@@ -17,6 +17,10 @@ export type MonthDay = {
     month: number;
 }
 
+export function getCurrentDay() {
+    return dayjs().utc().date();
+}
+
 export function getCurrentMonth() {
     return dayjs().utc().month();
 }
