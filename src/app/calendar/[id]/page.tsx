@@ -7,13 +7,11 @@ import {
     useState
 } from "react";
 
-import {
-    LOCAL_STORAGE_KEY,
-    useLocalStorage,
-} from "~/hooks/use-local-storage";
+
+import { useAuth } from "~/hooks/use-auth";
 import { useIsClient } from "~/hooks/use-is-client";
 import Calendar from "~/components/Calendar/Calendar";
-import { UsersAvailability } from "../../../../typescript";
+import { Event, UsersAvailability } from "../../../../typescript";
 
 type RouteParams = {
     id: string;
@@ -39,47 +37,52 @@ type ReactProps = {
 // }
 
 
-function fetchEventCalendar(eventId: string): Promise<UsersAvailability> {
+function fetchEventCalendar(eventId: string): Promise<Event> {
     console.log('fetching for event:', eventId);
     // Add choices
-    return Promise.resolve({ users: {
+    return Promise.resolve({
+        eventName: 'DnD',
+        users: {
             orzel: { available: [1], notAvailable: [2], maybeAvailable: [3] },
             bidon: { available: [1], notAvailable: [3], maybeAvailable: [] }
         },
     });
 }
 
+// czy ktos bez setowania username powinien moc obejrzec kalendarz?
+
 export default function EventCalendar({ params }: ReactProps) {
     const { id: eventId } = params;
 
     const isClient = useIsClient();
-    const [storageName, setUserStorage] = useLocalStorage(LOCAL_STORAGE_KEY.EVENT_NAME);
+    const { username, setUsername } = useAuth();
 
     const nameInputRef = useRef<HTMLInputElement>(null);
-
+    const [eventName, setEventName] = useState<string | null>(null);
+    const [authDialog, setAuthDialog] = useState(false);
     const [calendarAvailability, setCalendarAvailability] = useState<UsersAvailability | null>(null);
-    const [manualIdentityModal, setManualIdentityModal] = useState(false);
 
-    const renderIdentityModal = (!storageName && isClient) || manualIdentityModal;
+    const renderIdentityDialog = (!username && isClient) || authDialog;
 
     const openIdentityModal = () => {
-        setManualIdentityModal(true);
+        setAuthDialog(true);
     };
 
     const closeIdentityModal = () => {
-        setManualIdentityModal(false);
+        setAuthDialog(false);
     };
 
     const saveUserName = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const inputValue = nameInputRef.current?.value;
-        if (!inputValue) {
+        const usernameInputVal = nameInputRef.current?.value;
+        if (!usernameInputVal) {
             return;
         }
 
-        setUserStorage({ name: inputValue });
-        setManualIdentityModal(!inputValue);
+        setUsername(usernameInputVal);
+        setAuthDialog(!usernameInputVal);
+        console.log('ToDo: refetch user availability');
     };
 
     useEffect(() => {
@@ -87,11 +90,16 @@ export default function EventCalendar({ params }: ReactProps) {
         // ToDo: Error handling
         async function initEventCalendar() {
             const response = await fetchEventCalendar(eventId);
-            setCalendarAvailability(response); 
+            setCalendarAvailability(response.users);
+            setEventName(response.eventName);
         }
 
         initEventCalendar();
     }, []);
+
+    useEffect(() => {
+        document.title = `Event - ${eventName ?? ''}`;
+    }, [eventName]);
 
     if (!calendarAvailability) {
         return null;
@@ -99,20 +107,20 @@ export default function EventCalendar({ params }: ReactProps) {
 
     return (
         <div>
-            <h1>Event calendar</h1>
+            <h1>{eventName}</h1>
             <div className="flex">
-                <h2>Welcome {storageName?.name}</h2>
+                <h2>Welcome {username}</h2>
                 <button type="button" onClick={openIdentityModal}>Change name</button>
             </div>
             {/* <Legend /> */}
             <div>
                 <p>Yellow - if needed</p>
                 <p>Red - no</p>
-                <p>Green - tes</p>
+                <p>Green - yes</p>
             </div>
-            <Calendar availability={calendarAvailability} />
+            {<Calendar availability={calendarAvailability} eventId={eventId} username={username} />}
             {/* <UsernameForm /> */}
-            {renderIdentityModal && (
+            {renderIdentityDialog && (
                 <form onSubmit={saveUserName}>
                     <p>Add name</p>
                     <input ref={nameInputRef} />

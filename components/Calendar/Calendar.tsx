@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import {
     MonthDay,
@@ -12,17 +12,50 @@ import { chunks } from "~/utils/utils";
 import { changeAvailability } from "~/app/api/calendar/[id]/actions";
 import { Availability, UsersAvailability } from "../../typescript";
 
+const Availability = {
+    MAYBE_AVAILABLE: 'MAYBE_AVAILABLE',
+    NOT_AVAILABLE: 'NOT_AVAILABLE',
+    AVAILABLE: 'AVAILABLE'
+} as const;
+
+type AvailabilityEnum = keyof typeof Availability;
 type CalendarProps = {
     availability: UsersAvailability;
+    eventId: string;
+    username: string | undefined;
 }
-type DayChoice = {
+type DayAvailability = {
     user: string;
     choice: string;
 }
-type EmptyDays = Record<number, DayChoice[]>
+type EmptyDays = Record<number, DayAvailability[]>
+type OwnAvailability = Record<string, AvailabilityEnum>
+type AllAvailability = Record<string, { [k: string]: AvailabilityEnum }>;
 
-const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'null', 'null', 'null', 'null'];
+export const WEEKDAYS = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+] as const;
+
+export const MONTHS = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+] as const;
 
 function createEmptyDays(numberOfDaysInMonth: number = 0): EmptyDays {
     return Array
@@ -32,30 +65,30 @@ function createEmptyDays(numberOfDaysInMonth: number = 0): EmptyDays {
 
 function searchChoicesForMatch(choices: Availability, condition: number) {
     if (choices.available.some((day) => condition === day)) {
-        return 'available';
+        return Availability.AVAILABLE;
     }
 
     if (choices.maybeAvailable.some((day) => condition === day)) {
-        return 'maybe_available';
+        return Availability.MAYBE_AVAILABLE;
     }
 
     if (choices.notAvailable.some((day) => condition === day)) {
-        return 'not_available';
+        return Availability.NOT_AVAILABLE;
     }
 
     return null;
 }
 
 function areAllAvailable(choices: Record<string, string | null>) {
-    return Object.values(choices).every((choice) => choice === 'available');
+    return Object.values(choices).every((choice) => choice === Availability.AVAILABLE);
 }
 
-function fillUsersChoices(usersChoices: UsersAvailability['users'], maxMonthDay: number) {
-    const choices: Record<string, { [k: string]: string }> = {};
+function fillUsersChoices(usersChoices: UsersAvailability, maxMonthDay: number) {
+    const choices: AllAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
 
     Object.keys(emptyDays).forEach((day) => {
-        const usersDayChoices: Record<string, string> = {};
+        const usersDayChoices: OwnAvailability = {};
         Object.entries(usersChoices).forEach(([users, userChoices]) => {
             const type = searchChoicesForMatch(userChoices, Number.parseInt(day));
             if (!type) {
@@ -70,7 +103,7 @@ function fillUsersChoices(usersChoices: UsersAvailability['users'], maxMonthDay:
 }
 
 function fillOwnChoices(choices: Availability, maxMonthDay: number) {
-    const ownChoices: Record<string, string> = {};
+    const ownChoices: OwnAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
 
     Object.keys(emptyDays).forEach((i) => {
@@ -84,16 +117,24 @@ function fillOwnChoices(choices: Availability, maxMonthDay: number) {
     return ownChoices;
 }
 
+// ToDo: use circular data structure
+function getNextChoice(currentChoice: string) {
+    if (currentChoice === Availability.AVAILABLE) {
+        return Availability.MAYBE_AVAILABLE;
+    }
+
+    if (currentChoice === Availability.MAYBE_AVAILABLE) {
+        return Availability.NOT_AVAILABLE;
+    }
+
+    return Availability.AVAILABLE;
+}
+
 // CALENDAR component
 // if you select the day the color changes
 // if someone selects the day dot appears
 // prefetch next and prev months
-export default function Calendar({ availability }: CalendarProps) {
-    // ToDo: ID hardcoded
-    const eventId = '1';
-    // ToDo: User hardcoded
-    const user = 'orzel';
-
+export default function Calendar({ availability, eventId, username }: CalendarProps) {
     const [isPending, startTransition] = useTransition();
 
     const [currentMonth, setCurrentMonth] = useState(getCurrentMonth);
@@ -102,12 +143,17 @@ export default function Calendar({ availability }: CalendarProps) {
     const monthDaysData = createMonthDays(currentMonth);
     const monthDays = monthDaysData.map(({ day }) => day);
     const maxMonthDayNumber = Math.max(...monthDays);
-
-    const [ownChoices, setOwnChoices] = useState(() => fillOwnChoices(availability.users[user],  maxMonthDayNumber));
-    const [ownChoicesBackup, setOwnChoicesBackup] = useState<Record<string, string>>({});
-
     const currentDay = getCurrentDay();
     const chunkedMonth = [...chunks(monthDaysData, 7)];
+
+    const userAvailability = username ? availability[username] : null;
+    const extractedOwnChoices = userAvailability ? fillOwnChoices(userAvailability,  maxMonthDayNumber) : {};
+    const [ownChoices, setOwnChoices] = useState<OwnAvailability>(extractedOwnChoices);
+    const [ownChoicesBackup, setOwnChoicesBackup] = useState<OwnAvailability>(extractedOwnChoices);
+
+    useEffect(() => {
+        console.log('ToDo: recalculate choices on username change');
+    }, [username]);
 
     const onPrevMonthClick = () => {
         setCurrentMonth((prev) => prev - 1);
@@ -117,9 +163,23 @@ export default function Calendar({ availability }: CalendarProps) {
         setCurrentMonth((prev) => prev + 1);
     };
 
-    const onDayClick = ({ day }: MonthDay) => {
+    const onDayClick = ({ day, month }: MonthDay) => {
+        if (!username) {
+            return null;
+        }
+
+        if (month !== currentMonth) {
+            return null;
+        }
+
+        const ownChoicesClone = structuredClone(ownChoices);
+        const currentChoice = ownChoicesClone[day];
+        const nextChoice = getNextChoice(currentChoice)
+        
+        ownChoicesClone[day] = nextChoice;
+
+        setOwnChoices(ownChoicesClone);
         setIsDirty(true);
-        setOwnChoices((prev) => prev);
     };
 
     const onSubmitClick = () => {
@@ -129,11 +189,11 @@ export default function Calendar({ availability }: CalendarProps) {
     };
 
     const onResetClick = () => {
-        setIsDirty(false);
         setOwnChoices(ownChoicesBackup);
+        setIsDirty(false);
     }
 
-    const usersChoices = fillUsersChoices(availability.users, maxMonthDayNumber);
+    const usersChoices = fillUsersChoices(availability, maxMonthDayNumber);
 
     return (
         <div>
@@ -154,23 +214,21 @@ export default function Calendar({ availability }: CalendarProps) {
                             {week.chunk.map((dayData) => (
                                 <td key={dayData.key} onClick={() => onDayClick(dayData)}>
                                     <div>
-                                        <p>{dayData.day}</p>
-                                        {dayData.day === currentDay && <p>Today</p>}
-                                        {ownChoices[dayData.day]}
-                                        {
-                                            Object
-                                                .entries(usersChoices[dayData.day])
-                                                .map(([user]) => <p key={user}>.</p>)
+                                        <button type="button">{dayData.day}</button>
+                                        {dayData.month === currentMonth && dayData.day === currentDay && <p>Today</p>}
+                                        {dayData.month === currentMonth && ownChoices[dayData.day]}
+                                        {dayData.month === currentMonth && Object
+                                            .entries(usersChoices[dayData.day])
+                                            .map(([user]) => <p key={user}>.</p>)
                                         }
-                                        {areAllAvailable(usersChoices[dayData.day])}
-                                        <div>
+                                        {dayData.month === currentMonth && areAllAvailable(usersChoices[dayData.day])}
+                                        {dayData.month === currentMonth && <div>
                                             <p>Tooltip</p>
-                                            {
-                                                Object
-                                                    .entries(usersChoices[dayData.day])
-                                                    .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
+                                            {Object
+                                                .entries(usersChoices[dayData.day])
+                                                .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
                                             }
-                                        </div>
+                                        </div>}
                                     </div>
                                 </td>
                             ))}
@@ -179,8 +237,8 @@ export default function Calendar({ availability }: CalendarProps) {
                 </tbody>
             </table>
             {/* Move this part to different component */}
-            {isDirty && <button type="reset">Reset changes</button>}
-            {isDirty && <button type="submit">Submit changes</button>}
+            {isDirty && <button type="reset" onClick={onResetClick}>Reset changes</button>}
+            {isDirty && <button type="submit" onClick={onSubmitClick}>Submit changes</button>}
         </div>
     );
 }

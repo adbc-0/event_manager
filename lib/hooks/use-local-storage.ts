@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { LocalStorageKeys } from "~/utils/constants";
 import { Nullable, Values } from "../../typescript";
 
-export const LOCAL_STORAGE_KEY = {
-    EVENT_NAME: 'event_user_name',
-} as const;
-
-type StorageKey = Values<typeof LOCAL_STORAGE_KEY>
+type StorageKey = Values<typeof LocalStorageKeys>
 
 type EventUserStore = {
     name: string;

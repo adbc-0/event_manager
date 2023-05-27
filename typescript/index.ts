@@ -12,7 +12,10 @@ export type Availability = {
 }
 
 export type UsersAvailability = {
-    users: {
-        [key: string]: Availability;
-    }
+    [key: string]: Availability;
+}
+
+export type Event = {
+    eventName: string;
+    users: UsersAvailability; 
 }

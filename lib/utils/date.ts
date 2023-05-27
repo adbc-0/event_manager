@@ -17,14 +17,6 @@ export type MonthDay = {
     month: number;
 }
 
-export function getCurrentDay() {
-    return dayjs().utc().date();
-}
-
-export function getCurrentMonth() {
-    return dayjs().utc().month();
-}
-
 function newDate(day: number, month: number): MonthDay {
     return { day, month, key: `${day}-${month}` };
 }
@@ -56,6 +48,14 @@ function daysToNextSunday(date: dayjs.Dayjs) {
     }
 
     return 7 - weekday;
+}
+
+export function getCurrentDay() {
+    return dayjs().utc().date();
+}
+
+export function getCurrentMonth() {
+    return dayjs().utc().month();
 }
 
 export function createMonthDays(month: number): MonthDay[] {

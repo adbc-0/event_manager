@@ -1,5 +1,3 @@
-export const ATTENDANCE_DECISION = {
-  YES: 'yes',
-  IF_NEEDED: 'if_needed',
-  NO: 'NO'
-};
+export const LocalStorageKeys = {
+  EVENT_NAME: 'event_user_name',
+} as const;
