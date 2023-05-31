@@ -5,10 +5,11 @@ import { useEffect, useState, useTransition } from "react";
 import {
     MonthDay,
     createMonthDays,
-    getCurrentDay,
+    getCurrentDate,
     getCurrentMonth,
+    getCurrentYear,
 } from "~/utils/date";
-import { chunks } from "~/utils/utils";
+import { capitalize, chunks, truncateString, pipe } from "~/utils/utils";
 import { changeAvailability } from "~/app/api/calendar/[id]/actions";
 import { Availability, UsersAvailability } from "../../typescript";
 
@@ -79,9 +80,9 @@ function searchChoicesForMatch(choices: Availability, condition: number) {
     return null;
 }
 
-function areAllAvailable(choices: Record<string, string | null>) {
-    return Object.values(choices).every((choice) => choice === Availability.AVAILABLE);
-}
+// function areAllAvailable(choices: Record<string, string | null>) {
+//     return Object.values(choices).every((choice) => choice === Availability.AVAILABLE);
+// }
 
 function fillUsersChoices(usersChoices: UsersAvailability, maxMonthDay: number) {
     const choices: AllAvailability = {};
@@ -130,20 +131,50 @@ function getNextChoice(currentChoice: string) {
     return Availability.AVAILABLE;
 }
 
+function isToday(day: MonthDay) {
+    const currentDate = getCurrentDate();
+    return day.day === currentDate.day &&
+        day.month === currentDate.month &&
+        day.year === currentDate.year;
+}
+
+function getAvailabilityColor(availability: AvailabilityEnum) {
+    if (!availability) {
+        return;
+    }
+    if (availability === Availability.AVAILABLE) {
+        return 'bg-green-400 hover:bg-green-400/80';
+    }
+    if (availability === Availability.MAYBE_AVAILABLE) {
+        return 'bg-orange-400 hover:bg-orange-400/80';
+    }
+    if (availability === Availability.NOT_AVAILABLE) {
+        return 'bg-rose-400 hover:bg-rose-400/80';
+    }
+    throw new Error('unmatched availability type')
+}
+
+const trimWeekday = pipe(
+    truncateString(3),
+    capitalize
+);
+
 // CALENDAR component
 // if you select the day the color changes
 // if someone selects the day dot appears
 // prefetch next and prev months
+// select all
+// clear all selections
 export default function Calendar({ availability, eventId, username }: CalendarProps) {
     const [isPending, startTransition] = useTransition();
 
-    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth);
+    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+    const [currentYear, setCurrentYear] = useState(getCurrentYear())
     const [isDirty, setIsDirty] = useState(false);
 
-    const monthDaysData = createMonthDays(currentMonth);
+    const monthDaysData = createMonthDays(currentMonth, currentYear);
     const monthDays = monthDaysData.map(({ day }) => day);
     const maxMonthDayNumber = Math.max(...monthDays);
-    const currentDay = getCurrentDay();
     const chunkedMonth = [...chunks(monthDaysData, 7)];
 
     const userAvailability = username ? availability[username] : null;
@@ -156,10 +187,22 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
     }, [username]);
 
     const onPrevMonthClick = () => {
+        if (currentMonth - 1 < 0) {
+            setCurrentMonth(11);
+            setCurrentYear((prev) => prev - 1);
+            return;
+        }
+
         setCurrentMonth((prev) => prev - 1);
     };
 
     const onNextMonthClick = () => {
+        if (currentMonth + 1 > 11) {
+            setCurrentMonth(0);
+            setCurrentYear((prev) => prev + 1);
+            return;
+        }
+
         setCurrentMonth((prev) => prev + 1);
     };
 
@@ -196,52 +239,62 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
     const usersChoices = fillUsersChoices(availability, maxMonthDayNumber);
 
     return (
-        <div>
-            <div className="flex">
-                <button type="button" onClick={onPrevMonthClick}>{'<'}</button>
-                <p>{MONTHS.at(currentMonth)}</p>
-                <button type="button" onClick={onNextMonthClick}>{'>'}</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        {WEEKDAYS.map((month) => <td key={month}>{month}</td>)}
-                    </tr>
-                </thead>
-                <tbody>
-                    {chunkedMonth.map((week) => (
-                        <tr key={week.key}>
-                            {week.chunk.map((dayData) => (
-                                <td key={dayData.key} onClick={() => onDayClick(dayData)}>
-                                    <div>
-                                        <button type="button">{dayData.day}</button>
-                                        {dayData.month === currentMonth && dayData.day === currentDay && <p>Today</p>}
-                                        {dayData.month === currentMonth && ownChoices[dayData.day]}
-                                        {dayData.month === currentMonth && Object
-                                            .entries(usersChoices[dayData.day])
-                                            .map(([user]) => <p key={user}>.</p>)
-                                        }
-                                        {dayData.month === currentMonth && areAllAvailable(usersChoices[dayData.day])}
-                                        {dayData.month === currentMonth && <div>
-                                            <p>Tooltip</p>
-                                            {Object
-                                                .entries(usersChoices[dayData.day])
-                                                .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
-                                            }
-                                        </div>}
-                                    </div>
-                                </td>
-                            ))}
+        <>
+            <div className="bg-gray-100 rounded-md p-3 my-3 m-auto bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25 max-w-sm">
+                <div className="flex justify-between items-center">
+                    <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onPrevMonthClick}>{'<'}</button>
+                    <p className="px-7">{MONTHS.at(currentMonth)} {currentYear}</p>
+                    <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onNextMonthClick}>{'>'}</button>
+                </div>
+                <table className="table-fixed text-center w-full">
+                    <thead>
+                        <tr>
+                            {WEEKDAYS.map((weekday) => <td key={weekday} className="py-3">{trimWeekday(weekday)}</td>)}
                         </tr>
-                    ))} 
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {chunkedMonth.map((week) => (
+                            <tr key={week.key}>
+                                {week.chunk.map((dayData) => (
+                                    <td key={dayData.key} onClick={() => onDayClick(dayData)}>
+                                        <div className="aspect-square">
+                                            <button className={
+                                                `w-full h-full
+                                                ${dayData.month === currentMonth ? 'hover:bg-white/10 transform active:scale-75 transition-transform' : ''}
+                                                ${isToday(dayData) ? 'rounded-full' : 'rounded-md'}
+                                                ${isToday(dayData) && !getAvailabilityColor(ownChoices[dayData.day]) ? 'bg-white/10' : ''}
+                                                ${dayData.month === currentMonth && getAvailabilityColor(ownChoices[dayData.day])}
+                                            `} type="button" disabled={dayData.month !== currentMonth}>{dayData.day}</button>
+                                            {/* {dayData.month === currentMonth && Object
+                                                .entries(usersChoices[dayData.day])
+                                                .map(([user]) => <p key={user}>.</p>)
+                                            } */}
+                                            {/* {dayData.month === currentMonth && areAllAvailable(usersChoices[dayData.day])} */}
+                                            {/* {dayData.month === currentMonth && <div>
+                                                <p>Tooltip</p>
+                                                {Object
+                                                    .entries(usersChoices[dayData.day])
+                                                    .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
+                                                }
+                                            </div>} */}
+                                        </div>
+                                    </td>
+                                ))}
+                            </tr>
+                        ))} 
+                    </tbody>
+                </table>
+            </div>
             {/* Move this part to different component */}
-            {isDirty && <button type="reset" onClick={onResetClick}>Reset changes</button>}
-            {isDirty && <button type="submit" onClick={onSubmitClick}>Submit changes</button>}
-        </div>
+            <div className="flex">
+                {isDirty && <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md" type="reset" onClick={onResetClick}>Reset changes</button>}
+                {isDirty && <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md" type="submit" onClick={onSubmitClick}>Submit changes</button>}
+            </div>
+        </>
     );
 }
+
+// hover:bg-neutral-600
 
 // IMMUTABLE version of fill own choices function
 // function fillOwnChoices(choices: Availability, maxMonthDay: number) {

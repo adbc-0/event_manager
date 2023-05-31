@@ -107,17 +107,17 @@ export default function EventCalendar({ params }: ReactProps) {
 
     return (
         <div>
-            <h1>{eventName}</h1>
-            <div className="flex">
+            <h1 className="text-center">{eventName}</h1>
+            <div className="flex justify-center">
                 <h2>Welcome {username}</h2>
                 <button type="button" onClick={openIdentityModal}>Change name</button>
             </div>
             {/* <Legend /> */}
-            <div>
+            {/* <div className="text-center">
                 <p>Yellow - if needed</p>
                 <p>Red - no</p>
                 <p>Green - yes</p>
-            </div>
+            </div> */}
             {<Calendar availability={calendarAvailability} eventId={eventId} username={username} />}
             {/* <UsernameForm /> */}
             {renderIdentityDialog && (
