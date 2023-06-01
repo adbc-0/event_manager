@@ -12,6 +12,7 @@ import { useAuth } from "~/hooks/use-auth";
 import editIcon from "~/public/edit.svg"; 
 import Calendar from "~/components/Calendar/Calendar";
 import { Event, UsersAvailability } from "../../../../typescript";
+import { getCurrentMonth } from "~/utils/date";
 
 type RouteParams = {
     id: string;
@@ -20,6 +21,8 @@ type RouteParams = {
 type ReactProps = {
     params: RouteParams;
 }
+
+// ToDo: Improve background
 
 // you cannot use metadata with client component
 // export const metadata = {
@@ -37,19 +40,25 @@ type ReactProps = {
 // }
 
 
-function fetchEventCalendar(eventId: string): Promise<Event> {
+function fetchEventCalendar(eventId: string, month: number): Promise<Event> {
     console.log('fetching for event:', eventId);
-    // Add choices
+    if (month === 5) {
+        return Promise.resolve({
+            eventName: 'DnD',
+            month,
+            users: {
+                orzel: { available: [1], notAvailable: [2], maybeAvailable: [3] },
+                bidon: { available: [1], notAvailable: [3], maybeAvailable: [] }
+            },
+        });
+    }
+
     return Promise.resolve({
         eventName: 'DnD',
-        users: {
-            orzel: { available: [1], notAvailable: [2], maybeAvailable: [3] },
-            bidon: { available: [1], notAvailable: [3], maybeAvailable: [] }
-        },
+        month,
+        users: {}
     });
 }
-
-// czy ktos bez setowania username powinien moc obejrzec kalendarz?
 
 export default function EventCalendar({ params }: ReactProps) {
     const { id: eventId } = params;
@@ -81,15 +90,15 @@ export default function EventCalendar({ params }: ReactProps) {
         }
 
         setUsername(usernameInputVal);
+        // recalculate availabilities
         usernameDialogRef.current?.close();
-        console.log('ToDo: refetch user availability');
     };
 
     useEffect(() => {
         // ToDo: Abort controller
         // ToDo: Error handling
         async function initEventCalendar() {
-            const response = await fetchEventCalendar(eventId);
+            const response = await fetchEventCalendar(eventId, getCurrentMonth());
             setCalendarAvailability(response.users);
             setEventName(response.eventName);
         }
@@ -115,12 +124,6 @@ export default function EventCalendar({ params }: ReactProps) {
                     <Image className="cursor-pointer" onClick={openIdentityModal} src={editIcon} alt="edit username" />
                 </div>}
             </section>
-            {/* <Legend /> */}
-            {/* <div className="text-center">
-                <p>Yellow - if needed</p>
-                <p>Red - no</p>
-                <p>Green - yes</p>
-            </div> */}
             <Calendar availability={calendarAvailability} eventId={eventId} username={username} />
             {/* <UsernameForm /> */}
             <dialog ref={usernameDialogRef} className="bg-gray-100 rounded-md p-6 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25 max-w-sm" open={!username}>

@@ -32,6 +32,7 @@ type DayAvailability = {
 type EmptyDays = Record<number, DayAvailability[]>
 type OwnAvailability = Record<string, AvailabilityEnum>
 type AllAvailability = Record<string, { [k: string]: AvailabilityEnum }>;
+type DayColorType = 'MY_AVAILABLE' | 'MAYBE_AVAILABLE' | 'NOT_AVAILABLE' | 'ALL_SELECTED' | 'DIFFERENT_MONTH' | 'TODAY' | 'UNSELECTED';
 
 export const WEEKDAYS = [
     'monday',
@@ -58,6 +59,22 @@ export const MONTHS = [
     'december',
 ] as const;
 
+const dayColor: Record<DayColorType, string> = {
+    ALL_SELECTED: 'bg-gradient-to-br from-orange-400 via-rose-500 to-teal-400 animate-wave bg-[length:600%] hover:opacity-80',
+    DIFFERENT_MONTH: 'opacity-50',
+    MAYBE_AVAILABLE: 'bg-orange-400 hover:bg-orange-400/80',
+    MY_AVAILABLE: 'bg-green-400 hover:bg-green-400/80',
+    NOT_AVAILABLE: 'bg-rose-400 hover:bg-rose-400/80',
+    TODAY: 'bg-white/10',
+    UNSELECTED: 'hover:bg-white/10'
+} as const;
+
+const ownAvailabilityChoice: Record<AvailabilityEnum, DayColorType> = {
+    [Availability.AVAILABLE]: 'MY_AVAILABLE',
+    [Availability.MAYBE_AVAILABLE]: 'MAYBE_AVAILABLE',
+    [Availability.NOT_AVAILABLE]: 'NOT_AVAILABLE',
+} as const;
+
 function createEmptyDays(numberOfDaysInMonth: number = 0): EmptyDays {
     return Array
         .from<number>({ length: numberOfDaysInMonth })
@@ -80,15 +97,6 @@ function searchChoicesForMatch(choices: Availability, condition: number) {
     return null;
 }
 
-function areAllAvailable(choices: Record<string, string | null>) {
-    const choicesList = Object.values(choices);
-    if (!choicesList.length) {
-        return false;
-    }
-
-    return choicesList.every((choice) => choice === Availability.AVAILABLE);
-}
-
 function fillUsersChoices(usersChoices: UsersAvailability, maxMonthDay: number) {
     const choices: AllAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
@@ -109,18 +117,16 @@ function fillUsersChoices(usersChoices: UsersAvailability, maxMonthDay: number) 
 }
 
 function fillOwnChoices(choices: Availability, maxMonthDay: number) {
-    const ownChoices: OwnAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
-
-    Object.keys(emptyDays).forEach((i) => {
-        const type = searchChoicesForMatch(choices, Number.parseInt(i));
-        if (!type) {
-            return;
-        }
-        ownChoices[i] = type;
-    });
-
-    return ownChoices;
+    return Object
+        .keys(emptyDays)
+        .reduce((acc, curr) => {
+            const type = searchChoicesForMatch(choices, Number.parseInt(curr));
+            if (type) {
+                acc[curr] = type;
+            }
+            return acc;
+        }, {} as OwnAvailability);
 }
 
 // ToDo: use circular data structure
@@ -143,20 +149,33 @@ function isToday(day: MonthDay) {
         day.year === currentDate.year;
 }
 
-function getAvailabilityColor(availability: AvailabilityEnum) {
-    if (!availability) {
-        return 'hover:bg-white/10';
+function areAllAvailable(choices: OwnAvailability) {
+    const choicesList = Object.values(choices);
+    if (!choicesList.length) {
+        return false;
     }
-    if (availability === Availability.AVAILABLE) {
-        return 'bg-green-400 hover:bg-green-400/80';
+
+    return choicesList.every((choice) => choice === Availability.AVAILABLE);
+}
+
+function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
+    return ownAvailabilityChoice[ownChoice] ?? 'UNSELECTED';
+}
+
+function getColorType(day: MonthDay, selectedMonth: number, allChoices: OwnAvailability, ownChoice: AvailabilityEnum): DayColorType {
+    if (selectedMonth !== day.month) {
+        return 'DIFFERENT_MONTH';
     }
-    if (availability === Availability.MAYBE_AVAILABLE) {
-        return 'bg-orange-400 hover:bg-orange-400/80';
+    if (areAllAvailable(allChoices)) {
+        return 'ALL_SELECTED';
     }
-    if (availability === Availability.NOT_AVAILABLE) {
-        return 'bg-rose-400 hover:bg-rose-400/80';
+    if (ownAvailabilityChoice[ownChoice]) {
+        return ownAvailabilityChoice[ownChoice];
     }
-    throw new Error('unmatched availability type')
+    if (isToday(day)) {
+        return 'TODAY';
+    }
+    return 'UNSELECTED';
 }
 
 const trimWeekday = pipe(
@@ -187,10 +206,6 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
     const [ownChoices, setOwnChoices] = useState<OwnAvailability>(extractedOwnChoices);
     const [ownChoicesBackup, setOwnChoicesBackup] = useState<OwnAvailability>(extractedOwnChoices);
 
-    useEffect(() => {
-        console.log('ToDo: recalculate choices on username change');
-    }, [username]);
-
     const onPrevMonthClick = () => {
         if (currentMonth - 1 < 0) {
             setCurrentMonth(11);
@@ -198,6 +213,8 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
             return;
         }
 
+        console.log('ToDo: change availability');
+        console.log('ToDo: change own choices');
         setCurrentMonth((prev) => prev - 1);
     };
 
@@ -208,6 +225,8 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
             return;
         }
 
+        console.log('ToDo: change availability');
+        console.log('ToDo: change own choices');
         setCurrentMonth((prev) => prev + 1);
     };
 
@@ -267,16 +286,15 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
                                             <div className="aspect-square relative">
                                                 <button className={
                                                     `w-full h-full
-                                                    ${dayData.month === currentMonth ? 'transform active:scale-75 transition-transform' : 'opacity-50'}
+                                                    ${dayData.month === currentMonth ? 'transform active:scale-75 transition-transform' : ''}
                                                     ${isToday(dayData) ? 'rounded-full' : 'rounded-md'}
-                                                    ${isToday(dayData) && !ownChoices[dayData.day] ? 'bg-white/10' : ''}
-                                                    ${dayData.month === currentMonth && getAvailabilityColor(ownChoices[dayData.day])}
-                                                    ${dayData.month === currentMonth && areAllAvailable(usersChoices[dayData.day]) ? 'bg-gradient-to-br from-orange-400 via-rose-500 to-teal-400 animate-wave bg-[length:600%]' : ''}
+                                                    ${dayColor[getColorType(dayData, currentMonth, usersChoices[dayData.day], ownChoices[dayData.day])]}
                                                 `} type="button" disabled={dayData.month !== currentMonth}>{dayData.day}</button>
                                                 <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
+                                                    {/* ToDo: Dont render if all selected */}
                                                     {dayData.month === currentMonth && Object
                                                         .entries(usersChoices[dayData.day])
-                                                        .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${getAvailabilityColor(choice)}`} />)
+                                                        .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
                                                     }
                                                 </div>
                                                 {/* {dayData.month === currentMonth && <div>
@@ -304,20 +322,3 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
         </>
     );
 }
-
-// hover:bg-neutral-600
-
-// IMMUTABLE version of fill own choices function
-// function fillOwnChoices(choices: Availability, maxMonthDay: number) {
-//     const emptyDays = createEmptyDays(maxMonthDay);
-//     const ownChoices = Object.keys(emptyDays)
-//         .map((i) => {
-//             const type = searchChoicesForMatch(choices, Number.parseInt(i));
-//             return { key: i, value: type };
-//         })
-//         .filter((item) => item.value !== undefined)
-//         .reduce((acc, item) => {
-//             return Object.assign({}, acc, { [item.key]: item.value });
-//         }, {} as Record<string, string>);
-//     return ownChoices;
-// }
