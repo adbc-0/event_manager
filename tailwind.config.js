@@ -6,11 +6,19 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      // backgroundImage: ({ theme }) => ({
+      //   'wavy-gradient': `linear-gradient(${theme('colors.orange.400')},${theme('colors.rose.500')},${theme('colors.blue.400')},${theme('colors.teal.400')})`
+      // }),
+      keyframes: {
+        wave: {
+          '0%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' },
+          '100%': { 'background-position': '0% 50%' }
+        }
       },
+      animation: {
+        wave: 'wave 4s linear infinite',
+      }
     },
   },
   plugins: [],

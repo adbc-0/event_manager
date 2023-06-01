@@ -3,6 +3,7 @@ import {
     useState,
 } from "react";
 
+// ToDo: Remove as currently unused
 export function useIsClient() {
     const [isClient, setIsClient] = useState(false);
 
