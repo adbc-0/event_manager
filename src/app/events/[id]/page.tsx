@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useAuth } from "~/hooks/use-auth";
 import editIcon from "~/public/edit.svg"; 
 import Calendar from "~/components/Calendar/Calendar";
-import { Event, UsersAvailability } from "../../../../typescript";
+import { EventResponse, AllUsersAvailabilityChoices } from "../../../../typescript";
 import { getCurrentMonth } from "~/utils/date";
 
 type RouteParams = {
@@ -40,7 +40,7 @@ type ReactProps = {
 // }
 
 
-function fetchEventCalendar(eventId: string, month: number): Promise<Event> {
+function fetchEventCalendar(eventId: string, month: number): Promise<EventResponse> {
     console.log('fetching for event:', eventId);
     if (month === 5) {
         return Promise.resolve({
@@ -70,7 +70,7 @@ export default function EventCalendar({ params }: ReactProps) {
     const usernameDialogRef = useRef<HTMLDialogElement>(null);
 
     const [eventName, setEventName] = useState<string | null>(null);
-    const [calendarAvailability, setCalendarAvailability] = useState<UsersAvailability | null>(null);
+    const [calendarAvailability, setCalendarAvailability] = useState<AllUsersAvailabilityChoices | null>(null);
 
     const openIdentityModal = () => {
         usernameDialogRef.current?.showModal();        

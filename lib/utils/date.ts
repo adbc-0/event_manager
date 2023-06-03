@@ -70,7 +70,7 @@ export function getCurrentDate() {
         day: currentDate.date(),
         month: currentDate.month(),
         year: currentDate.year(),
-    };
+    } as const;
 }
 
 export function createMonthDays(month: number, year: number): MonthDay[] {

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 async function fetchCalendar() {
-    const response = await fetch('http://localhost:3000/api/calendar', {
+    const response = await fetch('http://localhost:3000/api/events', {
         cache: 'no-store'
     });
     if (!response.ok) {
@@ -12,8 +12,8 @@ async function fetchCalendar() {
 }
 
 export const metadata: Metadata = {
-    title: 'Chaos - Calendar',
-    description: 'Calendar part of app',
+    title: 'Chaos - Events',
+    description: 'Listing of all created event calendars',
 };
 
 export default async function Calendar() { 

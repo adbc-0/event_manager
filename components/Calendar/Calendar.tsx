@@ -10,8 +10,8 @@ import {
     getCurrentYear,
 } from "~/utils/date";
 import { capitalize, chunks, truncateString, pipe } from "~/utils/utils";
-import { changeAvailability } from "~/app/api/calendar/[id]/actions";
-import { Availability, UsersAvailability } from "../../typescript";
+import { changeAvailability } from "~/app/api/events/[id]/actions";
+import { Availability, AllUsersAvailabilityChoices } from "../../typescript";
 
 const Availability = {
     MAYBE_AVAILABLE: 'MAYBE_AVAILABLE',
@@ -21,7 +21,7 @@ const Availability = {
 
 type AvailabilityEnum = keyof typeof Availability;
 type CalendarProps = {
-    availability: UsersAvailability;
+    availability: AllUsersAvailabilityChoices;
     eventId: string;
     username: string | undefined;
 }
@@ -97,7 +97,7 @@ function searchChoicesForMatch(choices: Availability, condition: number) {
     return null;
 }
 
-function fillUsersChoices(usersChoices: UsersAvailability, maxMonthDay: number) {
+function fillUsersChoices(usersChoices: AllUsersAvailabilityChoices, maxMonthDay: number) {
     const choices: AllAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
 

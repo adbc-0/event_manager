@@ -4,18 +4,18 @@ export type AtLeastOnePropertyOf<T> = { [K in keyof T]:
   { [L in K]: T[L] } &
   { [L in Exclude<keyof T, K>]?: T[L] }
 }[keyof T];
-
+export type ReactProps = {
+    children: JSX.Element[];
+}
 export type Availability = {
     available: number[];
     notAvailable: number[];
     maybeAvailable: number[];
 }
-
-export type UsersAvailability = {
+export type AllUsersAvailabilityChoices = {
     [key: string]: Availability;
 }
-
-export type Event = {
+export type EventResponse = {
     eventName: string;
-    users: UsersAvailability; 
+    users: AllUsersAvailabilityChoices; 
 }
