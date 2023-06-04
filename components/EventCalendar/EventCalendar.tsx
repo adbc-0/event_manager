@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import {
     MonthDay,
-    createMonthDays,
     getCurrentDate,
-    getCurrentMonth,
-    getCurrentYear,
+    getNextMonthDate,
+    getPrevMonthDate,
 } from "~/utils/date";
-import { capitalize, chunks, truncateString, pipe } from "~/utils/utils";
+import { capitalize, truncateString, pipe } from "~/utils/utils";
 import { changeAvailability } from "~/app/api/events/[id]/actions";
-import { Availability, AllUsersAvailabilityChoices } from "../../typescript";
+import { Availability, EventResponse } from "../../typescript";
+import { useParams } from "next/navigation";
+import { useAuth } from "~/hooks/use-auth";
+import { useEvent } from "../../lib/context/EventProvider";
 
 const Availability = {
     MAYBE_AVAILABLE: 'MAYBE_AVAILABLE',
@@ -19,20 +21,9 @@ const Availability = {
     AVAILABLE: 'AVAILABLE'
 } as const;
 
-type AvailabilityEnum = keyof typeof Availability;
-type CalendarProps = {
-    availability: AllUsersAvailabilityChoices;
-    eventId: string;
-    username: string | undefined;
-}
-type DayAvailability = {
-    user: string;
-    choice: string;
-}
-type EmptyDays = Record<number, DayAvailability[]>
+type AvailabilityEnum = keyof typeof Availability
 type OwnAvailability = Record<string, AvailabilityEnum>
-type AllAvailability = Record<string, { [k: string]: AvailabilityEnum }>;
-type DayColorType = 'MY_AVAILABLE' | 'MAYBE_AVAILABLE' | 'NOT_AVAILABLE' | 'ALL_SELECTED' | 'DIFFERENT_MONTH' | 'TODAY' | 'UNSELECTED';
+type DayColorType = 'MY_AVAILABLE' | 'MAYBE_AVAILABLE' | 'NOT_AVAILABLE' | 'ALL_SELECTED' | 'DIFFERENT_MONTH' | 'TODAY' | 'UNSELECTED'
 
 export const WEEKDAYS = [
     'monday',
@@ -75,73 +66,6 @@ const ownAvailabilityChoice: Record<AvailabilityEnum, DayColorType> = {
     [Availability.NOT_AVAILABLE]: 'NOT_AVAILABLE',
 } as const;
 
-function createEmptyDays(numberOfDaysInMonth: number = 0): EmptyDays {
-    return Array
-        .from<number>({ length: numberOfDaysInMonth })
-        .reduce((acc, _, index) => ({ ...acc, [index + 1]: [] }), {});
-};
-
-function searchChoicesForMatch(choices: Availability, condition: number) {
-    if (choices.available.some((day) => condition === day)) {
-        return Availability.AVAILABLE;
-    }
-
-    if (choices.maybeAvailable.some((day) => condition === day)) {
-        return Availability.MAYBE_AVAILABLE;
-    }
-
-    if (choices.notAvailable.some((day) => condition === day)) {
-        return Availability.NOT_AVAILABLE;
-    }
-
-    return null;
-}
-
-function fillUsersChoices(usersChoices: AllUsersAvailabilityChoices, maxMonthDay: number) {
-    const choices: AllAvailability = {};
-    const emptyDays = createEmptyDays(maxMonthDay);
-
-    Object.keys(emptyDays).forEach((day) => {
-        const usersDayChoices: OwnAvailability = {};
-        Object.entries(usersChoices).forEach(([users, userChoices]) => {
-            const type = searchChoicesForMatch(userChoices, Number.parseInt(day));
-            if (!type) {
-                return;
-            }
-            usersDayChoices[users] = type;
-        });
-        choices[day] = usersDayChoices;
-    });
-
-    return choices;
-}
-
-function fillOwnChoices(choices: Availability, maxMonthDay: number) {
-    const emptyDays = createEmptyDays(maxMonthDay);
-    return Object
-        .keys(emptyDays)
-        .reduce((acc, curr) => {
-            const type = searchChoicesForMatch(choices, Number.parseInt(curr));
-            if (type) {
-                acc[curr] = type;
-            }
-            return acc;
-        }, {} as OwnAvailability);
-}
-
-// ToDo: use circular data structure
-function getNextChoice(currentChoice: string) {
-    if (currentChoice === Availability.AVAILABLE) {
-        return Availability.MAYBE_AVAILABLE;
-    }
-
-    if (currentChoice === Availability.MAYBE_AVAILABLE) {
-        return Availability.NOT_AVAILABLE;
-    }
-
-    return Availability.AVAILABLE;
-}
-
 function isToday(day: MonthDay) {
     const currentDate = getCurrentDate();
     return day.day === currentDate.day &&
@@ -183,51 +107,60 @@ const trimWeekday = pipe(
     capitalize
 );
 
-// CALENDAR component
-// if you select the day the color changes
-// if someone selects the day dot appears
 // prefetch next and prev months
 // select all
 // clear all selections
-export default function Calendar({ availability, eventId, username }: CalendarProps) {
+// dont have to show own choice bubble
+// dont have to show bubbles on matched days
+export default function EventCalendar() {
+    const { id: eventId } = useParams();
+    if (!eventId) {
+        throw new Error('Missing event url param');
+    }
+    const { username } = useAuth();
+    const { allChoices, ownChoices, calendarDate, getCurrentMonthInChunks, eventDispatch } = useEvent();
     const [isPending, startTransition] = useTransition();
 
-    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
-    const [currentYear, setCurrentYear] = useState(getCurrentYear())
     const [isDirty, setIsDirty] = useState(false);
 
-    const monthDaysData = createMonthDays(currentMonth, currentYear);
-    const monthDays = monthDaysData.map(({ day }) => day);
-    const maxMonthDayNumber = Math.max(...monthDays);
-    const chunkedMonth = [...chunks(monthDaysData, 7)];
+    const onPrevMonthClick = async () => {
+        const newDate = getPrevMonthDate(calendarDate);
 
-    const userAvailability = username ? availability[username] : null;
-    const extractedOwnChoices = userAvailability ? fillOwnChoices(userAvailability,  maxMonthDayNumber) : {};
-    const [ownChoices, setOwnChoices] = useState<OwnAvailability>(extractedOwnChoices);
-    const [ownChoicesBackup, setOwnChoicesBackup] = useState<OwnAvailability>(extractedOwnChoices);
-
-    const onPrevMonthClick = () => {
-        if (currentMonth - 1 < 0) {
-            setCurrentMonth(11);
-            setCurrentYear((prev) => prev - 1);
-            return;
+        async function initEventCalendar() {
+            const { month, year } = newDate;
+            const searchParams = new URLSearchParams({ date: `${month}-${year}` });
+            const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`);
+            const [event] = await response.json() as EventResponse[];
+            eventDispatch({
+                type: 'SET_CHOICES',
+                payload: {
+                    event,
+                    username
+                }
+            });
         }
 
-        console.log('ToDo: change availability');
-        console.log('ToDo: change own choices');
-        setCurrentMonth((prev) => prev - 1);
+        await initEventCalendar();
     };
 
-    const onNextMonthClick = () => {
-        if (currentMonth + 1 > 11) {
-            setCurrentMonth(0);
-            setCurrentYear((prev) => prev + 1);
-            return;
+    const onNextMonthClick = async () => {
+        const newDate = getNextMonthDate(calendarDate);
+
+        async function initEventCalendar() {
+            const { month, year } = newDate;
+            const searchParams = new URLSearchParams({ date: `${month}-${year}` });
+            const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`);
+            const [event] = await response.json() as EventResponse[];
+            eventDispatch({
+                type: 'SET_CHOICES',
+                payload: {
+                    event,
+                    username
+                }
+            });
         }
 
-        console.log('ToDo: change availability');
-        console.log('ToDo: change own choices');
-        setCurrentMonth((prev) => prev + 1);
+        await initEventCalendar();
     };
 
     const onDayClick = ({ day, month }: MonthDay) => {
@@ -235,33 +168,26 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
             return null;
         }
 
-        if (month !== currentMonth) {
+        if (month !== calendarDate.month) {
             return null;
         }
 
-        // ToDo: change general availability
-        const ownChoicesClone = structuredClone(ownChoices);
-        const currentChoice = ownChoicesClone[day];
-        const nextChoice = getNextChoice(currentChoice)
-        
-        ownChoicesClone[day] = nextChoice;
-
-        setOwnChoices(ownChoicesClone);
+        eventDispatch({
+            type: 'DAY_SELECT',
+            payload: { selectedDay: day, username }
+        });
         setIsDirty(true);
     };
 
     const onSubmitClick = () => {
         startTransition(() => changeAvailability(eventId, ownChoices))
         setIsDirty(false);
-        // ToDo: update ownChoiceBackup
     };
 
     const onResetClick = () => {
-        setOwnChoices(ownChoicesBackup);
+        eventDispatch({ type: 'RESET_CHOICES' });
         setIsDirty(false);
     }
-
-    const usersChoices = fillUsersChoices(availability, maxMonthDayNumber);
 
     return (
         <>
@@ -269,7 +195,7 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
                 <div className=" bg-gray-100 rounded-md p-3 my-3 m-auto bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25 max-w-sm">
                     <div className="flex justify-between items-center">
                         <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onPrevMonthClick}>{'<'}</button>
-                        <p className="px-7">{capitalize(MONTHS[currentMonth])} {currentYear}</p>
+                        <p className="px-7">{capitalize(MONTHS[calendarDate.month])} {calendarDate.year}</p>
                         <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onNextMonthClick}>{'>'}</button>
                     </div>
                     <table className="table-fixed text-center w-full">
@@ -279,21 +205,23 @@ export default function Calendar({ availability, eventId, username }: CalendarPr
                             </tr>
                         </thead>
                         <tbody>
-                            {chunkedMonth.map((week) => (
+                            {/* MEMOIZE */}
+                            {getCurrentMonthInChunks().map((week) => (
                                 <tr key={week.key}>
                                     {week.chunk.map((dayData) => (
                                         <td key={dayData.key} onClick={() => onDayClick(dayData)}>
                                             <div className="aspect-square relative">
+                                                {/* All choices are not refreshed after change */}
                                                 <button className={
                                                     `w-full h-full
-                                                    ${dayData.month === currentMonth ? 'transform active:scale-75 transition-transform' : ''}
+                                                    ${dayData.month === calendarDate.month ? 'transform active:scale-75 transition-transform' : ''}
                                                     ${isToday(dayData) ? 'rounded-full' : 'rounded-md'}
-                                                    ${dayColor[getColorType(dayData, currentMonth, usersChoices[dayData.day], ownChoices[dayData.day])]}
-                                                `} type="button" disabled={dayData.month !== currentMonth}>{dayData.day}</button>
+                                                    ${dayColor[getColorType(dayData, calendarDate.month, allChoices[dayData.day], ownChoices[dayData.day])]}
+                                                `} type="button" disabled={dayData.month !== calendarDate.month}>{dayData.day}</button>
                                                 <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
                                                     {/* ToDo: Dont render if all selected */}
-                                                    {dayData.month === currentMonth && Object
-                                                        .entries(usersChoices[dayData.day])
+                                                    {dayData.month === calendarDate.month && Object
+                                                        .entries(allChoices[dayData.day])
                                                         .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
                                                     }
                                                 </div>

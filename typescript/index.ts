@@ -5,7 +5,7 @@ export type AtLeastOnePropertyOf<T> = { [K in keyof T]:
   { [L in Exclude<keyof T, K>]?: T[L] }
 }[keyof T];
 export type ReactProps = {
-    children: JSX.Element[];
+    children: JSX.Element[] | JSX.Element;
 }
 export type Availability = {
     available: number[];
@@ -17,5 +17,11 @@ export type AllUsersAvailabilityChoices = {
 }
 export type EventResponse = {
     eventName: string;
-    users: AllUsersAvailabilityChoices; 
+    time: string;
+    users: AllUsersAvailabilityChoices;
+}
+export type CurrentDate = {
+    readonly day: number;
+    readonly month: number;
+    readonly year: number;
 }

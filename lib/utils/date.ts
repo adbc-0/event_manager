@@ -1,7 +1,7 @@
 // facade for dayjs library
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { AtLeastOnePropertyOf } from "../../typescript";
+import { AtLeastOnePropertyOf, CurrentDate } from "../../typescript";
 import { range } from "./utils";
 
 dayjs.extend(utc);
@@ -52,28 +52,53 @@ function daysToNextSunday(date: dayjs.Dayjs) {
     return 7 - weekday;
 }
 
-export function getCurrentDay() {
-    return dayjs().utc().date();
+export function getCurrentDate(): CurrentDate {
+    return transformDayJsToCurrentDate(dayjs().utc());
 }
 
-export function getCurrentMonth() {
-    return dayjs().utc().month();
+export function transformCurrentDateToDaysJs({ day, month, year }: CurrentDate): dayjs.Dayjs {
+    return dayjs(`${year}-${month + 1}-${day}`);
 }
 
-export function getCurrentYear() {
-    return dayjs().utc().year();
-}
-
-export function getCurrentDate() {
-    const currentDate = dayjs().utc();
+export function transformDayJsToCurrentDate(dayjsObject: dayjs.Dayjs): CurrentDate {
     return {
-        day: currentDate.date(),
-        month: currentDate.month(),
-        year: currentDate.year(),
-    } as const;
+        day: dayjsObject.date(),
+        month: dayjsObject.month(),
+        year: dayjsObject.year(),
+    }
 }
 
-export function createMonthDays(month: number, year: number): MonthDay[] {
+export function transformISO_8601ToCurrentDate(iso: string): CurrentDate {
+    const date = dayjs(iso);
+    return {
+        day: date.date(),
+        month: date.month(),
+        year: date.year(),
+    }
+}
+
+export function getNextMonthDate(currentDate: CurrentDate): CurrentDate {    
+    const nextMonthDate = transformCurrentDateToDaysJs(currentDate)
+        .startOf('month')
+        .add(1, 'month');
+    return transformDayJsToCurrentDate(nextMonthDate);
+}
+
+export function getPrevMonthDate(currentDate: CurrentDate): CurrentDate {    
+    const nextMonthDate = transformCurrentDateToDaysJs(currentDate)
+        .startOf('month')
+        .subtract(1, 'month');
+    return transformDayJsToCurrentDate(nextMonthDate);
+}
+
+export function getLastDayOfMonth(currentDate: CurrentDate): number {
+    return transformCurrentDateToDaysJs(currentDate)
+        .utc()
+        .endOf('month')
+        .date();
+}
+ 
+export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
     const curr = dayjs()
         .utc()
         .set('month', month)
