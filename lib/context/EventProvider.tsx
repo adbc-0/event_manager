@@ -1,4 +1,4 @@
-import { Dispatch, createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { Dispatch, createContext, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import { AllUsersAvailabilityChoices, Availability, CurrentDate, EventResponse, ReactProps } from "../../typescript";
 import { MonthDay, createMonthDays, getCurrentDate, getLastDayOfMonth, transformISO_8601ToCurrentDate } from "~/utils/date";
 import { chunks } from "~/utils/utils";
@@ -123,11 +123,11 @@ function getNextChoice(currentChoice: string) {
     return Availability.AVAILABLE;
 }
 
-function createEmptyDays(numberOfDaysInMonth: number = 0): EmptyDays {
+function createEmptyDays(daysInMonth = 0): EmptyDays {
     return Array
-        .from<number>({ length: numberOfDaysInMonth })
+        .from<number>({ length: daysInMonth })
         .reduce((acc, _, index) => ({ ...acc, [index + 1]: [] }), {});
-};
+}
 
 function searchChoicesForMatch(choices: Availability, condition: number) {
     if (choices.available.some((day) => condition === day)) {
@@ -184,7 +184,7 @@ function parseAllChoices(usersChoices: AllUsersAvailabilityChoices, maxMonthDay:
 
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
-        case 'USER_CHANGE_RECALCULATION':
+        case 'USER_CHANGE_RECALCULATION': {
             const clone = structuredClone(state);
             const maxMonthDay = getLastDayOfMonth(state.calendarDate); 
 
@@ -194,6 +194,7 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoicesBackup = parseOwnChoices(action.payload.allChoices['orzel'], maxMonthDay);
 
             return state;
+        }
         case 'CHANGE_DATE': {
             const clone = structuredClone(state);
             
@@ -234,7 +235,7 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoicesBackup = state.ownChoices;
 
             return clone;
-        };
+        }
         case 'RESET_CHOICES': {
             const clone = structuredClone(state);
 
@@ -257,7 +258,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         const abortController = new AbortController();
 
         async function initEventCalendar() {
-            const { month, year } = eventControl.calendarDate;
+            const { month, year } = getCurrentDate();
             const searchParams = new URLSearchParams({ date: `${month}-${year}` });
             const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`, {
                 signal: abortController.signal
@@ -276,18 +277,18 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         return () => {
             abortController.abort();
         }
-    }, []);
+    }, [eventId, username]);
 
-    const getCurrentMonthInChunks = (): MonthChunk[] => {
-        const monthDaysData = createMonthDays(calendarDate);
-        return [...chunks(monthDaysData, 7)];
-    };
+    const getCurrentMonthInChunks = useCallback(() => {
+            const monthDaysData = createMonthDays(calendarDate);
+            return [...chunks(monthDaysData, 7)];
+    }, [calendarDate]);
 
     const providerValue: EventProviderReturn = useMemo(() => ({
         ...eventControl,
         eventDispatch,
         getCurrentMonthInChunks,
-    }), [eventControl, eventDispatch]);
+    }), [eventControl, getCurrentMonthInChunks]);
 
     return (
         <EventContext.Provider value={providerValue}>

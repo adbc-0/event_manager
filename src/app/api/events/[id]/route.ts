@@ -10,6 +10,7 @@ type RequestParams = {
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
+    console.log('fetching event choices for event:', params, 'for date', searchParams);
 
     // {
     //     eventName: 'DnD',

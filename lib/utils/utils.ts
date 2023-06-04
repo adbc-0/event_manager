@@ -16,7 +16,7 @@ export function range<T>(start: number, iterations: number, callback: (i: number
     return arr;
 }
 
-export const pipe = <T extends any[], U>(
+export const pipe = <T extends unknown[], U>(
     fn1: (...args: T) => U,
     ...fns: Array<(a: U) => U>
 ) => {

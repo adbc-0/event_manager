@@ -7,6 +7,7 @@ type EventResponse = {
 }
 
 async function fetchEvents(): Promise<EventResponse[]> {
+    // ToDo: remove no-store cache value
     const response = await fetch('http://localhost:3000/api/events', {
         cache: 'no-store'
     });

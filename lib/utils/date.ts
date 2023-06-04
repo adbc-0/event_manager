@@ -1,5 +1,5 @@
 // facade for dayjs library
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { AtLeastOnePropertyOf, CurrentDate } from "../../typescript";
 import { range } from "./utils";
@@ -23,8 +23,8 @@ function newDate(day: number, month: number, year: number): MonthDay {
 }
 
 function newMonth({ beginning, end }: AtLeastOnePropertyOf<NewMonth>) {
-    const fromDate = beginning ?? end!.startOf('month');
-    const toDate = end ?? beginning!.endOf('month');
+    const fromDate = beginning ?? end.startOf('month');
+    const toDate = end ?? beginning.endOf('month');
     const month = fromDate.month();
     const year = fromDate.year();
     return range(

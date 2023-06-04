@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 
 import {
     MonthDay,
@@ -119,7 +119,7 @@ export default function EventCalendar() {
     }
     const { username } = useAuth();
     const { allChoices, ownChoices, calendarDate, getCurrentMonthInChunks, eventDispatch } = useEvent();
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition(); // [isPending, startTransition]
 
     const [isDirty, setIsDirty] = useState(false);
 
@@ -206,7 +206,6 @@ export default function EventCalendar() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* MEMOIZE */}
                                 {getCurrentMonthInChunks().map((week) => (
                                     <tr key={week.key}>
                                         {week.chunk.map((dayData) => (

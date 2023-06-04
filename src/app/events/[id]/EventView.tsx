@@ -4,7 +4,6 @@ import {
     FormEvent,
     useEffect,
     useRef,
-    useState
 } from "react";
 import Image from "next/image";
 import { useParams } from 'next/navigation';
@@ -100,7 +99,7 @@ export default function EventView() {
                     <form ref={usernameFormRef} method="dialog" onSubmit={saveUserName}>
                         <h2 className="text-center text-xl">Insert username</h2>
                         <p className="text-sm">use the same username across devices</p>
-                        <input className="border border-black rounded-sm my-6 block m-auto" ref={nameInputRef} defaultValue={username} />
+                        <input ref={nameInputRef} className="border border-black my-6 py-2 block m-auto text-center text-black rounded-md" aria-label="username input field" defaultValue={username} />
                         <div className="flex justify-evenly">
                             <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md shadow-md" type="button" onClick={closeIdentityModal}>Cancel</button>
                             <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md shadow-md" type="submit">Submit</button>
