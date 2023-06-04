@@ -192,53 +192,55 @@ export default function EventCalendar() {
     return (
         <>
             <div>
-                <div className=" bg-gray-100 rounded-md p-3 my-3 m-auto bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25 max-w-sm">
-                    <div className="flex justify-between items-center">
-                        <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onPrevMonthClick}>{'<'}</button>
-                        <p className="px-7">{capitalize(MONTHS[calendarDate.month])} {calendarDate.year}</p>
-                        <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onNextMonthClick}>{'>'}</button>
-                    </div>
-                    <table className="table-fixed text-center w-full">
-                        <thead>
-                            <tr>
-                                {WEEKDAYS.map((weekday) => <td key={weekday} className="py-3">{trimWeekday(weekday)}</td>)}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* MEMOIZE */}
-                            {getCurrentMonthInChunks().map((week) => (
-                                <tr key={week.key}>
-                                    {week.chunk.map((dayData) => (
-                                        <td key={dayData.key} onClick={() => onDayClick(dayData)}>
-                                            <div className="aspect-square relative">
-                                                {/* All choices are not refreshed after change */}
-                                                <button className={
-                                                    `w-full h-full
-                                                    ${dayData.month === calendarDate.month ? 'transform active:scale-75 transition-transform' : ''}
-                                                    ${isToday(dayData) ? 'rounded-full' : 'rounded-md'}
-                                                    ${dayColor[getColorType(dayData, calendarDate.month, allChoices[dayData.day], ownChoices[dayData.day])]}
-                                                `} type="button" disabled={dayData.month !== calendarDate.month}>{dayData.day}</button>
-                                                <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
-                                                    {/* ToDo: Dont render if all selected */}
-                                                    {dayData.month === calendarDate.month && Object
-                                                        .entries(allChoices[dayData.day])
-                                                        .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
-                                                    }
-                                                </div>
-                                                {/* {dayData.month === currentMonth && <div>
-                                                    <p>Tooltip</p>
-                                                    {Object
-                                                        .entries(usersChoices[dayData.day])
-                                                        .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
-                                                    }
-                                                </div>} */}
-                                            </div>
-                                        </td>
-                                    ))}
+                <div className="max-w-sm rounded-md my-3 m-auto border border-black">
+                    <div className=" bg-gray-100 rounded-md p-3 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25">
+                        <div className="flex justify-between items-center">
+                            <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onPrevMonthClick}>{'<'}</button>
+                            <p className="px-7">{capitalize(MONTHS[calendarDate.month])} {calendarDate.year}</p>
+                            <button className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform" type="button" onClick={onNextMonthClick}>{'>'}</button>
+                        </div>
+                        <table className="table-fixed text-center w-full">
+                            <thead>
+                                <tr>
+                                    {WEEKDAYS.map((weekday) => <td key={weekday} className="py-3">{trimWeekday(weekday)}</td>)}
                                 </tr>
-                            ))} 
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {/* MEMOIZE */}
+                                {getCurrentMonthInChunks().map((week) => (
+                                    <tr key={week.key}>
+                                        {week.chunk.map((dayData) => (
+                                            <td key={dayData.key} onClick={() => onDayClick(dayData)}>
+                                                <div className="aspect-square relative">
+                                                    {/* All choices are not refreshed after change */}
+                                                    <button className={
+                                                        `w-full h-full
+                                                        ${dayData.month === calendarDate.month ? 'transform active:scale-75 transition-transform' : ''}
+                                                        ${isToday(dayData) ? 'rounded-full' : 'rounded-md'}
+                                                        ${dayColor[getColorType(dayData, calendarDate.month, allChoices[dayData.day], ownChoices[dayData.day])]}
+                                                    `} type="button" disabled={dayData.month !== calendarDate.month}>{dayData.day}</button>
+                                                    <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
+                                                        {/* ToDo: Dont render if all selected */}
+                                                        {dayData.month === calendarDate.month && Object
+                                                            .entries(allChoices[dayData.day])
+                                                            .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
+                                                        }
+                                                    </div>
+                                                    {/* {dayData.month === currentMonth && <div>
+                                                        <p>Tooltip</p>
+                                                        {Object
+                                                            .entries(usersChoices[dayData.day])
+                                                            .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
+                                                        }
+                                                    </div>} */}
+                                                </div>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))} 
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {/* Move this part to different component */}

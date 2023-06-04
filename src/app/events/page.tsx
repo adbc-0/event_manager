@@ -1,6 +1,12 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
-async function fetchCalendar() {
+type EventResponse = {
+    id: number;
+    name: string;
+}
+
+async function fetchEvents(): Promise<EventResponse[]> {
     const response = await fetch('http://localhost:3000/api/events', {
         cache: 'no-store'
     });
@@ -17,11 +23,18 @@ export const metadata: Metadata = {
 };
 
 export default async function Calendar() { 
-    const calendar = await fetchCalendar();
+    const events = await fetchEvents();
     return (
         <div>
-            <h1>Calendar</h1>
-            <p>{calendar.month_name}</p>
+            <h1>All events</h1>
+            <div>
+                {events.map(({ id, name }) => (
+                    <div key={id}>
+                        <Link href={`/events/${id}`}>{name}</Link>
+                    </div>
+                    
+                ))}
+            </div>
         </div>
     );
 }

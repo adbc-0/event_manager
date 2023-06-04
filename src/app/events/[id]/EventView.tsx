@@ -73,6 +73,12 @@ export default function EventView() {
         document.title = `Event - ${event.name ?? 'Loading...'}`;
     }, [event.name]);
 
+
+    if (!username) {
+        return null;
+    }
+
+    // ToDo: Safe guard to be removed
     if (!Object.keys(allChoices).length) {
         return null;
     }
@@ -87,17 +93,20 @@ export default function EventView() {
                 </div>}
             </section>
             <EventCalendar />
-            {/* <UsernameForm /> */}
-            <dialog ref={usernameDialogRef} className="bg-gray-100 rounded-md p-6 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-white/25 max-w-sm" open={!username}>
-                <form ref={usernameFormRef} method="dialog" onSubmit={saveUserName}>
-                    <h2 className="text-center text-xl">Insert username</h2>
-                    <p className="text-sm">use the same username across devices</p>
-                    <input className="border border-black rounded-sm my-6 block m-auto" ref={nameInputRef} defaultValue={username} />
-                    <div className="flex justify-evenly">
-                        <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md" type="button" onClick={closeIdentityModal}>Cancel</button>
-                        <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md" type="submit">Submit</button>
-                    </div>
-                </form>
+            {/* ToDo: <UsernameForm /> */}
+            {/* ToDo: Make component for double border with transparency */}
+            <dialog ref={usernameDialogRef} className="p-0 bg-gray-100 rounded-md bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 max-w-sm border border-black" open={!username}>
+                <div className="border border-white/25 rounded-md p-6">
+                    <form ref={usernameFormRef} method="dialog" onSubmit={saveUserName}>
+                        <h2 className="text-center text-xl">Insert username</h2>
+                        <p className="text-sm">use the same username across devices</p>
+                        <input className="border border-black rounded-sm my-6 block m-auto" ref={nameInputRef} defaultValue={username} />
+                        <div className="flex justify-evenly">
+                            <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md shadow-md" type="button" onClick={closeIdentityModal}>Cancel</button>
+                            <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md shadow-md" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </dialog>
         </div>
     );
