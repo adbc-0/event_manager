@@ -83,7 +83,7 @@ export default function EventView() {
     }
 
     return (
-        <div className="h-full grid grid-cols-1 auto-rows-[1fr_4fr_1fr] items-center md:items-start">
+        <div className="h-full grid grid-cols-1 auto-rows-[1fr_4fr_1fr] md:auto-rows-[1fr_1fr_1fr] items-center md:items-start">
             <section>
                 <h1 className="text-center text-3xl p-5">{event.name}</h1>
                 {username && <div className="flex justify-center m-5">

@@ -244,9 +244,9 @@ export default function EventCalendar() {
             </div>
             {/* Move this part to different component */}
             {/* Also move this part to the bottom of the page */}
-            <div className="flex self-end md:self-center">
-                {isDirty && <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md" type="reset" onClick={onResetClick}>Reset changes</button>}
-                {isDirty && <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md" type="submit" onClick={onSubmitClick}>Submit changes</button>}
+            <div className="flex self-end md:self-start md:w-128 md:justify-self-center">
+                {isDirty && <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="reset" onClick={onResetClick}>Reset changes</button>}
+                {isDirty && <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="submit" onClick={onSubmitClick}>Submit changes</button>}
             </div>
         </>
     );

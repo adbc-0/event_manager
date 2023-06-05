@@ -9,6 +9,9 @@ module.exports = {
       // backgroundImage: ({ theme }) => ({
       //   'wavy-gradient': `linear-gradient(${theme('colors.orange.400')},${theme('colors.rose.500')},${theme('colors.blue.400')},${theme('colors.teal.400')})`
       // }),
+      width: {
+        '128': '32rem',
+      },
       keyframes: {
         wave: {
           '0%': { 'background-position': '0% 50%' },
