@@ -26,15 +26,16 @@ export const metadata: Metadata = {
 export default async function Calendar() { 
     const events = await fetchEvents();
     return (
-        <div>
-            <h1>All events</h1>
+        <div className="text-center">
+            <h1 className="py-3">All events</h1>
             <div>
-                {events.map(({ id, name }) => (
+                {events.length ? events.map(({ id, name }) => (
                     <div key={id}>
                         <Link href={`/events/${id}`}>{name}</Link>
                     </div>
-                    
-                ))}
+                )) : (
+                    <p>No events have been created</p>
+                )}
             </div>
         </div>
     );

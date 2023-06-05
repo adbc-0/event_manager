@@ -8,10 +8,13 @@ export const metadata = {
   description: 'Chaos manager',
 };
 
+// ToDo: Add missing <main> tag
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${lato.className} h-screen`}>{children}</body>
+      <body className={`${lato.className} min-h-full-dvh`}>
+        {children}
+      </body>
     </html>
   );
 }

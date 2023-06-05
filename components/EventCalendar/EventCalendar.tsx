@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import {
     MonthDay,
@@ -51,11 +51,11 @@ export const MONTHS = [
 ] as const;
 
 const dayColor: Record<DayColorType, string> = {
-    ALL_SELECTED: 'bg-gradient-to-br from-orange-400 via-rose-500 to-teal-400 animate-wave bg-[length:600%] hover:opacity-80',
+    ALL_SELECTED: 'bg-gradient-to-br from-sky-400 via-teal-400 to-green-400 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800',
     DIFFERENT_MONTH: 'opacity-50',
-    MAYBE_AVAILABLE: 'bg-orange-400 hover:bg-orange-400/80',
-    MY_AVAILABLE: 'bg-green-400 hover:bg-green-400/80',
-    NOT_AVAILABLE: 'bg-rose-400 hover:bg-rose-400/80',
+    MAYBE_AVAILABLE: 'bg-orange-400 hover:bg-orange-400/80 text-neutral-800',
+    MY_AVAILABLE: 'bg-green-400 hover:bg-green-400/80 text-neutral-800',
+    NOT_AVAILABLE: 'bg-rose-400 hover:bg-rose-400/80 text-neutral-800',
     TODAY: 'bg-white/10',
     UNSELECTED: 'hover:bg-white/10'
 } as const;
@@ -82,9 +82,9 @@ function areAllAvailable(choices: OwnAvailability) {
     return choicesList.every((choice) => choice === Availability.AVAILABLE);
 }
 
-function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
-    return ownAvailabilityChoice[ownChoice] ?? 'UNSELECTED';
-}
+// function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
+//     return ownAvailabilityChoice[ownChoice] ?? 'UNSELECTED';
+// }
 
 function getColorType(day: MonthDay, selectedMonth: number, allChoices: OwnAvailability, ownChoice: AvailabilityEnum): DayColorType {
     if (selectedMonth !== day.month) {
@@ -220,10 +220,10 @@ export default function EventCalendar() {
                                                     `} type="button" disabled={dayData.month !== calendarDate.month}>{dayData.day}</button>
                                                     <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
                                                         {/* ToDo: Dont render if all selected */}
-                                                        {dayData.month === calendarDate.month && Object
+                                                        {/* {dayData.month === calendarDate.month && Object
                                                             .entries(allChoices[dayData.day])
                                                             .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
-                                                        }
+                                                        } */}
                                                     </div>
                                                     {/* {dayData.month === currentMonth && <div>
                                                         <p>Tooltip</p>
@@ -244,9 +244,9 @@ export default function EventCalendar() {
             </div>
             {/* Move this part to different component */}
             {/* Also move this part to the bottom of the page */}
-            <div className="flex self-end md:self-start md:w-128 md:justify-self-center">
-                {isDirty && <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="reset" onClick={onResetClick}>Reset changes</button>}
-                {isDirty && <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="submit" onClick={onSubmitClick}>Submit changes</button>}
+            <div className="flex self-start md:w-128 md:justify-self-center">
+                {isDirty && <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="reset" onClick={onResetClick}>Reset</button>}
+                {isDirty && <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md text-black border border-black" type="submit" onClick={onSubmitClick}>Submit</button>}
             </div>
         </>
     );

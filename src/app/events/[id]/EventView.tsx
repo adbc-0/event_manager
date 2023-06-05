@@ -72,18 +72,13 @@ export default function EventView() {
         document.title = `Event - ${event.name ?? 'Loading...'}`;
     }, [event.name]);
 
-
-    if (!username) {
-        return null;
-    }
-
     // ToDo: Safe guard to be removed
     if (!Object.keys(allChoices).length) {
         return null;
     }
 
     return (
-        <div className="h-full grid grid-cols-1 auto-rows-[1fr_4fr_1fr] md:auto-rows-[1fr_1fr_1fr] items-center md:items-start">
+        <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-[1fr_1fr_1fr]">
             <section>
                 <h1 className="text-center text-3xl p-5">{event.name}</h1>
                 {username && <div className="flex justify-center m-5">
@@ -99,9 +94,10 @@ export default function EventView() {
                     <form ref={usernameFormRef} method="dialog" onSubmit={saveUserName}>
                         <h2 className="text-center text-xl">Insert username</h2>
                         <p className="text-sm">use the same username across devices</p>
-                        <input ref={nameInputRef} className="border border-black my-6 py-2 block m-auto text-center rounded-md bg-zinc-900 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40" aria-label="username input field" defaultValue={username} />
+                        <input ref={nameInputRef} className="border border-black my-6 py-2 block m-auto text-center rounded-md bg-zinc-900 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40" aria-label="username input field" defaultValue={username} required autoFocus />
                         <div className="flex justify-evenly">
-                            <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md shadow-md border border-black text-black" type="button" onClick={closeIdentityModal}>Cancel</button>
+                            {/* ToDo: styles for disabled buttons */}
+                            <button className="bg-red-400 flex-auto mx-2 py-2 rounded-md shadow-md border border-black text-black" type="button" disabled={!username} onClick={closeIdentityModal}>Cancel</button>
                             <button className="bg-green-400 flex-auto mx-2 py-2 rounded-md shadow-md border border-black text-black" type="submit">Submit</button>
                         </div>
                     </form>

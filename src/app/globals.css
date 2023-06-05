@@ -11,11 +11,16 @@
   dialog {
     @apply text-white;
   }
+
+  .min-h-full-dvh {
+    @apply min-h-[100dvh];
+  }
 }
 
 body {
   background: linear-gradient(135deg, #232931 10%, #1b1d21 100%);
 }
+
 /* body {
   background: linear-gradient(135deg, #ff9a9e 10%, #f6416c 100%);
 } */
