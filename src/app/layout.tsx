@@ -1,7 +1,7 @@
 import './globals.css'
-import { Roboto } from 'next/font/google'
+import { Fira_Sans_Condensed } from 'next/font/google'
 
-const lato = Roboto({ weight: '400', subsets: ['latin'] });
+const lato = Fira_Sans_Condensed({ weight: '400', subsets: ['latin'] });
 
 export const metadata = {
   title: 'Chaos',
