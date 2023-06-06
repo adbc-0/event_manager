@@ -63,7 +63,7 @@ export default function EventView() {
     }, [event.name]);
 
     return (
-        <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-[1fr_1fr_1fr]">
+        <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
             <WelcomeSection
                 eventName={event.name}
                 openModal={openIdentityModal}
