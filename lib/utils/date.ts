@@ -17,14 +17,15 @@ function newDate(day: number, month: number, year: number): MonthDay {
     return { day, month, year, key: `${day}-${month}-${year}` };
 }
 
-type NewMonth = {
-    beginning: null;
-    end: dayjs.Dayjs;
-} | {
-    beginning: dayjs.Dayjs;
-    end: null;
-};
-
+type NewMonth =
+    | {
+          beginning: null;
+          end: dayjs.Dayjs;
+      }
+    | {
+          beginning: dayjs.Dayjs;
+          end: null;
+      };
 
 function newMonth({ beginning, end }: NewMonth) {
     const fromDate = beginning ?? end.startOf("month");
@@ -118,7 +119,9 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
         ? newMonth({ beginning: prev, end: null })
         : [];
 
-    const nextMonth = !isSundayLastMonthDay ? newMonth({ beginning: null, end: next }) : [];
+    const nextMonth = !isSundayLastMonthDay
+        ? newMonth({ beginning: null, end: next })
+        : [];
 
     return [
         ...prevMonth,

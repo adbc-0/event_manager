@@ -16,9 +16,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${firaSans.className} min-h-full-dvh`}>
-                <main>
-                    {children}
-                </main>
+                <main>{children}</main>
             </body>
         </html>
     );

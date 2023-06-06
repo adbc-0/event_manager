@@ -1,19 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useRef } from "react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 
 import { useAuth } from "~/hooks/use-auth";
-import editIcon from "~/public/edit.svg";
 import EventCalendar from "~/components/EventCalendar/EventCalendar";
 import { useEvent } from "../../../../lib/context/EventProvider";
-
-// you cannot use metadata with client component
-// export const metadata = {
-//     title: 'Schedule event',
-//     description: 'Schedule some event',
-// };
+import { WelcomeSection } from "./WelcomeSection";
 
 export default function EventView() {
     const { id: eventId } = useParams();
@@ -59,7 +52,7 @@ export default function EventView() {
         }
 
         setUsername(usernameInputVal);
-        eventDispatch({ type: 'RESET_CHOICES' });
+        eventDispatch({ type: "RESET_CHOICES" });
 
         usernameDialogRef.current.close();
     };
@@ -71,22 +64,10 @@ export default function EventView() {
 
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-[1fr_1fr_1fr]">
-            <section>
-                <h1 className="text-center text-3xl p-5">{event.name}</h1>
-                {username && (
-                    <div className="flex justify-center m-5">
-                        <h2 className="text-2xl">Welcome {username}</h2>
-                        <Image
-                            src={editIcon}
-                            className="cursor-pointer"
-                            width={24}
-                            height={24}
-                            onClick={openIdentityModal}
-                            alt="edit username"
-                        />
-                    </div>
-                )}
-            </section>
+            <WelcomeSection
+                eventName={event.name}
+                openModal={openIdentityModal}
+            />
             <EventCalendar />
             {/* ToDo: <UsernameForm /> */}
             {/* ToDo: Make component for double border with transparency */}

@@ -11,19 +11,13 @@ export async function DeleteEvent(
     revalidatePath(`/calendar/${eventId}`);
 }
 
-export async function PostEvent(
-    eventId: string,
-    day: Record<string, string>,
-) {
+export async function PostEvent(eventId: string, day: Record<string, string>) {
     // make change to the db
     await new Promise((r) => r(day));
     revalidatePath(`/calendar/${eventId}`);
 }
 
-export async function PutEvent(
-    eventId: string,
-    day: Record<string, string>,
-) {
+export async function PutEvent(eventId: string, day: Record<string, string>) {
     // make change to the db
     await new Promise((r) => r(day));
     revalidatePath(`/calendar/${eventId}`);
