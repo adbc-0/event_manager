@@ -6,11 +6,6 @@ import { range } from "./utils";
 
 dayjs.extend(utc);
 
-type NewMonth = {
-    beginning: dayjs.Dayjs;
-    end: dayjs.Dayjs;
-};
-
 export type MonthDay = {
     key: string;
     day: number;
@@ -22,7 +17,16 @@ function newDate(day: number, month: number, year: number): MonthDay {
     return { day, month, year, key: `${day}-${month}-${year}` };
 }
 
-function newMonth({ beginning, end }: AtLeastOnePropertyOf<NewMonth>) {
+type NewMonth = {
+    beginning: null;
+    end: dayjs.Dayjs;
+} | {
+    beginning: dayjs.Dayjs;
+    end: null;
+};
+
+
+function newMonth({ beginning, end }: NewMonth) {
     const fromDate = beginning ?? end.startOf("month");
     const toDate = end ?? beginning.endOf("month");
     const month = fromDate.month();
@@ -111,14 +115,14 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
     const isSundayLastMonthDay = next.isSame(curr, "month");
 
     const prevMonth = !isMondayFirstMonthDay
-        ? newMonth({ beginning: prev })
+        ? newMonth({ beginning: prev, end: null })
         : [];
 
-    const nextMonth = !isSundayLastMonthDay ? newMonth({ end: next }) : [];
+    const nextMonth = !isSundayLastMonthDay ? newMonth({ beginning: null, end: next }) : [];
 
     return [
         ...prevMonth,
-        ...newMonth({ beginning: curr.startOf("month") }),
+        ...newMonth({ beginning: curr.startOf("month"), end: null }),
         ...nextMonth,
     ];
 }
