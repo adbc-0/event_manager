@@ -21,7 +21,7 @@ export default function EventView() {
         throw new Error("Missing event url param");
     }
     const { username, setUsername } = useAuth();
-    const { allChoices, event } = useEvent();
+    const { event, eventDispatch } = useEvent();
 
     const nameInputRef = useRef<HTMLInputElement>(null);
     const usernameFormRef = useRef<HTMLFormElement>(null);
@@ -59,7 +59,8 @@ export default function EventView() {
         }
 
         setUsername(usernameInputVal);
-        // recalculate availabilities
+        eventDispatch({ type: 'RESET_CHOICES' });
+
         usernameDialogRef.current.close();
     };
 
@@ -67,11 +68,6 @@ export default function EventView() {
     useEffect(() => {
         document.title = `Event - ${event.name ?? "Loading..."}`;
     }, [event.name]);
-
-    // ToDo: Safe guard to be removed
-    if (!Object.keys(allChoices).length) {
-        return null;
-    }
 
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-[1fr_1fr_1fr]">

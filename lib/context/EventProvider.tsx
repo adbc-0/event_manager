@@ -105,7 +105,7 @@ const nilEvent = {
 } as const;
 
 const nilCalendarReducer: EventState = {
-    allChoices: {},
+    allChoices: parseAllChoices({}, getLastDayOfMonth(getCurrentDate())),
     allChoicesBackup: {},
     calendarDate: getCurrentDate(),
     event: nilEvent,

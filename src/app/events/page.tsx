@@ -7,7 +7,6 @@ type EventResponse = {
 };
 
 async function fetchEvents(): Promise<EventResponse[]> {
-    // ToDo: remove no-store cache value
     const response = await fetch("http://localhost:3000/api/events", {
         cache: "no-store",
     });
@@ -22,6 +21,9 @@ export const metadata: Metadata = {
     title: "Chaos - Events",
     description: "Listing of all created event calendars",
 };
+
+// ToDo: DELETE event
+// ToDo: CREATE event
 
 export default async function Calendar() {
     const events = await fetchEvents();

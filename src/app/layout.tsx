@@ -1,14 +1,13 @@
 import "./globals.css";
 import { Fira_Sans_Condensed } from "next/font/google";
 
-const lato = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
+const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
 export const metadata = {
     title: "Chaos",
     description: "Chaos manager",
 };
 
-// ToDo: Add missing <main> tag
 export default function RootLayout({
     children,
 }: {
@@ -16,8 +15,10 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`${lato.className} min-h-full-dvh`}>
-                {children}
+            <body className={`${firaSans.className} min-h-full-dvh`}>
+                <main>
+                    {children}
+                </main>
             </body>
         </html>
     );
