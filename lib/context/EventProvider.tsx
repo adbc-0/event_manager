@@ -1,30 +1,50 @@
-import { Dispatch, createContext, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
-import { AllUsersAvailabilityChoices, Availability, CurrentDate, EventResponse, ReactProps } from "../../typescript";
-import { MonthDay, createMonthDays, getCurrentDate, getLastDayOfMonth, transformISO_8601ToCurrentDate } from "~/utils/date";
+import {
+    Dispatch,
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useReducer,
+} from "react";
+import {
+    AllUsersAvailabilityChoices,
+    Availability,
+    CurrentDate,
+    EventResponse,
+    ReactProps,
+} from "../../typescript";
+import {
+    MonthDay,
+    createMonthDays,
+    getCurrentDate,
+    getLastDayOfMonth,
+    transformISO_8601ToCurrentDate,
+} from "~/utils/date";
 import { chunks } from "~/utils/utils";
 import { useAuth } from "~/hooks/use-auth";
 
 const Availability = {
-    MAYBE_AVAILABLE: 'MAYBE_AVAILABLE',
-    NOT_AVAILABLE: 'NOT_AVAILABLE',
-    AVAILABLE: 'AVAILABLE'
+    MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
+    NOT_AVAILABLE: "NOT_AVAILABLE",
+    AVAILABLE: "AVAILABLE",
 } as const;
 
 type AvailabilityEnum = keyof typeof Availability;
 type DayAvailability = {
     user: string;
     choice: string;
-}
-type EmptyDays = Record<number, DayAvailability[]>
-type OwnAvailability = Record<string, AvailabilityEnum>
+};
+type EmptyDays = Record<number, DayAvailability[]>;
+type OwnAvailability = Record<string, AvailabilityEnum>;
 type AllAvailability = Record<string, { [k: string]: AvailabilityEnum }>;
 type Event = {
     name: string | null;
-}
+};
 type MonthChunk = {
     key: number;
     chunk: MonthDay[];
-}
+};
 type EventState = {
     allChoices: AllAvailability;
     allChoicesBackup: AllAvailability;
@@ -32,49 +52,50 @@ type EventState = {
     event: Event;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
-}
+};
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
     getCurrentMonthInChunks: () => MonthChunk[];
-}
+};
 type UsernameChangeRecalculateAction = {
-    type: 'USER_CHANGE_RECALCULATION';
+    type: "USER_CHANGE_RECALCULATION";
     payload: {
         username: string;
         allChoices: AllUsersAvailabilityChoices;
     };
-}
+};
 type ChangeDateAction = {
-    type: 'CHANGE_DATE';
+    type: "CHANGE_DATE";
     payload: CurrentDate;
-}
+};
 type DaySelectAction = {
-    type: 'DAY_SELECT';
+    type: "DAY_SELECT";
     payload: {
         selectedDay: number;
         username: string;
     };
-}
+};
 type ResetChoicesAction = {
-    type: 'RESET_CHOICES';
-}
+    type: "RESET_CHOICES";
+};
 type OverwriteBackupAction = {
-    type: 'OVERWRITE_BACKUP';
+    type: "OVERWRITE_BACKUP";
     payload: OwnAvailability;
-}
+};
 type SetChoicesAction = {
-    type: 'SET_CHOICES';
+    type: "SET_CHOICES";
     payload: {
         event: EventResponse;
         username: string | undefined;
     };
-}
-type EventActions = UsernameChangeRecalculateAction
+};
+type EventActions =
+    | UsernameChangeRecalculateAction
     | ChangeDateAction
     | DaySelectAction
     | ResetChoicesAction
     | OverwriteBackupAction
-    | SetChoicesAction
+    | SetChoicesAction;
 type EventProviderProps = ReactProps & {
     eventId: string;
 };
@@ -95,17 +116,17 @@ const nilCalendarReducer: EventState = {
 const EventContext = createContext<EventProviderReturn>({
     ...nilCalendarReducer,
     eventDispatch: () => {
-        throw new Error('function was called before proper initialization');
+        throw new Error("function was called before proper initialization");
     },
     getCurrentMonthInChunks: () => {
-        throw new Error('function was called before proper initialization');
-    }
+        throw new Error("function was called before proper initialization");
+    },
 });
 
 export function useEvent() {
     const event = useContext(EventContext);
     if (!event) {
-        throw new Error('wrap component with provider to access context');
+        throw new Error("wrap component with provider to access context");
     }
 
     return event;
@@ -124,9 +145,10 @@ function getNextChoice(currentChoice: string) {
 }
 
 function createEmptyDays(daysInMonth = 0): EmptyDays {
-    return Array
-        .from<number>({ length: daysInMonth })
-        .reduce((acc, _, index) => ({ ...acc, [index + 1]: [] }), {});
+    return Array.from<number>({ length: daysInMonth }).reduce(
+        (acc, _, index) => ({ ...acc, [index + 1]: [] }),
+        {},
+    );
 }
 
 function searchChoicesForMatch(choices: Availability, condition: number) {
@@ -152,25 +174,29 @@ function parseOwnChoices(choices: Availability, maxMonthDay: number) {
     }
 
     const emptyDays = createEmptyDays(maxMonthDay);
-    return Object
-        .keys(emptyDays)
-        .reduce((acc, curr) => {
-            const type = searchChoicesForMatch(choices, Number.parseInt(curr));
-            if (type) {
-                acc[curr] = type;
-            }
-            return acc;
-        }, {} as OwnAvailability);
+    return Object.keys(emptyDays).reduce((acc, curr) => {
+        const type = searchChoicesForMatch(choices, Number.parseInt(curr));
+        if (type) {
+            acc[curr] = type;
+        }
+        return acc;
+    }, {} as OwnAvailability);
 }
 
-function parseAllChoices(usersChoices: AllUsersAvailabilityChoices, maxMonthDay: number) {
+function parseAllChoices(
+    usersChoices: AllUsersAvailabilityChoices,
+    maxMonthDay: number,
+) {
     const choices: AllAvailability = {};
     const emptyDays = createEmptyDays(maxMonthDay);
 
     Object.keys(emptyDays).forEach((day) => {
         const usersDayChoices: OwnAvailability = {};
         Object.entries(usersChoices).forEach(([users, userChoices]) => {
-            const type = searchChoicesForMatch(userChoices, Number.parseInt(day));
+            const type = searchChoicesForMatch(
+                userChoices,
+                Number.parseInt(day),
+            );
             if (!type) {
                 return;
             }
@@ -184,25 +210,37 @@ function parseAllChoices(usersChoices: AllUsersAvailabilityChoices, maxMonthDay:
 
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
-        case 'USER_CHANGE_RECALCULATION': {
+        case "USER_CHANGE_RECALCULATION": {
             const clone = structuredClone(state);
-            const maxMonthDay = getLastDayOfMonth(state.calendarDate); 
+            const maxMonthDay = getLastDayOfMonth(state.calendarDate);
 
-            clone.allChoices = parseAllChoices(action.payload.allChoices, maxMonthDay);
-            clone.allChoicesBackup = parseAllChoices(action.payload.allChoices, maxMonthDay);
-            clone.ownChoices = parseOwnChoices(action.payload.allChoices['orzel'], maxMonthDay);
-            clone.ownChoicesBackup = parseOwnChoices(action.payload.allChoices['orzel'], maxMonthDay);
+            clone.allChoices = parseAllChoices(
+                action.payload.allChoices,
+                maxMonthDay,
+            );
+            clone.allChoicesBackup = parseAllChoices(
+                action.payload.allChoices,
+                maxMonthDay,
+            );
+            clone.ownChoices = parseOwnChoices(
+                action.payload.allChoices["orzel"],
+                maxMonthDay,
+            );
+            clone.ownChoicesBackup = parseOwnChoices(
+                action.payload.allChoices["orzel"],
+                maxMonthDay,
+            );
 
             return state;
         }
-        case 'CHANGE_DATE': {
+        case "CHANGE_DATE": {
             const clone = structuredClone(state);
-            
+
             clone.calendarDate = action.payload;
 
             return clone;
         }
-        case 'SET_CHOICES': {
+        case "SET_CHOICES": {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
@@ -213,12 +251,16 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.calendarDate = newCurrentDate;
             clone.allChoices = parseAllChoices(event.users, maxMonthDay);
             clone.allChoicesBackup = parseAllChoices(event.users, maxMonthDay);
-            clone.ownChoices = username ? parseOwnChoices(event.users[username], maxMonthDay) : {};
-            clone.ownChoicesBackup = username ? parseOwnChoices(event.users[username], maxMonthDay) : {};
+            clone.ownChoices = username
+                ? parseOwnChoices(event.users[username], maxMonthDay)
+                : {};
+            clone.ownChoicesBackup = username
+                ? parseOwnChoices(event.users[username], maxMonthDay)
+                : {};
 
             return clone;
         }
-        case 'DAY_SELECT': {
+        case "DAY_SELECT": {
             const clone = structuredClone(state);
             const { selectedDay, username } = action.payload;
             const currentChoice = state.ownChoices[selectedDay];
@@ -228,7 +270,7 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.allChoices[selectedDay][username] = nextChoice;
             return clone;
         }
-        case 'OVERWRITE_BACKUP': {
+        case "OVERWRITE_BACKUP": {
             const clone = structuredClone(state);
 
             clone.allChoicesBackup = state.allChoices;
@@ -236,7 +278,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
-        case 'RESET_CHOICES': {
+        case "RESET_CHOICES": {
             const clone = structuredClone(state);
 
             clone.allChoices = state.allChoicesBackup;
@@ -245,13 +287,16 @@ function eventReducer(state: EventState, action: EventActions) {
             return clone;
         }
         default:
-            throw new Error('unhandled reducer action');
+            throw new Error("unhandled reducer action");
     }
 }
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
     const { username } = useAuth();
-    const [eventControl, eventDispatch] = useReducer(eventReducer, nilCalendarReducer);
+    const [eventControl, eventDispatch] = useReducer(
+        eventReducer,
+        nilCalendarReducer,
+    );
     const { calendarDate } = eventControl;
 
     useEffect(() => {
@@ -259,54 +304,61 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
 
         async function initEventCalendar() {
             const { month, year } = getCurrentDate();
-            const searchParams = new URLSearchParams({ date: `${month}-${year}` });
-            
-            try {
-                const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`, {
-                    signal: abortController.signal
-                });
+            const searchParams = new URLSearchParams({
+                date: `${month}-${year}`,
+            });
 
-                const [event] = await response.json() as EventResponse[];
+            try {
+                const response = await fetch(
+                    `/api/events/${eventId}?${searchParams.toString()}`,
+                    {
+                        signal: abortController.signal,
+                    },
+                );
+
+                const [event] = (await response.json()) as EventResponse[];
 
                 eventDispatch({
-                    type: 'SET_CHOICES',
+                    type: "SET_CHOICES",
                     payload: {
                         event,
                         username,
-                    }
+                    },
                 });
             } catch (exception) {
                 if (!(exception instanceof Error)) {
-                    throw new Error('unexpected exception format');
+                    throw new Error("unexpected exception format");
                 }
-                if (exception.name === 'AbortError') {
+                if (exception.name === "AbortError") {
                     return;
                 }
                 throw exception;
             }
         }
-        
+
         initEventCalendar();
         return () => {
             abortController.abort();
-        }
+        };
     }, [eventId, username]);
 
     const getCurrentMonthInChunks = useCallback(() => {
-            const monthDaysData = createMonthDays(calendarDate);
-            return [...chunks(monthDaysData, 7)];
+        const monthDaysData = createMonthDays(calendarDate);
+        return [...chunks(monthDaysData, 7)];
     }, [calendarDate]);
 
-    const providerValue: EventProviderReturn = useMemo(() => ({
-        ...eventControl,
-        eventDispatch,
-        getCurrentMonthInChunks,
-    }), [eventControl, getCurrentMonthInChunks]);
+    const providerValue: EventProviderReturn = useMemo(
+        () => ({
+            ...eventControl,
+            eventDispatch,
+            getCurrentMonthInChunks,
+        }),
+        [eventControl, getCurrentMonthInChunks],
+    );
 
     return (
         <EventContext.Provider value={providerValue}>
             {children}
         </EventContext.Provider>
-    )
+    );
 }
-

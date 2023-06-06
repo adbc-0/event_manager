@@ -6,11 +6,11 @@ import EventView from "./EventView";
 
 type RouteParams = {
     id: string;
-}
+};
 
 type EventProps = ReactProps & {
     params: RouteParams;
-}
+};
 
 export default function Event({ params }: EventProps) {
     const { id: eventId } = params;

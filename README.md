@@ -1,4 +1,4 @@
-# REACT SERVER COMPONENTS #
+# REACT SERVER COMPONENTS
 
 Project created to learn react server components and eventually test them in production.
 

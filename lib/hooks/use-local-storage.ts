@@ -3,14 +3,15 @@ import { useEffect, useState } from "react";
 import { LocalStorageKeys } from "~/utils/constants";
 import { Nullable, Values } from "../../typescript";
 
-type StorageKey = Values<typeof LocalStorageKeys>
+type StorageKey = Values<typeof LocalStorageKeys>;
 
 type EventUserStore = {
     name: string;
-}
+};
 
-type StorageObject<T extends StorageKey> = T extends 'event_user_name'
-    ? Nullable<EventUserStore> : never;
+type StorageObject<T extends StorageKey> = T extends "event_user_name"
+    ? Nullable<EventUserStore>
+    : never;
 
 function getFromStorage<T extends StorageKey>(storageKey: T) {
     const raw = window.localStorage.getItem(storageKey);
@@ -27,20 +28,18 @@ function getFromStorage<T extends StorageKey>(storageKey: T) {
 }
 
 export function useLocalStorage<T extends StorageKey>(storageKey: T) {
-    const [storageValue, setStorageValue] = useState<Nullable<StorageObject<T>>>(null);
+    const [storageValue, setStorageValue] =
+        useState<Nullable<StorageObject<T>>>(null);
 
     const changeStorageValue = (newValue: StorageObject<T>) => {
         setStorageValue(newValue);
-        window.localStorage.setItem(
-            storageKey,
-            JSON.stringify(newValue)
-        );
+        window.localStorage.setItem(storageKey, JSON.stringify(newValue));
     };
 
     useEffect(() => {
         const parsedValue = getFromStorage(storageKey);
         setStorageValue(parsedValue);
     }, [storageKey]);
-  
+
     return [storageValue, changeStorageValue] as const;
 }

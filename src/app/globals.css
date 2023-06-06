@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    @apply text-white;
-    @apply bg-neutral-800;
-  }
+    html {
+        @apply text-white;
+        @apply bg-neutral-800;
+    }
 
-  dialog {
-    @apply text-white;
-  }
+    dialog {
+        @apply text-white;
+    }
 
-  .min-h-full-dvh {
-    @apply min-h-[100dvh];
-  }
+    .min-h-full-dvh {
+        @apply min-h-[100dvh];
+    }
 }
 
 body {
-  background: linear-gradient(135deg, #232931 10%, #1b1d21 100%);
+    background: linear-gradient(135deg, #232931 10%, #1b1d21 100%);
 }
 
 /* body {

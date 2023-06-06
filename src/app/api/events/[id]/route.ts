@@ -2,15 +2,20 @@ import { NextResponse } from "next/server";
 
 type RouteParams = {
     id: string;
-}
+};
 
 type RequestParams = {
     params: RouteParams;
-}
+};
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
-    console.log('fetching event choices for event:', params, 'for date', searchParams);
+    console.log(
+        "fetching event choices for event:",
+        params,
+        "for date",
+        searchParams,
+    );
 
     // {
     //     eventName: 'DnD',
@@ -20,13 +25,21 @@ export async function GET(request: Request, { params }: RequestParams) {
     //     },
     // };
 
-    if (searchParams.toString() === 'date=5-2023') {
-        return NextResponse.json([{"eventName":"DnD","time":"2023-06-04T12:46:17.599Z","users":{}}]);
-    } else if (searchParams.toString() === 'date=6-2023') {
-        return NextResponse.json([{"eventName":"DnD","time":"2023-07-04T12:46:17.599Z","users":{}}]);
-    } else if (searchParams.toString() === 'date=4-2023') {
-        return NextResponse.json([{"eventName":"DnD","time":"2023-05-04T12:46:17.599Z","users":{}}]);
+    if (searchParams.toString() === "date=5-2023") {
+        return NextResponse.json([
+            { eventName: "DnD", time: "2023-06-04T12:46:17.599Z", users: {} },
+        ]);
+    } else if (searchParams.toString() === "date=6-2023") {
+        return NextResponse.json([
+            { eventName: "DnD", time: "2023-07-04T12:46:17.599Z", users: {} },
+        ]);
+    } else if (searchParams.toString() === "date=4-2023") {
+        return NextResponse.json([
+            { eventName: "DnD", time: "2023-05-04T12:46:17.599Z", users: {} },
+        ]);
     } else {
-        return NextResponse.json([{"eventName":"DnD","time":"2023-06-04T12:46:17.599Z","users":{}}]);
+        return NextResponse.json([
+            { eventName: "DnD", time: "2023-06-04T12:46:17.599Z", users: {} },
+        ]);
     }
 }
