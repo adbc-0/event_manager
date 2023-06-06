@@ -260,19 +260,32 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         async function initEventCalendar() {
             const { month, year } = getCurrentDate();
             const searchParams = new URLSearchParams({ date: `${month}-${year}` });
-            const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`, {
-                signal: abortController.signal
-            });
-            const [event] = await response.json() as EventResponse[];
-            eventDispatch({
-                type: 'SET_CHOICES',
-                payload: {
-                    event,
-                    username,
-                }
-            });
-        }
+            
+            try {
+                const response = await fetch(`/api/events/${eventId}?${searchParams.toString()}`, {
+                    signal: abortController.signal
+                });
 
+                const [event] = await response.json() as EventResponse[];
+
+                eventDispatch({
+                    type: 'SET_CHOICES',
+                    payload: {
+                        event,
+                        username,
+                    }
+                });
+            } catch (exception) {
+                if (!(exception instanceof Error)) {
+                    throw new Error('unexpected exception format');
+                }
+                if (exception.name === 'AbortError') {
+                    return;
+                }
+                throw exception;
+            }
+        }
+        
         initEventCalendar();
         return () => {
             abortController.abort();
