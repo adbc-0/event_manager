@@ -35,7 +35,7 @@ export default function EventView() {
                 openModal={openIdentityModal}
             />
             <EventCalendar />
-            <UsernameDialog usernameDialogRef={usernameDialogRef} />
+            <UsernameDialog ref={usernameDialogRef} />
         </div>
     );
 }

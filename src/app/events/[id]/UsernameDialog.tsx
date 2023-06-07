@@ -1,14 +1,14 @@
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { Button } from "~/components/Button/Button";
-import { FormEvent, useRef } from "react";
+import { FormEvent, forwardRef, useRef } from "react";
 import { useEvent } from "../../../../lib/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
+import { ReactProps } from "../../../../typescript";
 
-type UsernameDialogProps = {
-    usernameDialogRef: any;
-};
+type UsernameDialogProps = ReactProps;
+type Ref = React.Ref<HTMLDivElement>;
 
-export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
+export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(function UsernameDialog(_, ref) {
     const { getUsername, setUsername } = useAuth();
     const { eventDispatch } = useEvent();
 
@@ -17,16 +17,24 @@ export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
     const nameInputRef = useRef<HTMLInputElement>(null);
     const usernameFormRef = useRef<HTMLFormElement>(null);
 
+    const dialogRef = useRef(null);
+
+    useImperativeHandle(ref, () => ({
+      updateValue: (newValue) => {
+        dialogRef.current.value = newValue;
+      }
+    }));
+
     const closeIdentityModal = () => {
         if (!usernameFormRef.current) {
             throw new Error("Ref not fonnd");
         }
-        if (!usernameDialogRef.current) {
+        if (!dialogRef?.current) {
             throw new Error("Ref not fonnd");
         }
 
         usernameFormRef.current.reset();
-        usernameDialogRef.current.close();
+        dialogRef.current.close();
     };
 
     const saveUserName = (e: FormEvent<HTMLFormElement>) => {
@@ -35,7 +43,7 @@ export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
         if (!usernameFormRef.current) {
             throw new Error("Ref not fonnd");
         }
-        if (!usernameDialogRef.current) {
+        if (!dialogRef.current) {
             throw new Error("Ref not fonnd");
         }
 
@@ -47,12 +55,12 @@ export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
         setUsername(usernameInputVal);
         eventDispatch({ type: "RESET_CHOICES" });
 
-        usernameDialogRef.current.close();
+        dialogRef.current.close();
     };
 
     return (
         <dialog
-            ref={usernameDialogRef}
+            ref={dialogRef}
             className="p-0 rounded-md"
             open={!username}
         >
@@ -105,4 +113,4 @@ export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
             </GlassmorphicPane>
         </dialog>
     );
-}
+});
