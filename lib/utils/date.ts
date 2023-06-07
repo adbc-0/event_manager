@@ -1,8 +1,8 @@
 // facade for dayjs library
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { AtLeastOnePropertyOf, CurrentDate } from "../../typescript";
 import { range } from "./utils";
+import { CurrentDate } from "../../typescript";
 
 dayjs.extend(utc);
 

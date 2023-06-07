@@ -7,8 +7,8 @@ import { useParams } from "next/navigation";
 import { useEvent } from "../../../../lib/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import EventCalendar from "~/components/EventCalendar/EventCalendar";
-import { MacBorder } from "~/components/MacBorder/MacBorder";
 import { WelcomeSection } from "./WelcomeSection";
+import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 
 export default function EventView() {
     const { id: eventId } = useParams();
@@ -39,14 +39,14 @@ export default function EventView() {
     };
 
     const saveUserName = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         if (!usernameFormRef.current) {
             throw new Error("Ref not fonnd");
         }
         if (!usernameDialogRef.current) {
             throw new Error("Ref not fonnd");
         }
-
-        e.preventDefault();
 
         const usernameInputVal = nameInputRef.current?.value;
         if (!usernameInputVal) {
@@ -76,25 +76,25 @@ export default function EventView() {
             {/* ToDo: make dialog default color transparent? inherit? rounded corners? */}
             <dialog
                 ref={usernameDialogRef}
-                className="p-0 rounded-md max-w-sm bg-gray-100 backdrop-filter backdrop-blur-3xl bg-opacity-10"
+                className="p-0 rounded-md"
                 open={!username}
             >
-                <MacBorder>
-                    <div className="py-6 px-4">
+                <GlassmorphicPane>
+                    <div className="py-6 px-4 max-w-sm">
                         <form
                             ref={usernameFormRef}
                             className="text-center"
                             method="dialog"
                             onSubmit={saveUserName}
                         >
-                            <h2 className="text-xl mb-2">
-                                Insert identifier
-                            </h2>
+                            <h2 className="text-xl mb-2">Insert identifier</h2>
                             <p className="text-sm">
-                                choices you make will be linked to this identifier
+                                choices you make will be linked to this
+                                identifier
                             </p>
                             <p className="text-sm">
-                                using someone elses identifier will make you an sus impostor
+                                using someone elses identifier will make you an
+                                sus impostor
                             </p>
                             <input
                                 ref={nameInputRef}
@@ -102,6 +102,8 @@ export default function EventView() {
                                 aria-label="username input field"
                                 defaultValue={username}
                                 required
+                                maxLength={20}
+                                onFocus={(e) => e.target.select()}
                                 autoFocus
                             />
                             <div className="flex justify-evenly">
@@ -123,7 +125,7 @@ export default function EventView() {
                             </div>
                         </form>
                     </div>
-                </MacBorder>
+                </GlassmorphicPane>
             </dialog>
         </div>
     );
