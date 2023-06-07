@@ -2,19 +2,17 @@ import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane
 import { Button } from "~/components/Button/Button";
 import { FormEvent, useRef } from "react";
 import { useEvent } from "../../../../lib/context/EventProvider";
+import { useAuth } from "~/hooks/use-auth";
 
 type UsernameDialogProps = {
-    username: any;
-    setUsername: any;
     usernameDialogRef: any;
 };
 
-export function UsernameDialog({
-    usernameDialogRef,
-    setUsername,
-    username,
-}: UsernameDialogProps) {
+export function UsernameDialog({ usernameDialogRef }: UsernameDialogProps) {
+    const { getUsername, setUsername } = useAuth();
     const { eventDispatch } = useEvent();
+
+    const username = getUsername()?.name;
 
     const nameInputRef = useRef<HTMLInputElement>(null);
     const usernameFormRef = useRef<HTMLFormElement>(null);

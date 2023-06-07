@@ -2,18 +2,17 @@ import Image from "next/image";
 
 import editIcon from "~/public/edit.svg";
 import { ReactProps } from "../../../../typescript";
+import { useAuth } from "~/hooks/use-auth";
 
 type WelcomeSectionProps = ReactProps & {
-    username: string | undefined;
     eventName: string | null;
     openModal: () => void;
 };
 
-export function WelcomeSection({
-    eventName,
-    username,
-    openModal,
-}: WelcomeSectionProps) {
+export function WelcomeSection({ eventName, openModal }: WelcomeSectionProps) {
+    const { getUsername } = useAuth();
+    const username = getUsername()?.name;
+
     return (
         <section>
             <h1 className="text-center text-3xl p-5">{eventName}</h1>
