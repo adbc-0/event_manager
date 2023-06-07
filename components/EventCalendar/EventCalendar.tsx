@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useParams } from "next/navigation";
 
 import {
     MonthDay,
@@ -9,11 +10,11 @@ import {
     getPrevMonthDate,
 } from "~/utils/date";
 import { capitalize, truncateString, pipe } from "~/utils/utils";
-import { changeAvailability } from "~/app/api/events/[id]/actions";
-import { Availability, EventResponse } from "../../typescript";
-import { useParams } from "next/navigation";
-import { useAuth } from "~/hooks/use-auth";
 import { useEvent } from "../../lib/context/EventProvider";
+import { changeAvailability } from "~/app/api/events/[id]/actions";
+import { useAuth } from "~/hooks/use-auth";
+import { Button } from "../Button/Button";
+import { Availability, EventResponse } from "../../typescript";
 
 const Availability = {
     MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
@@ -262,9 +263,8 @@ export default function EventCalendar() {
                                                 }
                                             >
                                                 <div className="aspect-square relative">
-                                                    {/* All choices are not refreshed after change */}
                                                     <button
-                                                        className={`w-full h-full
+                                                        className={`w-full h-full disabled:cursor-not-allowed
                                                         ${
                                                             dayData.month ===
                                                             calendarDate.month
@@ -329,22 +329,24 @@ export default function EventCalendar() {
             {/* Also move this part to the bottom of the page */}
             <div className="flex self-start md:w-128 md:justify-self-center">
                 {isDirty && (
-                    <button
-                        className="bg-red-400 flex-auto mx-2 py-2 rounded-md text-black border border-black"
+                    <Button
+                        className="flex-auto mx-2"
+                        theme="DESTRUCTIVE"
                         type="reset"
                         onClick={onResetClick}
                     >
                         Reset
-                    </button>
+                    </Button>
                 )}
                 {isDirty && (
-                    <button
-                        className="bg-green-400 flex-auto mx-2 py-2 rounded-md text-black border border-black"
+                    <Button
+                        className="flex-auto mx-2"
+                        theme="PROCEED"
                         type="submit"
                         onClick={onSubmitClick}
                     >
                         Submit
-                    </button>
+                    </Button>
                 )}
             </div>
         </>
