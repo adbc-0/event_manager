@@ -7,8 +7,9 @@ import { useParams } from "next/navigation";
 import { useEvent } from "../../../../lib/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import EventCalendar from "~/components/EventCalendar/EventCalendar";
-import { WelcomeSection } from "./WelcomeSection";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
+import { Button } from "~/components/Button/Button";
+import { WelcomeSection } from "./WelcomeSection";
 
 export default function EventView() {
     const { id: eventId } = useParams();
@@ -67,12 +68,12 @@ export default function EventView() {
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
             <WelcomeSection
+                username={username}
                 eventName={event.name}
                 openModal={openIdentityModal}
             />
             <EventCalendar />
             {/* ToDo: <UsernameForm /> */}
-            {/* ToDo: <GlassmorphicBg> */}
             {/* ToDo: make dialog default color transparent? inherit? rounded corners? */}
             <dialog
                 ref={usernameDialogRef}
@@ -107,21 +108,22 @@ export default function EventView() {
                                 autoFocus
                             />
                             <div className="flex justify-evenly">
-                                {/* ToDo: styles for disabled buttons */}
-                                <button
-                                    className="bg-red-400 flex-auto mx-2 py-2 rounded-md shadow-md border border-black text-black"
+                                <Button
+                                    theme="DISCARD"
+                                    className="flex-auto mx-2 py-2"
                                     type="button"
                                     disabled={!username}
                                     onClick={closeIdentityModal}
                                 >
                                     Cancel
-                                </button>
-                                <button
-                                    className="bg-green-400 flex-auto mx-2 py-2 rounded-md shadow-md border border-black text-black"
+                                </Button>
+                                <Button
+                                    theme="SAVE"
+                                    className="flex-auto mx-2 py-2"
                                     type="submit"
                                 >
                                     Submit
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>

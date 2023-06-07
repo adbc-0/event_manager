@@ -331,7 +331,7 @@ export default function EventCalendar() {
                 {isDirty && (
                     <Button
                         className="flex-auto mx-2"
-                        theme="DESTRUCTIVE"
+                        theme="DISCARD"
                         type="reset"
                         onClick={onResetClick}
                     >
@@ -341,7 +341,7 @@ export default function EventCalendar() {
                 {isDirty && (
                     <Button
                         className="flex-auto mx-2"
-                        theme="PROCEED"
+                        theme="SAVE"
                         type="submit"
                         onClick={onSubmitClick}
                     >
