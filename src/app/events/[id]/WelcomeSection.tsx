@@ -9,7 +9,11 @@ type WelcomeSectionProps = ReactProps & {
     openModal: () => void;
 };
 
-export function WelcomeSection({ eventName, username, openModal }: WelcomeSectionProps) {
+export function WelcomeSection({
+    eventName,
+    username,
+    openModal,
+}: WelcomeSectionProps) {
     return (
         <section>
             <h1 className="text-center text-3xl p-5">{eventName}</h1>

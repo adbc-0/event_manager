@@ -11,9 +11,9 @@ type ButtonProps = React.DetailedHTMLProps<
 
 const themeColors: Record<ButtonTheme, string> = {
     BASIC: "",
-    DISCARD: "bg-red-400 hover:bg-red-400/90 disabled:opacity-50 disabled:cursor-not-allowed text-black border border-black",
-    SAVE:
-        "bg-green-400 hover:bg-green-400/90 disabled:opacity-50 disabled:cursor-not-allowed text-black border border-black",
+    DISCARD:
+        "bg-red-400 hover:bg-red-400/90 disabled:opacity-50 disabled:cursor-not-allowed text-black border border-black",
+    SAVE: "bg-green-400 hover:bg-green-400/90 disabled:opacity-50 disabled:cursor-not-allowed text-black border border-black",
 } as const;
 
 const baseButtonStyle = "py-2 rounded-md shadow-md";

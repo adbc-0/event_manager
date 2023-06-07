@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
+import { Button } from "~/components/Button/Button";
+
 type EventResponse = {
     id: number;
     name: string;
@@ -41,6 +43,9 @@ export default async function Calendar() {
                     <p>No events have been created</p>
                 )}
             </div>
+            <Button theme="BASIC" type="button">
+                Add event
+            </Button>
         </div>
     );
 }
