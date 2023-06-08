@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { Button } from "~/components/Button/Button";
+import { NewEvent } from "./NewEvent";
 
 type EventResponse = {
     id: number;
@@ -24,9 +24,6 @@ export const metadata: Metadata = {
     description: "Listing of all created event calendars",
 };
 
-// ToDo: DELETE event
-// ToDo: CREATE event
-
 export default async function Calendar() {
     const events = await fetchEvents();
     return (
@@ -43,9 +40,7 @@ export default async function Calendar() {
                     <p>No events have been created</p>
                 )}
             </div>
-            <Button theme="BASIC" type="button">
-                Add event
-            </Button>
+            <NewEvent />
         </div>
     );
 }

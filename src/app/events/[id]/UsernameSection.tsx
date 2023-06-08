@@ -19,13 +19,17 @@ export function UsernameSection({ openModal }: UsernameSectionProps) {
     return (
         <section className="flex justify-center items-center gap-1 m-5">
             <h2 className="text-2xl">Welcome {username}</h2>
-            <Button theme="BASIC" className="w-9 h-9 p-0">
+            <Button
+                type="button"
+                theme="BASIC"
+                className="w-9 h-9"
+                onClick={openModal}
+            >
                 <Image
                     src={editIcon}
                     className="cursor-pointer m-auto"
                     width={24}
                     height={24}
-                    onClick={openModal}
                     alt="edit username"
                 />
             </Button>

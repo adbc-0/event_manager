@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+
 import { ReactProps } from "../../typescript";
 
 type ButtonTheme = "DISCARD" | "SAVE" | "BASIC";
@@ -8,7 +9,6 @@ type ButtonProps = React.DetailedHTMLProps<
 > &
     ReactProps & {
         theme: ButtonTheme;
-        children: string | JSX.Element | JSX.Element[];
     };
 
 const themeColors: Record<ButtonTheme, string> = {
@@ -18,7 +18,7 @@ const themeColors: Record<ButtonTheme, string> = {
 } as const;
 
 const baseButtonStyle =
-    "py-2 rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90";
+    "rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90";
 
 export function Button({ children, theme, className, ...props }: ButtonProps) {
     return (
