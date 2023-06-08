@@ -12,6 +12,10 @@ type StorageObject<T extends StorageKey> = T extends "event_user_name"
     : never;
 
 function readKeyFromStorage<T extends StorageKey>(storageKey: T) {
+    if (!window) {
+        return null;
+    }
+
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) {
         return null;
@@ -29,6 +33,10 @@ export function useLocalStorage<T extends StorageKey>(storageKey: T) {
     const getFromStorage = () => readKeyFromStorage(storageKey);
 
     const setStorage = (newValue: StorageObject<T>) => {
+        if (!window) {
+            return null;
+        }
+
         window.localStorage.setItem(storageKey, JSON.stringify(newValue));
     };
 
