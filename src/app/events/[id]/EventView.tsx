@@ -30,10 +30,8 @@ export default function EventView() {
 
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
-            <WelcomeSection
-                eventName={event.name}
-                openModal={openIdentityModal}
-            />
+            <h1 className="text-center text-3xl p-5">{event.name}</h1>
+            <WelcomeSection openModal={openIdentityModal} />
             <EventCalendar />
             <UsernameDialog ref={usernameDialogRef} />
         </div>

@@ -1,10 +1,11 @@
-import { FormEvent, forwardRef, useRef } from "react";
+import { FormEvent, forwardRef, useEffect, useRef } from "react";
 
 import { useEvent } from "../../../../lib/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { ReactProps } from "../../../../typescript";
+import { useSsr } from "~/hooks/use-ssr";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -15,11 +16,26 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
             throw new Error("Unexpected ref type");
         }
 
-        const { username, setUsername } = useAuth();
+        const { isServer } = useSsr();
         const { eventDispatch } = useEvent();
+        const { username, setUsername } = useAuth();
 
         const nameInputRef = useRef<HTMLInputElement>(null);
         const usernameFormRef = useRef<HTMLFormElement>(null);
+
+        useEffect(() => {
+            if (!ref?.current) {
+                throw new Error("Ref not fonnd");
+            }
+            if (isServer) {
+                return;
+            }
+            if (!username) {
+                return;
+            }
+
+            ref.current.showModal();
+        }, []);
 
         const closeIdentityModal = () => {
             if (!usernameFormRef.current) {
@@ -55,7 +71,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
         };
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md" open={!username}>
+            <dialog ref={ref} className="p-0 rounded-md">
                 <GlassmorphicPane>
                     <div className="py-6 px-4 max-w-sm">
                         <form
