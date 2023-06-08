@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 // ToDo: ~create alias~
 import { useEvent } from "../../../../lib/context/EventProvider";
 import EventCalendar from "~/components/EventCalendar/EventCalendar";
-import { WelcomeSection } from "./WelcomeSection";
+import { UsernameSection } from "./UsernameSection";
 import { UsernameDialog } from "./UsernameDialog";
 
 export default function EventView() {
@@ -31,7 +31,7 @@ export default function EventView() {
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
             <h1 className="text-center text-3xl p-5">{event.name}</h1>
-            <WelcomeSection openModal={openIdentityModal} />
+            <UsernameSection openModal={openIdentityModal} />
             <EventCalendar />
             <UsernameDialog ref={usernameDialogRef} />
         </div>

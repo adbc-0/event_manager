@@ -1,6 +1,7 @@
 import { FormEvent, forwardRef, useRef } from "react";
 
 import { useEvent } from "../../../../lib/context/EventProvider";
+import { useSsc } from "~/hooks/use-ssc";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
@@ -15,6 +16,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
             throw new Error("Unexpected ref type");
         }
 
+        const { isBrowser } = useSsc();
         const { eventDispatch } = useEvent();
         const { username, setUsername } = useAuth();
 
@@ -55,7 +57,11 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
         };
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md">
+            <dialog
+                ref={ref}
+                className="p-0 rounded-md"
+                open={!username && isBrowser}
+            >
                 <GlassmorphicPane>
                     <div className="py-6 px-4 max-w-sm">
                         <form
@@ -69,14 +75,14 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                                 choices you make will be linked to this
                                 identifier
                             </p>
-                            <p className="text-sm">
-                                using someone elses identifier will make you an
-                                sus impostor
+                            <p className="text-sm text-orange-400">
+                                warning: using someone elses identifier will
+                                make you an sus impostor
                             </p>
                             <input
                                 ref={nameInputRef}
                                 type="text"
-                                className="text-center border border-black my-6 py-2 block m-auto rounded-md bg-zinc-900 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40"
+                                className="text-center border border-black my-6 py-2 block m-auto rounded-md bg-zinc-900 autofill:bg-zinc-950 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40"
                                 name="username"
                                 autoComplete="username"
                                 autoCorrect="off"
