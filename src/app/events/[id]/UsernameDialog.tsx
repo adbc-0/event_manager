@@ -15,10 +15,8 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
             throw new Error("Unexpected ref type");
         }
 
-        const { getUsername, setUsername } = useAuth();
+        const { username, setUsername } = useAuth();
         const { eventDispatch } = useEvent();
-
-        const username = getUsername()?.name;
 
         const nameInputRef = useRef<HTMLInputElement>(null);
         const usernameFormRef = useRef<HTMLFormElement>(null);
@@ -77,7 +75,11 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             </p>
                             <input
                                 ref={nameInputRef}
+                                type="text"
                                 className="text-center border border-black my-6 py-2 block m-auto rounded-md bg-zinc-900 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40"
+                                name="username"
+                                autoComplete="username"
+                                autoCorrect="off"
                                 aria-label="username input field"
                                 defaultValue={username}
                                 required

@@ -1,17 +1,19 @@
 import { LocalStorageKeys } from "~/utils/constants";
 import { useLocalStorage } from "./use-local-storage";
+import { useCallback } from "react";
 
 export function useAuth() {
-    const [getUsername, setUsernameInStorage] = useLocalStorage(
-        LocalStorageKeys.EVENT_NAME,
+    const [username, setStorage] = useLocalStorage(LocalStorageKeys.EVENT_NAME);
+
+    const setUsername = useCallback(
+        (newUserName: string) => {
+            setStorage({ name: newUserName });
+        },
+        [setStorage],
     );
 
-    const setUsername = (newUserName: string) => {
-        setUsernameInStorage({ name: newUserName });
-    };
-
     return {
-        getUsername,
+        username: username?.name,
         setUsername,
     } as const;
 }

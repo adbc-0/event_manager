@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from "react";
+
 import { LocalStorageKeys } from "~/utils/constants";
 import { Nullable, Values } from "../../typescript";
 
@@ -29,16 +31,42 @@ function readKeyFromStorage<T extends StorageKey>(storageKey: T) {
     }
 }
 
+const STORAGE_EVENT = "storage"; // https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event
+
 export function useLocalStorage<T extends StorageKey>(storageKey: T) {
-    const getFromStorage = () => readKeyFromStorage(storageKey);
+    const [storageValue, setStorageValue] =
+        useState<Nullable<StorageObject<T>>>(null);
 
-    const setStorage = (newValue: StorageObject<T>) => {
-        if (!window) {
-            return null;
-        }
+    const changeStateOnLocalStorageEvent = useCallback(() => {
+        const parsedValue = readKeyFromStorage(storageKey);
+        setStorageValue(parsedValue);
+    }, [storageKey]);
 
-        window.localStorage.setItem(storageKey, JSON.stringify(newValue));
-    };
+    useEffect(() => {
+        changeStateOnLocalStorageEvent();
+    }, [changeStateOnLocalStorageEvent]);
 
-    return [getFromStorage, setStorage] as const;
+    useEffect(() => {
+        window.addEventListener(STORAGE_EVENT, changeStateOnLocalStorageEvent);
+        return () => {
+            window.removeEventListener(
+                STORAGE_EVENT,
+                changeStateOnLocalStorageEvent,
+            );
+        };
+    }, [changeStateOnLocalStorageEvent]);
+
+    const setStorage = useCallback(
+        (newValue: StorageObject<T>) => {
+            if (!window) {
+                return null;
+            }
+
+            window.localStorage.setItem(storageKey, JSON.stringify(newValue));
+            window.dispatchEvent(new Event(STORAGE_EVENT));
+        },
+        [storageKey],
+    );
+
+    return [storageValue, setStorage] as const;
 }

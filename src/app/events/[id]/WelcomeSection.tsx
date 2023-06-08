@@ -10,8 +10,7 @@ type WelcomeSectionProps = ReactProps & {
 };
 
 export function WelcomeSection({ eventName, openModal }: WelcomeSectionProps) {
-    const { getUsername } = useAuth();
-    const username = getUsername()?.name;
+    const { username } = useAuth();
 
     return (
         <section>

@@ -132,7 +132,7 @@ export default function EventCalendar() {
         throw new Error("Missing event url param");
     }
 
-    const { getUsername } = useAuth();
+    const { username } = useAuth();
     const {
         allChoices,
         ownChoices,
@@ -160,7 +160,7 @@ export default function EventCalendar() {
                 type: "SET_CHOICES",
                 payload: {
                     event,
-                    username: getUsername()?.name,
+                    username,
                 },
             });
         }
@@ -184,7 +184,7 @@ export default function EventCalendar() {
                 type: "SET_CHOICES",
                 payload: {
                     event,
-                    username: getUsername()?.name,
+                    username,
                 },
             });
         }
@@ -193,7 +193,7 @@ export default function EventCalendar() {
     };
 
     const onDayClick = ({ day, month }: MonthDay) => {
-        if (!getUsername()?.name) {
+        if (!username) {
             return null;
         }
 
@@ -203,7 +203,7 @@ export default function EventCalendar() {
 
         eventDispatch({
             type: "DAY_SELECT",
-            payload: { selectedDay: day, username: getUsername()?.name },
+            payload: { selectedDay: day, username },
         });
         setIsDirty(true);
     };

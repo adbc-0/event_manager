@@ -264,7 +264,7 @@ function eventReducer(state: EventState, action: EventActions) {
             const clone = structuredClone(state);
             const { selectedDay, username } = action.payload;
             if (!username) {
-                throw new Error('cannot select the day without username');
+                throw new Error("cannot select the day without username");
             }
 
             const currentChoice = state.ownChoices[selectedDay];
@@ -296,7 +296,7 @@ function eventReducer(state: EventState, action: EventActions) {
 }
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
-    const { getUsername } = useAuth();
+    const { username } = useAuth();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
         nilCalendarReducer,
@@ -326,7 +326,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     type: "SET_CHOICES",
                     payload: {
                         event,
-                        username: getUsername()?.name,
+                        username,
                     },
                 });
             } catch (exception) {
@@ -344,7 +344,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         return () => {
             abortController.abort();
         };
-    }, [eventId]);
+    }, [eventId, username]);
 
     const getCurrentMonthInChunks = useCallback(() => {
         const monthDaysData = createMonthDays(calendarDate);
