@@ -1,3 +1,4 @@
+// ToDo: Currently unused
 export function useSsr() {
     const isDOM =
         typeof window !== "undefined" &&
