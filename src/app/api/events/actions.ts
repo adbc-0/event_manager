@@ -12,7 +12,7 @@ export async function DeleteEvent(
 }
 
 export async function PostEvent(formData: FormData) {
-    const newEventName = formData.get('event_name')
+    const newEventName = formData.get("event_name");
     revalidatePath(`/events`);
 }
 

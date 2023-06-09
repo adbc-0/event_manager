@@ -46,6 +46,7 @@ type MonthChunk = {
     chunk: MonthDay[];
 };
 type EventState = {
+    isDirty: boolean;
     allChoices: AllAvailability;
     allChoicesBackup: AllAvailability;
     calendarDate: CurrentDate;
@@ -63,10 +64,6 @@ type UsernameChangeRecalculateAction = {
         username: string;
         allChoices: AllUsersAvailabilityChoices;
     };
-};
-type ChangeDateAction = {
-    type: "CHANGE_DATE";
-    payload: CurrentDate;
 };
 type DaySelectAction = {
     type: "DAY_SELECT";
@@ -91,7 +88,6 @@ type SetChoicesAction = {
 };
 type EventActions =
     | UsernameChangeRecalculateAction
-    | ChangeDateAction
     | DaySelectAction
     | ResetChoicesAction
     | OverwriteBackupAction
@@ -109,6 +105,7 @@ const nilCalendarReducer: EventState = {
     allChoicesBackup: {},
     calendarDate: getCurrentDate(),
     event: nilEvent,
+    isDirty: false,
     ownChoices: {},
     ownChoicesBackup: {},
 } as const;
@@ -230,15 +227,9 @@ function eventReducer(state: EventState, action: EventActions) {
                 action.payload.allChoices["orzel"],
                 maxMonthDay,
             );
+            clone.isDirty = false;
 
             return state;
-        }
-        case "CHANGE_DATE": {
-            const clone = structuredClone(state);
-
-            clone.calendarDate = action.payload;
-
-            return clone;
         }
         case "SET_CHOICES": {
             const clone = structuredClone(state);
@@ -257,6 +248,7 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoicesBackup = username
                 ? parseOwnChoices(event.users[username], maxMonthDay)
                 : {};
+            clone.isDirty = false;
 
             return clone;
         }
@@ -272,6 +264,8 @@ function eventReducer(state: EventState, action: EventActions) {
 
             clone.ownChoices[selectedDay] = nextChoice;
             clone.allChoices[selectedDay][username] = nextChoice;
+            clone.isDirty = true;
+
             return clone;
         }
         case "OVERWRITE_BACKUP": {
@@ -287,6 +281,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             clone.allChoices = state.allChoicesBackup;
             clone.ownChoices = state.ownChoicesBackup;
+            clone.isDirty = false;
 
             return clone;
         }

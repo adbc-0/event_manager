@@ -36,22 +36,22 @@ export function NewEvent() {
                             autoFocus
                         />
                         <div className="flex justify-evenly">
-                        <Button
-                            type="reset"
-                            theme="DISCARD"
-                            className="flex-auto mx-2 py-2"
-                            onClick={() => dialogRef.current?.close()}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            theme="SAVE"
-                            className="flex-auto mx-2 py-2"
-                        >
-                            Submit
-                        </Button>
-                    </div>
+                            <Button
+                                type="reset"
+                                theme="DISCARD"
+                                className="flex-auto mx-2 py-2"
+                                onClick={() => dialogRef.current?.close()}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                theme="SAVE"
+                                className="flex-auto mx-2 py-2"
+                            >
+                                Submit
+                            </Button>
+                        </div>
                     </form>
                 </GlassmorphicPane>
             </dialog>
