@@ -9,9 +9,7 @@ type EventResponse = {
 };
 
 async function fetchEvents(): Promise<EventResponse[]> {
-    const response = await fetch("http://localhost:3000/api/events", {
-        cache: "no-store",
-    });
+    const response = await fetch("http://localhost:3000/api/events");
     if (!response.ok) {
         throw new Error("failed to fetch the data");
     }
