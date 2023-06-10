@@ -167,6 +167,7 @@ export default function EventCalendar() {
         const newDate = getNextMonthDate(calendarDate);
 
         async function initEventCalendar() {
+            // ToDo: Abort controller
             const { month, year } = newDate;
             const searchParams = new URLSearchParams({
                 date: `${month}-${year}`,

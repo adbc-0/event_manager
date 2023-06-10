@@ -25,7 +25,7 @@
             "~/hooks/*": ["./lib/hooks/*"],
             "~/utils/*": ["./lib/utils/*"],
             "~/public/*": ["./public/*"],
-            "~/services/*": ["./services/*"],
+            "~/services/*": ["./services/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

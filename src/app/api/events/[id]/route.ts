@@ -17,17 +17,24 @@ export async function GET(request: Request, { params }: RequestParams) {
         searchParams,
     );
 
-    // {
-    //     eventName: 'DnD',
-    //     users: {
-    //         orzel: { available: [1], notAvailable: [2], maybeAvailable: [3] },
-    //         bidon: { available: [1], notAvailable: [3], maybeAvailable: [] }
-    //     },
-    // };
-
     if (searchParams.toString() === "date=5-2023") {
         return NextResponse.json([
-            { eventName: "DnD", time: "2023-06-04T12:46:17.599Z", users: {} },
+            {
+                eventName: "DnD",
+                time: "2023-06-04T12:46:17.599Z",
+                users: {
+                    orzel: {
+                        available: [1],
+                        notAvailable: [2],
+                        maybeAvailable: [3],
+                    },
+                    bidon: {
+                        available: [1],
+                        notAvailable: [3],
+                        maybeAvailable: [],
+                    },
+                },
+            },
         ]);
     } else if (searchParams.toString() === "date=6-2023") {
         return NextResponse.json([
