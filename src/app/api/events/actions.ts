@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { postgres } from "~/services/postgres";
+
 export async function DeleteEvent(
     eventId: string,
     day: Record<string, string>,
@@ -13,6 +15,7 @@ export async function DeleteEvent(
 
 export async function PostEvent(formData: FormData) {
     const newEventName = formData.get("event_name");
+    await postgres`SELECT * FROM events`;
     revalidatePath(`/events`);
 }
 
