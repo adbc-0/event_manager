@@ -12,15 +12,14 @@ type ButtonProps = React.DetailedHTMLProps<
     };
 
 const themeColors: Record<ButtonTheme, string> = {
-    BASIC: "bg-neutral-700 text-white border border-black",
-    DISCARD: "bg-red-400 text-black border border-black",
-    SAVE: "bg-green-400 text-black border border-black",
+    BASIC: "bg-neutral-700 text-white border border-black outline-neutral-700",
+    DISCARD: "bg-red-400 text-black border border-black outline-red-400",
+    SAVE: "bg-green-400 text-black border border-black outline-green-400",
 } as const;
 
 const baseButtonStyle =
-    "rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90";
+    "rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90 active:outline active:outline-offset-3";
 
-// ToDo: Try offset "active:outline outline-red-400 active:outline-offset-3"
 export function Button({ children, theme, className, ...props }: ButtonProps) {
     return (
         <button
