@@ -41,7 +41,6 @@ export function NewEventAction() {
                             required
                             maxLength={20}
                             onFocus={(e) => e.target.select()}
-                            autoFocus
                         />
                         <div className="flex justify-evenly gap-2">
                             <Button

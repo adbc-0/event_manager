@@ -1,18 +1,14 @@
 "use client";
 
-import { ReactProps } from "../../../../typescript";
 import { EventProvider } from "../../../../lib/context/EventProvider";
 import EventView from "./EventView";
 
-type RouteParams = {
-    id: string;
+type PageProps = {
+    params: { id: string };
+    searchParams: { [key: string]: string | string[] | undefined };
 };
 
-type EventProps = ReactProps & {
-    params: RouteParams;
-};
-
-export default function Event({ params }: EventProps) {
+export default async function Page({ params }: PageProps) {
     const { id: eventId } = params;
 
     return (

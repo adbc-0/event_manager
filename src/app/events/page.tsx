@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: "Listing of all created event calendars",
 };
 
-export default async function Calendar() {
+export default async function Page() {
     const events = await fetchEvents();
     return (
         <div className="text-center">

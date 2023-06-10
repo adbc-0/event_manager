@@ -243,10 +243,7 @@ export default function EventCalendar() {
                         {getCurrentMonthInChunks().map((week) => (
                             <tr key={week.key}>
                                 {week.chunk.map((dayData) => (
-                                    <td
-                                        key={dayData.key}
-                                        onClick={() => onDayClick(dayData)}
-                                    >
+                                    <td key={dayData.key}>
                                         <div className="aspect-square relative">
                                             <button
                                                 className={`w-full h-full disabled:cursor-not-allowed
@@ -279,6 +276,9 @@ export default function EventCalendar() {
                                                         }
                                                     `}
                                                 type="button"
+                                                onClick={() =>
+                                                    onDayClick(dayData)
+                                                }
                                                 disabled={
                                                     dayData.month !==
                                                     calendarDate.month

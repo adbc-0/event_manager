@@ -17,8 +17,8 @@ dependencies:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
     tailwind-merge:
-        specifier: 1.13.0
-        version: 1.13.0
+        specifier: 1.13.1
+        version: 1.13.1
     tailwindcss:
         specifier: 3.3.2
         version: 3.3.2
@@ -30,12 +30,15 @@ dependencies:
         version: 3.21.4
 
 devDependencies:
+    "@next/eslint-plugin-next":
+        specifier: 13.4.4
+        version: 13.4.4
     "@types/node":
-        specifier: 20.2.5
-        version: 20.2.5
+        specifier: 20.2.6
+        version: 20.2.6
     "@types/react":
-        specifier: 18.2.8
-        version: 18.2.8
+        specifier: 18.2.11
+        version: 18.2.11
     "@types/react-dom":
         specifier: 18.2.4
         version: 18.2.4
@@ -54,6 +57,12 @@ devDependencies:
     eslint-config-next:
         specifier: 13.4.4
         version: 13.4.4(eslint@8.42.0)(typescript@5.1.3)
+    eslint-plugin-import:
+        specifier: 2.27.5
+        version: 2.27.5(@typescript-eslint/parser@5.59.9)(eslint-import-resolver-typescript@3.5.5)(eslint@8.42.0)
+    eslint-plugin-jsx-a11y:
+        specifier: 6.7.1
+        version: 6.7.1(eslint@8.42.0)
     eslint-plugin-react:
         specifier: 7.32.2
         version: 7.32.2(eslint@8.42.0)
@@ -79,10 +88,10 @@ packages:
         engines: { node: ">=10" }
         dev: false
 
-    /@babel/runtime@7.22.3:
+    /@babel/runtime@7.22.5:
         resolution:
             {
-                integrity: sha512-XsDuspWKLUsxwCp6r7EhsExHtYfbe5oAGQ19kqngTdCPUoPQzOPdUbD/pB9PJiwb2ptYKQDjSJT3R6dC+EPqfQ==,
+                integrity: sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==,
             }
         engines: { node: ">=6.9.0" }
         dependencies:
@@ -385,10 +394,10 @@ packages:
             tslib: 2.5.3
         dev: true
 
-    /@rushstack/eslint-patch@1.3.0:
+    /@rushstack/eslint-patch@1.3.1:
         resolution:
             {
-                integrity: sha512-IthPJsJR85GhOkp3Hvp8zFOPK5ynKn6STyHa/WZpioK7E1aYDiBzpqQPrngc14DszIUkIrdd3k9Iu0XSzlP/1w==,
+                integrity: sha512-RkmuBcqiNioeeBKbgzMlOdreUkJfYaSjwgx9XDgGGpjvWgyaxWvDmZVSN9CS6LjEASadhgPv2BcFp+SeouWXXA==,
             }
         dev: true
 
@@ -415,10 +424,10 @@ packages:
             }
         dev: true
 
-    /@types/node@20.2.5:
+    /@types/node@20.2.6:
         resolution:
             {
-                integrity: sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==,
+                integrity: sha512-GQBWUtGoefMEOx/vu+emHEHU5aw6JdDoEtZhoBrHFPZbA/YNRFfN996XbBASEWdvmLSLyv9FKYppYGyZjCaq/g==,
             }
         dev: true
 
@@ -435,13 +444,13 @@ packages:
                 integrity: sha512-G2mHoTMTL4yoydITgOGwWdWMVd8sNgyEP85xVmMKAPUBwQWm9wBPQUmvbeF4V3WBY1P7mmL4BkjQ0SqUpf1snw==,
             }
         dependencies:
-            "@types/react": 18.2.8
+            "@types/react": 18.2.11
         dev: true
 
-    /@types/react@18.2.8:
+    /@types/react@18.2.11:
         resolution:
             {
-                integrity: sha512-lTyWUNrd8ntVkqycEEplasWy2OxNlShj3zqS0LuB1ENUGis5HodmhM7DtCoUGbxj3VW/WsGA0DUhpG6XrM7gPA==,
+                integrity: sha512-+hsJr9hmwyDecSMQAmX7drgbDpyE+EgSF6t7+5QEBAn1tQK7kl1vWZ4iRf6SjQ8lk7dyEULxUmZOIpN0W5baZA==,
             }
         dependencies:
             "@types/prop-types": 15.7.5
@@ -797,7 +806,7 @@ packages:
             postcss: ^8.1.0
         dependencies:
             browserslist: 4.21.7
-            caniuse-lite: 1.0.30001495
+            caniuse-lite: 1.0.30001498
             fraction.js: 4.2.0
             normalize-range: 0.1.2
             picocolors: 1.0.0
@@ -888,8 +897,8 @@ packages:
         engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
         hasBin: true
         dependencies:
-            caniuse-lite: 1.0.30001495
-            electron-to-chromium: 1.4.423
+            caniuse-lite: 1.0.30001498
+            electron-to-chromium: 1.4.427
             node-releases: 2.0.12
             update-browserslist-db: 1.0.11(browserslist@4.21.7)
         dev: true
@@ -940,10 +949,10 @@ packages:
         engines: { node: ">= 6" }
         dev: false
 
-    /caniuse-lite@1.0.30001495:
+    /caniuse-lite@1.0.30001498:
         resolution:
             {
-                integrity: sha512-F6x5IEuigtUfU5ZMQK2jsy5JqUUlEFRVZq8bO2a+ysq5K7jD6PPc9YXZj78xDNS3uNchesp1Jw47YXEqr+Viyg==,
+                integrity: sha512-LFInN2zAwx3ANrGCDZ5AKKJroHqNKyjXitdV5zRIVIaQlXKj3GmxUKagoKsjqUfckpAObPCEWnk5EeMlyMWcgw==,
             }
 
     /chalk@4.1.2:
@@ -1204,10 +1213,10 @@ packages:
             esutils: 2.0.3
         dev: true
 
-    /electron-to-chromium@1.4.423:
+    /electron-to-chromium@1.4.427:
         resolution:
             {
-                integrity: sha512-y4A7YfQcDGPAeSWM1IuoWzXpg9RY1nwHzHSwRtCSQFp9FgAVDgdWlFf0RbdWfLWQ2WUI+bddUgk5RgTjqRE6FQ==,
+                integrity: sha512-HK3r9l+Jm8dYAm1ctXEWIC+hV60zfcjS9UA5BDlYvnI5S7PU/yytjpvSrTNrSSRRkuu3tDyZhdkwIczh+0DWaw==,
             }
         dev: true
 
@@ -1351,7 +1360,7 @@ packages:
                 optional: true
         dependencies:
             "@next/eslint-plugin-next": 13.4.4
-            "@rushstack/eslint-patch": 1.3.0
+            "@rushstack/eslint-patch": 1.3.1
             "@typescript-eslint/parser": 5.59.9(eslint@8.42.0)(typescript@5.1.3)
             eslint: 8.42.0
             eslint-import-resolver-node: 0.3.7
@@ -1484,7 +1493,7 @@ packages:
         peerDependencies:
             eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
         dependencies:
-            "@babel/runtime": 7.22.3
+            "@babel/runtime": 7.22.5
             aria-query: 5.1.3
             array-includes: 3.1.6
             array.prototype.flatmap: 1.3.1
@@ -2725,7 +2734,7 @@ packages:
             "@next/env": 13.4.4
             "@swc/helpers": 0.5.1
             busboy: 1.6.0
-            caniuse-lite: 1.0.30001495
+            caniuse-lite: 1.0.30001498
             postcss: 8.4.14
             react: 18.2.0
             react-dom: 18.2.0(react@18.2.0)
@@ -3613,10 +3622,10 @@ packages:
             tslib: 2.5.3
         dev: true
 
-    /tailwind-merge@1.13.0:
+    /tailwind-merge@1.13.1:
         resolution:
             {
-                integrity: sha512-mUTmDbcU+IhOvJ0c42eLQ/nRkvolTqfpVaVQRSxfJAv9TabS6Y2zW/1wKpKLdKzyL3Gh8j6NTLl6MWNmvOM6kA==,
+                integrity: sha512-tRtRN22TDokGi2TuYSvuHQuuW6BJ/zlUEG+iYpAQ9i66msc/0eU/+HPccbPnNNH0mCPp0Ob8thaC8Uy9CxHitQ==,
             }
         dev: false
 

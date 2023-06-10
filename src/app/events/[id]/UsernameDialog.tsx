@@ -9,6 +9,9 @@ import { ReactProps } from "../../../../typescript";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
+type UsernameFormElementTarget = FormEvent<HTMLFormElement>["target"] & {
+    username: { value: string };
+};
 
 export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
     function UsernameDialog(_, ref) {
@@ -43,7 +46,9 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                 throw new Error("Ref not fonnd");
             }
 
-            const newUsername = (e.target as any)["username"].value as string;
+            const newUsername = (e.target as UsernameFormElementTarget)[
+                "username"
+            ].value as string;
             if (!newUsername) {
                 return;
             }
@@ -88,7 +93,6 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             required
                             maxLength={20}
                             onFocus={(e) => e.target.select()}
-                            autoFocus
                         />
                         <div className="flex justify-evenly">
                             <Button
