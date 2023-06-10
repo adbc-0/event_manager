@@ -10,6 +10,7 @@ module.exports = {
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
     ],
+    ignorePatterns: ["pnpm-lock.yaml"],
     parser: "@typescript-eslint/parser",
     parserOptions: {
         ecmaVersion: "latest",
