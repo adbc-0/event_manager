@@ -14,7 +14,7 @@ export function NewEvent() {
             <Button
                 theme="BASIC"
                 type="button"
-                className="py-2 px-4"
+                className="py-2 px-4 "
                 onClick={() => dialogRef.current?.showModal()}
             >
                 Add Event
@@ -35,11 +35,11 @@ export function NewEvent() {
                             onFocus={(e) => e.target.select()}
                             autoFocus
                         />
-                        <div className="flex justify-evenly">
+                        <div className="flex justify-evenly gap-2">
                             <Button
                                 type="reset"
                                 theme="DISCARD"
-                                className="flex-auto mx-2 py-2"
+                                className="flex-1 py-2"
                                 onClick={() => dialogRef.current?.close()}
                             >
                                 Cancel
@@ -47,7 +47,7 @@ export function NewEvent() {
                             <Button
                                 type="submit"
                                 theme="SAVE"
-                                className="flex-auto mx-2 py-2"
+                                className="flex-1 py-2"
                             >
                                 Submit
                             </Button>

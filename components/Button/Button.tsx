@@ -20,6 +20,7 @@ const themeColors: Record<ButtonTheme, string> = {
 const baseButtonStyle =
     "rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90";
 
+// ToDo: Try offset "active:outline outline-red-400 active:outline-offset-3"
 export function Button({ children, theme, className, ...props }: ButtonProps) {
     return (
         <button
