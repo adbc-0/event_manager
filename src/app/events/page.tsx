@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { NewEvent } from "./NewEvent";
+import { NewEventAction } from "./NewEventAction";
 
 type EventResponse = {
     id: number;
@@ -28,19 +28,29 @@ export default async function Calendar() {
     const events = await fetchEvents();
     return (
         <div className="text-center">
-            <h1 className="py-3">All events</h1>
-            <div>
-                {events.length ? (
-                    events.map(({ id, name }) => (
-                        <div key={id}>
-                            <Link href={`/events/${id}`}>{name}</Link>
+            <div className="max-w-lg m-auto pt-10 px-3">
+                <div className="flex justify-between items-end">
+                    <h2>Events</h2>
+                    <NewEventAction />
+                </div>
+                <div className="border border-black bg-neutral-700 mt-1 rounded-md">
+                    {events.length ? (
+                        <div className="my-10 w-60 m-auto border border-black">
+                            {events.map(({ id, name }) => (
+                                <Link
+                                    key={id}
+                                    href={`/events/${id}`}
+                                    className="block py-2 bg-zinc-800 hover:brightness-110 last:border-b-0 border-b border-b-zinc-900"
+                                >
+                                    {name}
+                                </Link>
+                            ))}
                         </div>
-                    ))
-                ) : (
-                    <p>No events have been created</p>
-                )}
+                    ) : (
+                        <h3 className="py-3">No created events were found</h3>
+                    )}
+                </div>
             </div>
-            <NewEvent />
         </div>
     );
 }

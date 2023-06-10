@@ -1,23 +1,31 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 
+import addIcon from "~/public/new.svg";
 import { PostEvent } from "../api/events/actions";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 
-export function NewEvent() {
+export function NewEventAction() {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
 
     return (
         <>
             <Button
-                theme="BASIC"
                 type="button"
-                className="py-2 px-4 "
+                theme="BASIC"
+                className="w-9 h-9"
                 onClick={() => dialogRef.current?.showModal()}
             >
-                Add Event
+                <Image
+                    src={addIcon}
+                    className="cursor-pointer m-auto"
+                    width={24}
+                    height={24}
+                    alt="edit username"
+                />
             </Button>
             <dialog ref={dialogRef} className="p-0 rounded-md">
                 <GlassmorphicPane innerClassName="py-8 px-12">

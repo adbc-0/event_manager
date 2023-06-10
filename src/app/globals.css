@@ -4,12 +4,12 @@
 
 @layer base {
     html {
-        @apply text-white;
+        @apply text-neutral-300;
         @apply bg-neutral-800;
     }
 
     dialog {
-        @apply text-white;
+        @apply text-neutral-300;
         @apply bg-transparent;
     }
 
@@ -19,7 +19,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #232931 10%, #1b1d21 100%);
+    background: linear-gradient(135deg, #1c1e20 10%, #1e1f20 100%);
 }
 
 /* body {

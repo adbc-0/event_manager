@@ -15,7 +15,7 @@ export async function DeleteEvent(
 
 export async function PostEvent(formData: FormData) {
     const newEventName = formData.get("event_name");
-    await postgres`SELECT * FROM events`;
+    // await postgres`SELECT * FROM events`;
     revalidatePath(`/events`);
 }
 
