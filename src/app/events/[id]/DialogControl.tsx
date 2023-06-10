@@ -29,7 +29,7 @@ export function DialogControl() {
     }
 
     return (
-        <div className="flex self-start md:w-128 md:justify-self-center gap-4">
+        <div className="flex self-start md:w-128 md:justify-self-center gap-4 mx-1">
             <Button
                 className="flex-auto py-2"
                 theme="DISCARD"
