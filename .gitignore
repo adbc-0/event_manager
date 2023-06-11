@@ -42,3 +42,6 @@ _mocks
 
 # evn
 .env*
+
+# migrations
+_migrations
