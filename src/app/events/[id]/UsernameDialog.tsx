@@ -28,10 +28,10 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
 
         const closeIdentityModal = () => {
             if (!usernameFormRef.current) {
-                throw new Error("Ref not fonnd");
+                throw new Error("Ref not found");
             }
             if (!ref?.current) {
-                throw new Error("Ref not fonnd");
+                throw new Error("Ref not found");
             }
 
             usernameFormRef.current.reset();
@@ -40,10 +40,10 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
 
         const saveUserName = (e: FormEvent<HTMLFormElement>) => {
             if (!usernameFormRef.current) {
-                throw new Error("Ref not fonnd");
+                throw new Error("Ref not found");
             }
             if (!ref?.current) {
-                throw new Error("Ref not fonnd");
+                throw new Error("Ref not found");
             }
 
             const newUsername = (e.target as UsernameFormElementTarget)[

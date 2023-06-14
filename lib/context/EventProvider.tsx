@@ -17,12 +17,14 @@ import {
 import {
     MonthDay,
     createMonthDays,
+    eventDateToDate,
     getCurrentDate,
     getLastDayOfMonth,
-    transformISO_8601ToCurrentDate,
+    transformDayJsToCurrentDate,
 } from "~/utils/date";
 import { chunks } from "~/utils/utils";
 import { useAuth } from "~/hooks/use-auth";
+import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 
 const Availability = {
     MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
@@ -153,11 +155,11 @@ function searchChoicesForMatch(choices: Availability, condition: number) {
         return Availability.AVAILABLE;
     }
 
-    if (choices.maybeAvailable.some((day) => condition === day)) {
+    if (choices.maybe_available.some((day) => condition === day)) {
         return Availability.MAYBE_AVAILABLE;
     }
 
-    if (choices.notAvailable.some((day) => condition === day)) {
+    if (choices.unavailable.some((day) => condition === day)) {
         return Availability.NOT_AVAILABLE;
     }
 
@@ -235,8 +237,13 @@ function eventReducer(state: EventState, action: EventActions) {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
-            const newCurrentDate = transformISO_8601ToCurrentDate(event.time);
+            // ToDo: pipe
+            const eventParamDate = decodeEventParamDate(event.time);
+            const dayJsDate = eventDateToDate(eventParamDate);
+            const newCurrentDate = transformDayJsToCurrentDate(dayJsDate);
             const maxMonthDay = getLastDayOfMonth(newCurrentDate);
+
+            console.log(newCurrentDate);
 
             clone.event.name = event.eventName;
             clone.calendarDate = newCurrentDate;
@@ -304,7 +311,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         async function initEventCalendar() {
             const { month, year } = getCurrentDate();
             const searchParams = new URLSearchParams({
-                date: `${month}-${year}`,
+                date: encodeEventParamDate(month, year),
             });
 
             try {
@@ -315,7 +322,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     },
                 );
 
-                const [event] = (await response.json()) as EventResponse[];
+                const event = (await response.json()) as EventResponse;
 
                 eventDispatch({
                     type: "SET_CHOICES",

@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
+import { postgres } from "~/services/postgres";
+
+type EventsResponse = {
+    id: number;
+    name: string;
+    owner_id: number;
+};
 
 export async function GET() {
-    const response = await new Promise((resolve) => {
-        resolve([
-            { id: 1, name: "DnD" },
-            { id: 2, name: "Divinity" },
-        ]);
-    });
+    const rows = await postgres<EventsResponse[]>`
+        SELECT id, name, owner_id FROM event.events;
+    `;
 
-    return NextResponse.json(response);
+    return NextResponse.json(rows);
 }

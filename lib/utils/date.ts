@@ -78,13 +78,17 @@ export function transformDayJsToCurrentDate(
     };
 }
 
-export function transformISO_8601ToCurrentDate(iso: string): CurrentDate {
-    const date = dayjs(iso);
-    return {
-        day: date.date(),
-        month: date.month(),
-        year: date.year(),
-    };
+// export function transformISO_8601ToCurrentDate(iso: string): CurrentDate {
+//     const date = dayjs(iso);
+//     return {
+//         day: date.date(),
+//         month: date.month(),
+//         year: date.year(),
+//     };
+// }
+
+export function eventDateToDate([month, year]: readonly [string, string]) {
+    return dayjs(`${year}-${parseInt(month) + 1}-${1}`);
 }
 
 export function getNextMonthDate(currentDate: CurrentDate): CurrentDate {

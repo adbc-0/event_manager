@@ -8,7 +8,7 @@ type PageProps = {
     searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default async function Page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
     const { id: eventId } = params;
 
     return (
