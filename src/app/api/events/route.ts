@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { postgres } from "~/services/postgres";
 
 type EventsResponse = {

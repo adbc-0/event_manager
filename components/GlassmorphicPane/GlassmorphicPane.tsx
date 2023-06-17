@@ -2,11 +2,6 @@ import { twMerge } from "tailwind-merge";
 
 import { ReactProps } from "~/typescript";
 
-// React.DetailedHTMLProps<
-//     React.HTMLAttributes<HTMLDivElement>,
-//     HTMLDivElement
-// >
-
 type GlassmorphicPaneProps = ReactProps & {
     innerClassName?: string;
     outerClassName?: string;
