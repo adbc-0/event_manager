@@ -8,7 +8,11 @@ import {
     useReducer,
 } from "react";
 
-import { AvailabilityEnum, AvailabilityEnumType } from "~/constants";
+import {
+    AvailabilityEnum,
+    AvailabilityEnumType,
+    EventActionEnum,
+} from "~/constants";
 import {
     MonthDay,
     createMonthDays,
@@ -35,7 +39,7 @@ type DayAvailability = {
 type EmptyDays = Record<number, DayAvailability[]>;
 type OwnAvailability = Record<string, AvailabilityEnumType>;
 type AllAvailability = Record<string, { [k: string]: AvailabilityEnumType }>;
-type Event = {
+type EventBasicDetails = {
     name: string | null;
 };
 type MonthChunk = {
@@ -47,7 +51,7 @@ type EventState = {
     allChoices: AllAvailability;
     allChoicesBackup: AllAvailability;
     calendarDate: CurrentDate;
-    event: Event;
+    event: EventBasicDetails;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
 };
@@ -56,28 +60,28 @@ type EventProviderReturn = EventState & {
     getCurrentMonthInChunks: () => MonthChunk[];
 };
 type UsernameChangeRecalculateAction = {
-    type: "USER_CHANGE_RECALCULATION";
+    type: (typeof EventActionEnum)["USER_CHANGE_RECALCULATION"];
     payload: {
         username: string;
         allChoices: AllUsersAvailabilityChoices;
     };
 };
 type DaySelectAction = {
-    type: "DAY_SELECT";
+    type: (typeof EventActionEnum)["DAY_SELECT"];
     payload: {
         selectedDay: number;
         username: string | undefined;
     };
 };
 type ResetChoicesAction = {
-    type: "RESET_CHOICES";
+    type: (typeof EventActionEnum)["RESET_CHOICES"];
 };
 type OverwriteBackupAction = {
-    type: "OVERWRITE_BACKUP";
+    type: (typeof EventActionEnum)["OVERWRITE_BACKUP"];
     payload: OwnAvailability;
 };
 type SetChoicesAction = {
-    type: "SET_CHOICES";
+    type: (typeof EventActionEnum)["SET_CHOICES"];
     payload: {
         event: EventResponse;
         username: string | undefined;
@@ -207,7 +211,7 @@ function parseAllChoices(
 
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
-        case "USER_CHANGE_RECALCULATION": {
+        case EventActionEnum.USER_CHANGE_RECALCULATION: {
             const clone = structuredClone(state);
             const maxMonthDay = getLastDayOfMonth(state.calendarDate);
 
@@ -231,7 +235,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return state;
         }
-        case "SET_CHOICES": {
+        case EventActionEnum.SET_CHOICES: {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
@@ -255,7 +259,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
-        case "DAY_SELECT": {
+        case EventActionEnum.DAY_SELECT: {
             const clone = structuredClone(state);
             const { selectedDay, username } = action.payload;
             if (!username) {
@@ -271,7 +275,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
-        case "OVERWRITE_BACKUP": {
+        case EventActionEnum.OVERWRITE_BACKUP: {
             const clone = structuredClone(state);
 
             clone.allChoicesBackup = state.allChoices;
@@ -279,7 +283,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
-        case "RESET_CHOICES": {
+        case EventActionEnum.RESET_CHOICES: {
             const clone = structuredClone(state);
 
             clone.allChoices = state.allChoicesBackup;
@@ -321,7 +325,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 const event = (await response.json()) as EventResponse;
 
                 eventDispatch({
-                    type: "SET_CHOICES",
+                    type: EventActionEnum.SET_CHOICES,
                     payload: {
                         event,
                         username,

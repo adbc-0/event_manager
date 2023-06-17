@@ -1,6 +1,7 @@
 import { startTransition } from "react";
 import { useParams } from "next/navigation";
 
+import { EventActionEnum } from "~/constants";
 import { changeAvailability } from "~/api/events/[id]/actions";
 import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
@@ -21,7 +22,7 @@ export function DialogControl() {
     };
 
     const onResetClick = () => {
-        eventDispatch({ type: "RESET_CHOICES" });
+        eventDispatch({ type: EventActionEnum.RESET_CHOICES });
     };
 
     if (!isDirty) {

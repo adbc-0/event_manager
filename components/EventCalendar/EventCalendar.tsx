@@ -2,7 +2,11 @@
 
 import { useParams } from "next/navigation";
 
-import { AvailabilityEnum, AvailabilityEnumType } from "~/constants";
+import {
+    AvailabilityEnum,
+    AvailabilityEnumType,
+    EventActionEnum,
+} from "~/constants";
 import {
     MonthDay,
     getCurrentDate,
@@ -16,6 +20,17 @@ import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { EventResponse } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumType>;
+
+const DayColorTypeEnum = {
+    MY_AVAILABLE: "MY_AVAILABLE",
+    MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
+    UNAVAILABLE: "UNAVAILABLE",
+    ALL_SELECTED: "ALL_SELECTED",
+    DIFFERENT_MONTH: "DIFFERENT_MONTH",
+    TODAY: "TODAY",
+    UNSELECTED: "UNSELECTED",
+} as const;
+
 type DayColorType =
     | "MY_AVAILABLE"
     | "MAYBE_AVAILABLE"
@@ -61,11 +76,10 @@ const dayColor: Record<DayColorType, string> = {
     UNSELECTED: "hover:bg-white/10",
 } as const;
 
-// Create constants for DayColorType
 const ownAvailabilityChoice: Record<AvailabilityEnumType, DayColorType> = {
-    [AvailabilityEnum.AVAILABLE]: "MY_AVAILABLE",
-    [AvailabilityEnum.MAYBE_AVAILABLE]: "MAYBE_AVAILABLE",
-    [AvailabilityEnum.UNAVAILABLE]: "UNAVAILABLE",
+    [AvailabilityEnum.AVAILABLE]: DayColorTypeEnum.MY_AVAILABLE,
+    [AvailabilityEnum.MAYBE_AVAILABLE]: DayColorTypeEnum.MAYBE_AVAILABLE,
+    [AvailabilityEnum.UNAVAILABLE]: DayColorTypeEnum.UNAVAILABLE,
 } as const;
 
 function isToday(monthDay: MonthDay) {
@@ -97,18 +111,18 @@ function getColorType(
     ownChoice: AvailabilityEnumType,
 ): DayColorType {
     if (selectedMonth !== day.month) {
-        return "DIFFERENT_MONTH";
+        return DayColorTypeEnum.DIFFERENT_MONTH;
     }
     if (areAllAvailable(allChoices)) {
-        return "ALL_SELECTED";
+        return DayColorTypeEnum.ALL_SELECTED;
     }
     if (ownAvailabilityChoice[ownChoice]) {
         return ownAvailabilityChoice[ownChoice];
     }
     if (isToday(day)) {
-        return "TODAY";
+        return DayColorTypeEnum.TODAY;
     }
-    return "UNSELECTED";
+    return DayColorTypeEnum.UNSELECTED;
 }
 
 const trimWeekday = pipe(truncateString(3), capitalize);
@@ -137,6 +151,7 @@ export function EventCalendar() {
     const onPrevMonthClick = async () => {
         const newDate = getPrevMonthDate(calendarDate);
 
+        // ToDo: add to every fetch call abortController
         async function initEventCalendar() {
             const { month, year } = newDate;
             const searchParams = new URLSearchParams({
@@ -147,7 +162,7 @@ export function EventCalendar() {
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
-                type: "SET_CHOICES",
+                type: EventActionEnum.SET_CHOICES,
                 payload: {
                     event,
                     username,
@@ -172,7 +187,7 @@ export function EventCalendar() {
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
-                type: "SET_CHOICES",
+                type: EventActionEnum.SET_CHOICES,
                 payload: {
                     event,
                     username,
@@ -193,7 +208,7 @@ export function EventCalendar() {
         }
 
         eventDispatch({
-            type: "DAY_SELECT",
+            type: EventActionEnum.DAY_SELECT,
             payload: { selectedDay: day, username },
         });
     };

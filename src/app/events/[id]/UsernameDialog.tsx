@@ -1,5 +1,6 @@
 import { FormEvent, forwardRef, useRef } from "react";
 
+import { EventActionEnum } from "~/constants";
 import { useEvent } from "~/context/EventProvider";
 import { useSsc } from "~/hooks/use-ssc";
 import { useAuth } from "~/hooks/use-auth";
@@ -54,7 +55,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
             }
 
             setUsername(newUsername);
-            eventDispatch({ type: "RESET_CHOICES" });
+            eventDispatch({ type: EventActionEnum.RESET_CHOICES });
         };
 
         return (
