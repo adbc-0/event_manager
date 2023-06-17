@@ -22,11 +22,11 @@
         "paths": {
             "~/*": ["./src/*"],
             "~/components/*": ["./components/*"],
-            "~/hooks/*": ["./lib/hooks/*"],
-            "~/utils/*": ["./lib/utils/*"],
             "~/context/*": ["./lib/context/*"],
+            "~/hooks/*": ["./lib/hooks/*"],
+            "~/services/*": ["./lib/services/*"],
+            "~/utils/*": ["./lib/utils/*"],
             "~/public/*": ["./public/*"],
-            "~/services/*": ["./services/*"],
             "~/api/*": ["./src/app/api/*"],
             "~/typescript": ["./typescript"]
         }
