@@ -241,7 +241,6 @@ function eventReducer(state: EventState, action: EventActions) {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
-            // ToDo: pipe
             const eventParamDate = decodeEventParamDate(event.time);
             const dayJsDate = eventDateToDate(eventParamDate);
             const newCurrentDate = transformDayJsToCurrentDate(dayJsDate);
