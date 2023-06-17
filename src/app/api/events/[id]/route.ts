@@ -6,7 +6,7 @@ import {
     validateEventParamDate,
 } from "~/utils/eventUtils";
 import { groupBy } from "~/utils/utils";
-import { HashId } from "../../../../../typescript";
+import { HashId } from "~/typescript";
 
 type Event = {
     event_id: HashId;

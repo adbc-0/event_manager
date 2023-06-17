@@ -27,7 +27,8 @@
             "~/context/*": ["./lib/context/*"],
             "~/public/*": ["./public/*"],
             "~/services/*": ["./services/*"],
-            "~/api/*": ["./src/app/api/*"]
+            "~/api/*": ["./src/app/api/*"],
+            "~/typescript": ["./typescript"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

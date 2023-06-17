@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import { ReactProps } from "../../typescript";
+import { ReactProps } from "~/typescript";
 
 // React.DetailedHTMLProps<
 //     React.HTMLAttributes<HTMLDivElement>,

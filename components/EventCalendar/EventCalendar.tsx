@@ -12,7 +12,7 @@ import { capitalize, truncateString, pipe } from "~/utils/utils";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
-import { Availability, EventResponse } from "../../typescript";
+import { Availability, EventResponse } from "~/typescript";
 
 const Availability = {
     MAYBE_AVAILABLE: "MAYBE_AVAILABLE",

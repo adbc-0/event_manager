@@ -8,13 +8,6 @@ import {
     useReducer,
 } from "react";
 import {
-    AllUsersAvailabilityChoices,
-    Availability,
-    CurrentDate,
-    EventResponse,
-    ReactProps,
-} from "../../typescript";
-import {
     MonthDay,
     createMonthDays,
     eventDateToDate,
@@ -25,6 +18,13 @@ import {
 import { chunks } from "~/utils/utils";
 import { useAuth } from "~/hooks/use-auth";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
+import {
+    AllUsersAvailabilityChoices,
+    Availability,
+    CurrentDate,
+    EventResponse,
+    ReactProps,
+} from "~/typescript";
 
 const Availability = {
     MAYBE_AVAILABLE: "MAYBE_AVAILABLE",

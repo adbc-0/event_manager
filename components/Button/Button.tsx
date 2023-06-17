@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 
-import { ReactProps } from "../../typescript";
+import { ReactProps } from "~/typescript";
 
 type ButtonTheme = "DISCARD" | "SAVE" | "BASIC";
 type ButtonProps = React.DetailedHTMLProps<

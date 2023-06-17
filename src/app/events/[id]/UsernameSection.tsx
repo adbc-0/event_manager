@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import editIcon from "~/public/edit.svg";
 import { useAuth } from "~/hooks/use-auth";
-import { ReactProps } from "../../../../typescript";
 import { Button } from "~/components/Button/Button";
+import { ReactProps } from "~/typescript";
 
 type UsernameSectionProps = ReactProps & {
     openModal: () => void;

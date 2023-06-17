@@ -5,7 +5,7 @@ import { useSsc } from "~/hooks/use-ssc";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
-import { ReactProps } from "../../../../typescript";
+import { ReactProps } from "~/typescript";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
