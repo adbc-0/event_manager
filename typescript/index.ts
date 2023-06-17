@@ -7,7 +7,7 @@ export type ReactProps = {
 };
 export type HashId = string;
 
-// Typing for div html node
+// Typings for div html node
 // React.DetailedHTMLProps<
 //     React.HTMLAttributes<HTMLDivElement>,
 //     HTMLDivElement
