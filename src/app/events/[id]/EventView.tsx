@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 
-// ToDo: ~create alias~
-import { useEvent } from "../../../../lib/context/EventProvider";
+import { useEvent } from "~/context/EventProvider";
 import EventCalendar from "~/components/EventCalendar/EventCalendar";
 import { UsernameSection } from "./UsernameSection";
 import { UsernameDialog } from "./UsernameDialog";

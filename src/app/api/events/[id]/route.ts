@@ -1,26 +1,29 @@
 import { NextResponse } from "next/server";
 
 import { postgres } from "~/services/postgres";
-import { decodeEventParamDate, validateEventParamDate } from "~/utils/eventUtils";
+import {
+    decodeEventParamDate,
+    validateEventParamDate,
+} from "~/utils/eventUtils";
 import { groupBy } from "~/utils/utils";
 import { HashId } from "../../../../../typescript";
 
 type Event = {
-    event_id: HashId,
+    event_id: HashId;
     name: string;
     owner_id: HashId;
     month_id: number;
     month: number;
-}
+};
 
 // ToDo: Export event related code to event related files
-type Choice = 'available' | 'unavailable' | 'maybe_available';
+type Choice = "available" | "unavailable" | "maybe_available";
 
 type Availability = {
     day: string;
     choice: Choice;
     user_id: HashId;
-}
+};
 
 type RouteParams = {
     id: string;
@@ -88,32 +91,43 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     type GroupedAvailability = {
         [k: string]: {
-            [k in Choice]: Availability[]
+            [k in Choice]: Availability[];
         };
     };
 
     // ToDo: Tidy Up
-    const userGrouped = groupBy(availabilityRows, (predicate) => predicate.user_id.toString());
-    const availabilityGrouped = Object.entries(userGrouped).reduce((prev, [k, v]) => {
-        prev[k] = groupBy(v, (predicate) => predicate.choice) as Record<Choice, Availability[]>;
-        return prev;
-    }, {} as GroupedAvailability);
+    const userGrouped = groupBy(availabilityRows, (predicate) =>
+        predicate.user_id.toString(),
+    );
+    const availabilityGrouped = Object.entries(userGrouped).reduce(
+        (prev, [k, v]) => {
+            prev[k] = groupBy(v, (predicate) => predicate.choice) as Record<
+                Choice,
+                Availability[]
+            >;
+            return prev;
+        },
+        {} as GroupedAvailability,
+    );
 
-    const nonEmptyAvailabilities = Object.keys(availabilityGrouped).reduce((prev, k) => {
-        const userData = prev[k];
-        console.log(userData, k, availabilityGrouped);
-        if (!('available' in userData)) {
-            prev[k].available = [];
-        }
-        if (!('unavailable' in userData)) {
-            prev[k].unavailable = [];
-        }
-        if (!('maybe_available' in userData)) {
-            prev[k].maybe_available = [];
-        }
-        
-        return prev;
-    }, availabilityGrouped);
+    const nonEmptyAvailabilities = Object.keys(availabilityGrouped).reduce(
+        (prev, k) => {
+            const userData = prev[k];
+            console.log(userData, k, availabilityGrouped);
+            if (!("available" in userData)) {
+                prev[k].available = [];
+            }
+            if (!("unavailable" in userData)) {
+                prev[k].unavailable = [];
+            }
+            if (!("maybe_available" in userData)) {
+                prev[k].maybe_available = [];
+            }
+
+            return prev;
+        },
+        availabilityGrouped,
+    );
 
     // can this be written recurseively?
     const cleanUpGroupedChoices = (choices: GroupedAvailability) => {
@@ -122,9 +136,9 @@ export async function GET(request: Request, { params }: RequestParams) {
             Object.entries(clone[c]).forEach(([k, v]) => {
                 clone[c][k] = v.map(({ day }) => day);
             });
-        })
+        });
         return clone;
-    }
+    };
 
     const r = cleanUpGroupedChoices(nonEmptyAvailabilities);
 

@@ -1,8 +1,8 @@
 import { startTransition } from "react";
 import { useParams } from "next/navigation";
 
-import { changeAvailability } from "~/app/api/events/[id]/actions";
-import { useEvent } from "../../../../lib/context/EventProvider";
+import { changeAvailability } from "~/api/events/[id]/actions";
+import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
 
 export function DialogControl() {

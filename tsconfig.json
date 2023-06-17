@@ -24,8 +24,10 @@
             "~/components/*": ["./components/*"],
             "~/hooks/*": ["./lib/hooks/*"],
             "~/utils/*": ["./lib/utils/*"],
+            "~/context/*": ["./lib/context/*"],
             "~/public/*": ["./public/*"],
-            "~/services/*": ["./services/*"]
+            "~/services/*": ["./services/*"],
+            "~/api/*": ["./src/app/api/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

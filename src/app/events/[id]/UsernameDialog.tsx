@@ -1,6 +1,6 @@
 import { FormEvent, forwardRef, useRef } from "react";
 
-import { useEvent } from "../../../../lib/context/EventProvider";
+import { useEvent } from "~/context/EventProvider";
 import { useSsc } from "~/hooks/use-ssc";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";

@@ -9,7 +9,7 @@ import {
     getPrevMonthDate,
 } from "~/utils/date";
 import { capitalize, truncateString, pipe } from "~/utils/utils";
-import { useEvent } from "../../lib/context/EventProvider";
+import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { Availability, EventResponse } from "../../typescript";
