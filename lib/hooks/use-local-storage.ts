@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { LocalStorageKeys } from "~/utils/constants";
+import { LocalStorageKeys } from "~/constants";
 import { Nullable, Values } from "~/typescript";
 
 type StorageKey = Values<typeof LocalStorageKeys>;

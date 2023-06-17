@@ -1,10 +1,10 @@
-export type Availability = {
+export type AvailabilityChoices = {
     available: number[];
     unavailable: number[];
     maybe_available: number[];
 };
 export type AllUsersAvailabilityChoices = {
-    [key: string]: Availability;
+    [key: string]: AvailabilityChoices;
 };
 export type EventResponse = {
     eventName: string;

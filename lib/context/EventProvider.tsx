@@ -7,6 +7,8 @@ import {
     useMemo,
     useReducer,
 } from "react";
+
+import { AvailabilityEnum, AvailabilityEnumType } from "~/constants";
 import {
     MonthDay,
     createMonthDays,
@@ -20,26 +22,19 @@ import { useAuth } from "~/hooks/use-auth";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
     AllUsersAvailabilityChoices,
-    Availability,
+    AvailabilityChoices,
     CurrentDate,
     EventResponse,
     ReactProps,
 } from "~/typescript";
 
-const Availability = {
-    MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
-    NOT_AVAILABLE: "NOT_AVAILABLE",
-    AVAILABLE: "AVAILABLE",
-} as const;
-
-type AvailabilityEnum = keyof typeof Availability;
 type DayAvailability = {
     user: string;
     choice: string;
 };
 type EmptyDays = Record<number, DayAvailability[]>;
-type OwnAvailability = Record<string, AvailabilityEnum>;
-type AllAvailability = Record<string, { [k: string]: AvailabilityEnum }>;
+type OwnAvailability = Record<string, AvailabilityEnumType>;
+type AllAvailability = Record<string, { [k: string]: AvailabilityEnumType }>;
 type Event = {
     name: string | null;
 };
@@ -132,15 +127,15 @@ export function useEvent() {
 }
 
 function getNextChoice(currentChoice: string) {
-    if (currentChoice === Availability.AVAILABLE) {
-        return Availability.MAYBE_AVAILABLE;
+    if (currentChoice === AvailabilityEnum.AVAILABLE) {
+        return AvailabilityEnum.MAYBE_AVAILABLE;
     }
 
-    if (currentChoice === Availability.MAYBE_AVAILABLE) {
-        return Availability.NOT_AVAILABLE;
+    if (currentChoice === AvailabilityEnum.MAYBE_AVAILABLE) {
+        return AvailabilityEnum.UNAVAILABLE;
     }
 
-    return Availability.AVAILABLE;
+    return AvailabilityEnum.AVAILABLE;
 }
 
 function createEmptyDays(daysInMonth = 0): EmptyDays {
@@ -150,24 +145,27 @@ function createEmptyDays(daysInMonth = 0): EmptyDays {
     );
 }
 
-function searchChoicesForMatch(choices: Availability, condition: number) {
+function searchChoicesForMatch(
+    choices: AvailabilityChoices,
+    condition: number,
+) {
     if (choices.available.some((day) => condition === day)) {
-        return Availability.AVAILABLE;
+        return AvailabilityEnum.AVAILABLE;
     }
 
     if (choices.maybe_available.some((day) => condition === day)) {
-        return Availability.MAYBE_AVAILABLE;
+        return AvailabilityEnum.MAYBE_AVAILABLE;
     }
 
     if (choices.unavailable.some((day) => condition === day)) {
-        return Availability.NOT_AVAILABLE;
+        return AvailabilityEnum.UNAVAILABLE;
     }
 
     return null;
 }
 
 // fixable with currying and checking before if choices exists
-function parseOwnChoices(choices: Availability, maxMonthDay: number) {
+function parseOwnChoices(choices: AvailabilityChoices, maxMonthDay: number) {
     if (!choices) {
         return {};
     }
@@ -242,8 +240,6 @@ function eventReducer(state: EventState, action: EventActions) {
             const dayJsDate = eventDateToDate(eventParamDate);
             const newCurrentDate = transformDayJsToCurrentDate(dayJsDate);
             const maxMonthDay = getLastDayOfMonth(newCurrentDate);
-
-            console.log(newCurrentDate);
 
             clone.event.name = event.eventName;
             clone.calendarDate = newCurrentDate;

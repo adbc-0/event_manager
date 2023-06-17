@@ -113,7 +113,6 @@ export async function GET(request: Request, { params }: RequestParams) {
     const nonEmptyAvailabilities = Object.keys(availabilityGrouped).reduce(
         (prev, k) => {
             const userData = prev[k];
-            console.log(userData, k, availabilityGrouped);
             if (!("available" in userData)) {
                 prev[k].available = [];
             }

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 
 import { useEvent } from "~/context/EventProvider";
-import EventCalendar from "~/components/EventCalendar/EventCalendar";
+import { EventCalendar } from "~/components/EventCalendar/EventCalendar";
 import { UsernameSection } from "./UsernameSection";
 import { UsernameDialog } from "./UsernameDialog";
 import { DialogControl } from "./DialogControl";

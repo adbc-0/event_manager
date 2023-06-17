@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 
+import { AvailabilityEnum, AvailabilityEnumType } from "~/constants";
 import {
     MonthDay,
     getCurrentDate,
@@ -12,26 +13,19 @@ import { capitalize, truncateString, pipe } from "~/utils/utils";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
-import { Availability, EventResponse } from "~/typescript";
+import { EventResponse } from "~/typescript";
 
-const Availability = {
-    MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
-    NOT_AVAILABLE: "NOT_AVAILABLE",
-    AVAILABLE: "AVAILABLE",
-} as const;
-
-type AvailabilityEnum = keyof typeof Availability;
-type OwnAvailability = Record<string, AvailabilityEnum>;
+type OwnAvailability = Record<string, AvailabilityEnumType>;
 type DayColorType =
     | "MY_AVAILABLE"
     | "MAYBE_AVAILABLE"
-    | "NOT_AVAILABLE"
+    | "UNAVAILABLE"
     | "ALL_SELECTED"
     | "DIFFERENT_MONTH"
     | "TODAY"
     | "UNSELECTED";
 
-export const WEEKDAYS = [
+const WEEKDAYS = [
     "monday",
     "tuesday",
     "wednesday",
@@ -41,7 +35,7 @@ export const WEEKDAYS = [
     "sunday",
 ] as const;
 
-export const MONTHS = [
+const MONTHS = [
     "january",
     "february",
     "march",
@@ -62,23 +56,24 @@ const dayColor: Record<DayColorType, string> = {
     DIFFERENT_MONTH: "opacity-50",
     MAYBE_AVAILABLE: "bg-orange-400 hover:bg-orange-400/80 text-neutral-800",
     MY_AVAILABLE: "bg-green-400 hover:bg-green-400/80 text-neutral-800",
-    NOT_AVAILABLE: "bg-rose-400 hover:bg-rose-400/80 text-neutral-800",
+    UNAVAILABLE: "bg-rose-400 hover:bg-rose-400/80 text-neutral-800",
     TODAY: "bg-white/10",
     UNSELECTED: "hover:bg-white/10",
 } as const;
 
-const ownAvailabilityChoice: Record<AvailabilityEnum, DayColorType> = {
-    [Availability.AVAILABLE]: "MY_AVAILABLE",
-    [Availability.MAYBE_AVAILABLE]: "MAYBE_AVAILABLE",
-    [Availability.NOT_AVAILABLE]: "NOT_AVAILABLE",
+// Create constants for DayColorType
+const ownAvailabilityChoice: Record<AvailabilityEnumType, DayColorType> = {
+    [AvailabilityEnum.AVAILABLE]: "MY_AVAILABLE",
+    [AvailabilityEnum.MAYBE_AVAILABLE]: "MAYBE_AVAILABLE",
+    [AvailabilityEnum.UNAVAILABLE]: "UNAVAILABLE",
 } as const;
 
-function isToday(day: MonthDay) {
+function isToday(monthDay: MonthDay) {
     const currentDate = getCurrentDate();
     return (
-        day.day === currentDate.day &&
-        day.month === currentDate.month &&
-        day.year === currentDate.year
+        monthDay.day === currentDate.day &&
+        monthDay.month === currentDate.month &&
+        monthDay.year === currentDate.year
     );
 }
 
@@ -88,7 +83,7 @@ function areAllAvailable(choices: OwnAvailability) {
         return false;
     }
 
-    return choicesList.every((choice) => choice === Availability.AVAILABLE);
+    return choicesList.every((choice) => choice === AvailabilityEnum.AVAILABLE);
 }
 
 // function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
@@ -99,7 +94,7 @@ function getColorType(
     day: MonthDay,
     selectedMonth: number,
     allChoices: OwnAvailability,
-    ownChoice: AvailabilityEnum,
+    ownChoice: AvailabilityEnumType,
 ): DayColorType {
     if (selectedMonth !== day.month) {
         return "DIFFERENT_MONTH";
@@ -124,7 +119,7 @@ const trimWeekday = pipe(truncateString(3), capitalize);
 // ToDo: dont have to show own choice bubble
 // ToDo: dont have to show bubbles on matched days
 // ToDo: Add list view
-export default function EventCalendar() {
+export function EventCalendar() {
     const { id: eventId } = useParams();
     if (!eventId) {
         throw new Error("Missing event url param");

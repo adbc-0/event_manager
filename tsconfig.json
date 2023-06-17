@@ -25,6 +25,7 @@
             "~/context/*": ["./lib/context/*"],
             "~/hooks/*": ["./lib/hooks/*"],
             "~/services/*": ["./lib/services/*"],
+            "~/constants": ["./lib/constants/constants"],
             "~/utils/*": ["./lib/utils/*"],
             "~/public/*": ["./public/*"],
             "~/api/*": ["./src/app/api/*"],

@@ -1,4 +1,4 @@
-import { LocalStorageKeys } from "~/utils/constants";
+import { LocalStorageKeys } from "~/constants";
 import { useLocalStorage } from "./use-local-storage";
 import { useCallback } from "react";
 
