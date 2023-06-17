@@ -20,8 +20,8 @@ import {
     getCurrentDate,
     getLastDayOfMonth,
     transformDayJsToCurrentDate,
-} from "~/utils/date";
-import { chunks } from "~/utils/utils";
+} from "~/services/dayJsFacade";
+import { chunks } from "~/utils/index";
 import { useAuth } from "~/hooks/use-auth";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {

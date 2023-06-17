@@ -1,7 +1,7 @@
-// facade for dayjs library
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { range } from "./utils";
+
+import { range } from "../utils";
 import { CurrentDate } from "~/typescript";
 
 // eslint-disable-next-line import/no-named-as-default-member

@@ -12,8 +12,8 @@ import {
     getCurrentDate,
     getNextMonthDate,
     getPrevMonthDate,
-} from "~/utils/date";
-import { capitalize, truncateString, pipe } from "~/utils/utils";
+} from "~/services/dayJsFacade";
+import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";

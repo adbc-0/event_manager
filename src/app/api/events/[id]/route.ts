@@ -5,7 +5,7 @@ import {
     decodeEventParamDate,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { groupBy } from "~/utils/utils";
+import { groupBy } from "~/utils/index";
 import { HashId } from "~/typescript";
 
 type Event = {
