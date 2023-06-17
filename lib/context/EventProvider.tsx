@@ -54,6 +54,7 @@ type EventState = {
     event: EventBasicDetails;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
+    usersCount: number;
 };
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
@@ -81,7 +82,7 @@ type OverwriteBackupAction = {
     payload: OwnAvailability;
 };
 type SetChoicesAction = {
-    type: (typeof EventActionEnum)["SET_CHOICES"];
+    type: (typeof EventActionEnum)["LOAD_CHOICES"];
     payload: {
         event: EventResponse;
         username: string | undefined;
@@ -109,6 +110,7 @@ const nilCalendarReducer: EventState = {
     isDirty: false,
     ownChoices: {},
     ownChoicesBackup: {},
+    usersCount: 0,
 } as const;
 
 const EventContext = createContext<EventProviderReturn>({
@@ -235,7 +237,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return state;
         }
-        case EventActionEnum.SET_CHOICES: {
+        case EventActionEnum.LOAD_CHOICES: {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
@@ -255,6 +257,7 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoicesBackup = username
                 ? parseOwnChoices(event.users[username], maxMonthDay)
                 : {};
+            clone.usersCount = Object.keys(event.users).length;
             clone.isDirty = false;
 
             return clone;
@@ -325,7 +328,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 const event = (await response.json()) as EventResponse;
 
                 eventDispatch({
-                    type: EventActionEnum.SET_CHOICES,
+                    type: EventActionEnum.LOAD_CHOICES,
                     payload: {
                         event,
                         username,

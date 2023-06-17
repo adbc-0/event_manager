@@ -91,9 +91,12 @@ function isToday(monthDay: MonthDay) {
     );
 }
 
-function areAllAvailable(choices: OwnAvailability) {
+function areAllAvailable(choices: OwnAvailability, usersCount: number) {
     const choicesList = Object.values(choices);
     if (!choicesList.length) {
+        return false;
+    }
+    if (choicesList.length !== usersCount) {
         return false;
     }
 
@@ -107,13 +110,14 @@ function areAllAvailable(choices: OwnAvailability) {
 function getColorType(
     day: MonthDay,
     selectedMonth: number,
+    usersCount: number,
     allChoices: OwnAvailability,
     ownChoice: AvailabilityEnumType,
 ): DayColorType {
     if (selectedMonth !== day.month) {
         return DayColorTypeEnum.DIFFERENT_MONTH;
     }
-    if (areAllAvailable(allChoices)) {
+    if (areAllAvailable(allChoices, usersCount)) {
         return DayColorTypeEnum.ALL_SELECTED;
     }
     if (ownAvailabilityChoice[ownChoice]) {
@@ -144,6 +148,7 @@ export function EventCalendar() {
         allChoices,
         ownChoices,
         calendarDate,
+        usersCount,
         getCurrentMonthInChunks,
         eventDispatch,
     } = useEvent();
@@ -162,7 +167,7 @@ export function EventCalendar() {
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
-                type: EventActionEnum.SET_CHOICES,
+                type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
                     username,
@@ -187,7 +192,7 @@ export function EventCalendar() {
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
-                type: EventActionEnum.SET_CHOICES,
+                type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
                     username,
@@ -270,9 +275,11 @@ export function EventCalendar() {
                                                         }
                                                         ${
                                                             dayColor[
+                                                                // ToDo: Pass the whole event
                                                                 getColorType(
                                                                     dayData,
                                                                     calendarDate.month,
+                                                                    usersCount,
                                                                     allChoices[
                                                                         dayData
                                                                             .day
