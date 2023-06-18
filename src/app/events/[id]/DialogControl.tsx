@@ -12,11 +12,11 @@ export function DialogControl() {
         throw new Error("Missing event url param");
     }
 
-    const { isDirty, ownChoices, eventDispatch } = useEvent();
+    const { isDirty, ownChoices, calendarDate, eventDispatch } = useEvent();
 
     const onSubmitClick = () => {
         startTransition(() => {
-            changeAvailability(eventId, ownChoices);
+            changeAvailability(ownChoices, eventId, 1, calendarDate.month);
         });
         // setIsDirty(false);
     };
