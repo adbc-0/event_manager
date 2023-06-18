@@ -16,10 +16,10 @@ export async function DeleteEvent(eventId: string) {
 
 const newEventSchema = z.object({
     owner_id: z.number(),
-    event_name: z.string(),
+    event_name: z.string().trim().min(1).max(80),
 });
 
-type NewEventSchema = z.infer<typeof newEventSchema>;
+type NewEventSchema = Partial<z.infer<typeof newEventSchema>>;
 
 export async function addEvent(newEvent: NewEventSchema) {
     const payload = newEventSchema.parse(newEvent);
@@ -28,11 +28,6 @@ export async function addEvent(newEvent: NewEventSchema) {
         INSERT INTO event.events (name, owner_id)
         VALUES (${payload.event_name}, ${payload.owner_id});
     `;
+
     revalidatePath(`/events`);
 }
-
-// export async function PutEvent(eventId: string, day: Record<string, string>) {
-//     // make change to the db
-//     await new Promise((r) => r(day));
-//     revalidatePath(`/events`);
-// }

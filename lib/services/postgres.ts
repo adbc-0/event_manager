@@ -1,6 +1,8 @@
 import { default as postgresConnect } from "postgres";
 
 const postgressBaseConfig = {
+    idle_timeout: 10,
+    max_lifetime: 60 * 30,
     host: process.env.POSTGRES_HOST,
     port: 5432,
     database: process.env.POSTGRES_DATABASE,

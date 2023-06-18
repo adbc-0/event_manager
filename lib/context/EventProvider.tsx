@@ -7,6 +7,7 @@ import {
     useMemo,
     useReducer,
 } from "react";
+import { useRouter } from "next/navigation";
 
 import {
     AvailabilityEnum,
@@ -21,13 +22,14 @@ import {
     getLastDayOfMonth,
     transformDayJsToCurrentDate,
 } from "~/services/dayJsFacade";
-import { chunks } from "~/utils/index";
+import { ServerError, chunks } from "~/utils/index";
 import { useAuth } from "~/hooks/use-auth";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
     AllUsersAvailabilityChoices,
     AvailabilityChoices,
     CurrentDate,
+    ErrorMessage,
     EventResponse,
     ReactProps,
 } from "~/typescript";
@@ -300,6 +302,7 @@ function eventReducer(state: EventState, action: EventActions) {
 }
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
+    const { replace } = useRouter();
     const { username } = useAuth();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
@@ -324,6 +327,17 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     },
                 );
 
+                if (!response.ok) {
+                    const error = (await response.json()) as ErrorMessage;
+                    if (!error.message) {
+                        throw new ServerError(
+                            "error unhandled by server",
+                            response.status,
+                        );
+                    }
+                    throw new ServerError(error.message, response.status);
+                }
+
                 const event = (await response.json()) as EventResponse;
 
                 eventDispatch({
@@ -335,10 +349,16 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 });
             } catch (exception) {
                 if (!(exception instanceof Error)) {
-                    throw new Error("unexpected exception format");
+                    throw new Error("unexpected exception type");
                 }
                 if (exception.name === "AbortError") {
                     return;
+                }
+                if (exception instanceof ServerError) {
+                    if (exception.status === 404) {
+                        replace("/404");
+                    }
+                    throw exception;
                 }
                 throw exception;
             }
@@ -348,7 +368,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         return () => {
             abortController.abort();
         };
-    }, [eventId, username]);
+    }, [eventId, username, replace]);
 
     const getCurrentMonthInChunks = useCallback(() => {
         const monthDaysData = createMonthDays(calendarDate);

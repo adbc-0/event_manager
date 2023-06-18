@@ -8,6 +8,8 @@ type PageProps = {
     searchParams: { [key: string]: string | string[] | undefined };
 };
 
+// ToDo: There is somwhere one additional fetch of calendar. Localize it.
+
 export default function Page({ params }: PageProps) {
     const { id: eventId } = params;
 

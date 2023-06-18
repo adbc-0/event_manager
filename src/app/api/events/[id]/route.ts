@@ -50,7 +50,7 @@ export async function GET(request: Request, { params }: RequestParams) {
         validateEventParamDate(date);
     } catch {
         return NextResponse.json(
-            { message: "Wront event date param format" },
+            { message: "Wrong event date param format" },
             { status: 400 },
         );
     }

@@ -131,11 +131,6 @@ function getColorType(
 
 const trimWeekday = pipe(truncateString(3), capitalize);
 
-// ToDo: prefetch next and prev months
-// ToDo: select all
-// ToDo: clear all selections
-// ToDo: dont have to show own choice bubble
-// ToDo: dont have to show bubbles on matched days
 // ToDo: Add list view
 export function EventCalendar() {
     const { id: eventId } = useParams();

@@ -18,18 +18,23 @@ export function NewEventAction() {
         if (!inputRef.current) {
             throw new Error("Ref not found");
         }
-
         if (!inputRef.current.value) {
             return;
         }
 
-        startTransition(() =>
-            addEvent({
-                owner_id: 1,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                event_name: inputRef.current!.value,
-            }),
-        );
+        startTransition(async () => {
+            try {
+                await addEvent({
+                    owner_id: 1,
+                    event_name: inputRef.current?.value,
+                });
+            } catch (exception) {
+                if (!(exception instanceof Error)) {
+                    throw new Error("unexpected exception type");
+                }
+                throw exception;
+            }
+        });
     };
 
     return (

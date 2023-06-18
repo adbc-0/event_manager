@@ -54,3 +54,14 @@ export const groupBy = <T>(
         (acc[predicate(value, index, array)] ||= []).push(value);
         return acc;
     }, {} as { [key: string]: T[] });
+
+export class ServerError extends Error {
+    status: number;
+
+    constructor(message: string, status: number) {
+        super(message); // 'Error' breaks prototype chain here
+        this.name = "ServerError";
+        this.status = status;
+        Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+    }
+}
