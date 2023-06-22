@@ -8,7 +8,7 @@ import { CurrentDate, OwnAvailability } from "~/typescript";
 export async function changeAvailability(
     eventId: string,
     choices: OwnAvailability,
-    { month, year }: CurrentDate
+    { month, year }: CurrentDate,
 ) {
     // ToDo: I can take user value from localstorage/token
     const ownerId = 1;

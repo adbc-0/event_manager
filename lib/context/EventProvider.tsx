@@ -9,10 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-    AvailabilityEnum,
-    EventActionEnum,
-} from "~/constants";
+import { AvailabilityEnum, EventActionEnum } from "~/constants";
 import {
     MonthDay,
     createMonthDays,
@@ -86,7 +83,7 @@ type SetChoicesAction = {
 };
 type SubmitCleanupAction = {
     type: (typeof EventActionEnum)["SUBMIT_CLEANUP"];
-}
+};
 type EventActions =
     | UsernameChangeRecalculateAction
     | DaySelectAction

@@ -16,12 +16,8 @@ export function DialogControl() {
 
     const onSubmitClick = () => {
         startTransition(() => {
-            changeAvailability(
-                eventId,
-                ownChoices,
-                calendarDate,
-            );
-            eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP })
+            changeAvailability(eventId, ownChoices, calendarDate);
+            eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP });
         });
     };
 
