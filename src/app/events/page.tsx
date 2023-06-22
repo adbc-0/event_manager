@@ -9,10 +9,7 @@ type EventResponse = {
 };
 
 async function fetchEvents(): Promise<EventResponse[]> {
-    // ToDo: no-store
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/events`, {
-        cache: "no-store",
-    });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/events`);
     if (!response.ok) {
         throw new Error("failed to fetch the data");
     }

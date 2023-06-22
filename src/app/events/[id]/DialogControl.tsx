@@ -16,9 +16,13 @@ export function DialogControl() {
 
     const onSubmitClick = () => {
         startTransition(() => {
-            changeAvailability(ownChoices, eventId, 1, calendarDate.month);
+            changeAvailability(
+                eventId,
+                ownChoices,
+                calendarDate,
+            );
+            eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP })
         });
-        // setIsDirty(false);
     };
 
     const onResetClick = () => {

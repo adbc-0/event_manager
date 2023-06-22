@@ -12,8 +12,8 @@ export type AvailabilityEnumType = keyof typeof AvailabilityEnum;
 
 export const EventActionEnum = {
     RESET_CHOICES: "RESET_CHOICES",
-    OVERWRITE_BACKUP: "OVERWRITE_BACKUP",
     LOAD_CHOICES: "SET_CHOICES",
     DAY_SELECT: "DAY_SELECT",
-    USER_CHANGE_RECALCULATION: "USER_CHANGE_RECALCULATION",
+    USER_CHANGE: "USER_CHANGE",
+    SUBMIT_CLEANUP: "SUBMIT_CLEANUP"
 } as const;

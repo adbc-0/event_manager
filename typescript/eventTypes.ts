@@ -1,3 +1,5 @@
+import { AvailabilityEnumType } from "~/constants";
+
 export type AvailabilityChoices = {
     available: number[];
     unavailable: number[];
@@ -16,3 +18,8 @@ export type CurrentDate = {
     readonly month: number;
     readonly year: number;
 };
+export type AllAvailability = Record<
+    string,
+    { [k: string]: AvailabilityEnumType }
+>;
+export type OwnAvailability = Record<string, AvailabilityEnumType>;

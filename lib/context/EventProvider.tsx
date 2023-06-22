@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 
 import {
     AvailabilityEnum,
-    AvailabilityEnumType,
     EventActionEnum,
 } from "~/constants";
 import {
@@ -26,11 +25,13 @@ import { ServerError, chunks } from "~/utils/index";
 import { useAuth } from "~/hooks/use-auth";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
+    AllAvailability,
     AllUsersAvailabilityChoices,
     AvailabilityChoices,
     CurrentDate,
     ErrorMessage,
     EventResponse,
+    OwnAvailability,
     ReactProps,
 } from "~/typescript";
 
@@ -39,8 +40,6 @@ type DayAvailability = {
     choice: string;
 };
 type EmptyDays = Record<number, DayAvailability[]>;
-type OwnAvailability = Record<string, AvailabilityEnumType>;
-type AllAvailability = Record<string, { [k: string]: AvailabilityEnumType }>;
 type EventBasicDetails = {
     name: string | null;
 };
@@ -56,14 +55,13 @@ type EventState = {
     event: EventBasicDetails;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
-    usersCount: number;
 };
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
     getCurrentMonthInChunks: () => MonthChunk[];
 };
 type UsernameChangeRecalculateAction = {
-    type: (typeof EventActionEnum)["USER_CHANGE_RECALCULATION"];
+    type: (typeof EventActionEnum)["USER_CHANGE"];
     payload: {
         username: string;
         allChoices: AllUsersAvailabilityChoices;
@@ -79,10 +77,6 @@ type DaySelectAction = {
 type ResetChoicesAction = {
     type: (typeof EventActionEnum)["RESET_CHOICES"];
 };
-type OverwriteBackupAction = {
-    type: (typeof EventActionEnum)["OVERWRITE_BACKUP"];
-    payload: OwnAvailability;
-};
 type SetChoicesAction = {
     type: (typeof EventActionEnum)["LOAD_CHOICES"];
     payload: {
@@ -90,12 +84,15 @@ type SetChoicesAction = {
         username: string | undefined;
     };
 };
+type SubmitCleanupAction = {
+    type: (typeof EventActionEnum)["SUBMIT_CLEANUP"];
+}
 type EventActions =
     | UsernameChangeRecalculateAction
     | DaySelectAction
     | ResetChoicesAction
-    | OverwriteBackupAction
-    | SetChoicesAction;
+    | SetChoicesAction
+    | SubmitCleanupAction;
 type EventProviderProps = ReactProps & {
     eventId: string;
 };
@@ -112,7 +109,6 @@ const nilCalendarReducer: EventState = {
     isDirty: false,
     ownChoices: {},
     ownChoicesBackup: {},
-    usersCount: 0,
 } as const;
 
 const EventContext = createContext<EventProviderReturn>({
@@ -215,7 +211,7 @@ function parseAllChoices(
 
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
-        case EventActionEnum.USER_CHANGE_RECALCULATION: {
+        case EventActionEnum.USER_CHANGE: {
             const clone = structuredClone(state);
             const maxMonthDay = getLastDayOfMonth(state.calendarDate);
 
@@ -258,7 +254,6 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoicesBackup = username
                 ? parseOwnChoices(event.users[username], maxMonthDay)
                 : {};
-            clone.usersCount = Object.keys(event.users).length;
             clone.isDirty = false;
 
             return clone;
@@ -279,19 +274,20 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
-        case EventActionEnum.OVERWRITE_BACKUP: {
-            const clone = structuredClone(state);
-
-            clone.allChoicesBackup = state.allChoices;
-            clone.ownChoicesBackup = state.ownChoices;
-
-            return clone;
-        }
         case EventActionEnum.RESET_CHOICES: {
             const clone = structuredClone(state);
 
             clone.allChoices = state.allChoicesBackup;
             clone.ownChoices = state.ownChoicesBackup;
+            clone.isDirty = false;
+
+            return clone;
+        }
+        case EventActionEnum.SUBMIT_CLEANUP: {
+            const clone = structuredClone(state);
+
+            clone.allChoicesBackup = state.allChoices;
+            clone.ownChoicesBackup = state.ownChoices;
             clone.isDirty = false;
 
             return clone;
@@ -310,6 +306,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     );
     const { calendarDate } = eventControl;
 
+    // ToDo: Runs one extra time because of changing username
     useEffect(() => {
         const abortController = new AbortController();
 

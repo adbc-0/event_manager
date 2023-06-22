@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useParams } from "next/navigation";
 
 import {
@@ -17,7 +18,7 @@ import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
-import { EventResponse } from "~/typescript";
+import { AllAvailability, EventResponse } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumType>;
 
@@ -129,6 +130,12 @@ function getColorType(
     return DayColorTypeEnum.UNSELECTED;
 }
 
+function getUserCountFromChoices(choices: AllAvailability) {
+    return [
+        ...new Set(Object.values(choices).flatMap((obj) => Object.keys(obj))),
+    ].length;
+}
+
 const trimWeekday = pipe(truncateString(3), capitalize);
 
 // ToDo: Add list view
@@ -143,10 +150,14 @@ export function EventCalendar() {
         allChoices,
         ownChoices,
         calendarDate,
-        usersCount,
         getCurrentMonthInChunks,
         eventDispatch,
     } = useEvent();
+
+    const usersCount = useMemo(
+        () => getUserCountFromChoices(allChoices),
+        [allChoices],
+    );
 
     const onPrevMonthClick = async () => {
         const newDate = getPrevMonthDate(calendarDate);
@@ -298,13 +309,13 @@ export function EventCalendar() {
                                             >
                                                 {dayData.day}
                                             </button>
-                                            <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]">
-                                                {/* ToDo: Dont render if all selected */}
-                                                {/* {dayData.month === calendarDate.month && Object
+                                            {/* <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]"> */}
+                                            {/* ToDo: Dont render if all selected */}
+                                            {/* {dayData.month === calendarDate.month && Object
                                                             .entries(allChoices[dayData.day])
                                                             .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
                                                         } */}
-                                            </div>
+                                            {/* </div> */}
                                             {/* {dayData.month === currentMonth && <div>
                                                         <p>Tooltip</p>
                                                         {Object
