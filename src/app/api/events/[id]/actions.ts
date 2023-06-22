@@ -37,23 +37,9 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         throw new Error("unknown month id");
     }
 
-    // ToDo: temporary function (remove it after)
-    const transformAvailability = (availability: string) => {
-        if (availability === "MAYBE_AVAILABLE") {
-            return "maybe_available";
-        }
-        if (availability === "UNAVAILABLE") {
-            return "unavailable";
-        }
-        if (availability === "AVAILABLE") {
-            return "available";
-        }
-        throw new Error("unknown availability type");
-    };
-
     const newEvents = Object.entries(choices).map(([k, v]) => ({
         day: k,
-        choice: transformAvailability(v),
+        choice: v,
         event_month_id: monthId,
         user_id: ownerId,
     }));

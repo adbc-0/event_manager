@@ -4,11 +4,13 @@ export const LocalStorageKeys = {
 
 // Event related constants
 export const AvailabilityEnum = {
-    MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
-    UNAVAILABLE: "UNAVAILABLE",
-    AVAILABLE: "AVAILABLE",
+    MAYBE_AVAILABLE: "maybe_available",
+    UNAVAILABLE: "unavailable",
+    AVAILABLE: "available",
 } as const;
-export type AvailabilityEnumType = keyof typeof AvailabilityEnum;
+// export type AvailabilityEnumKeys = keyof typeof AvailabilityEnum;
+export type AvailabilityEnumValues =
+    (typeof AvailabilityEnum)[keyof typeof AvailabilityEnum];
 
 export const EventActionEnum = {
     RESET_CHOICES: "RESET_CHOICES",

@@ -7,6 +7,7 @@ import {
 } from "~/utils/eventUtils";
 import { groupBy } from "~/utils/index";
 import { HashId } from "~/typescript";
+import { AvailabilityEnumValues } from "~/constants";
 
 type Event = {
     event_id: HashId;
@@ -16,12 +17,9 @@ type Event = {
     month: number;
 };
 
-// ToDo: Export event related code to event related files
-type Choice = "available" | "unavailable" | "maybe_available";
-
 type Availability = {
     day: string;
-    choice: Choice;
+    choice: AvailabilityEnumValues;
     user_id: HashId;
 };
 
@@ -91,7 +89,7 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     type GroupedAvailability = {
         [k: string]: {
-            [k in Choice]: Availability[];
+            [k in AvailabilityEnumValues]: Availability[];
         };
     };
 
@@ -102,7 +100,7 @@ export async function GET(request: Request, { params }: RequestParams) {
     const availabilityGrouped = Object.entries(userGrouped).reduce(
         (prev, [k, v]) => {
             prev[k] = groupBy(v, (predicate) => predicate.choice) as Record<
-                Choice,
+                AvailabilityEnumValues,
                 Availability[]
             >;
             return prev;

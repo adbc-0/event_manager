@@ -1,4 +1,4 @@
-import { AvailabilityEnumType } from "~/constants";
+import { AvailabilityEnumValues } from "~/constants";
 
 export type AvailabilityChoices = {
     available: number[];
@@ -20,6 +20,6 @@ export type CurrentDate = {
 };
 export type AllAvailability = Record<
     string,
-    { [k: string]: AvailabilityEnumType }
+    { [k: string]: AvailabilityEnumValues }
 >;
-export type OwnAvailability = Record<string, AvailabilityEnumType>;
+export type OwnAvailability = Record<string, AvailabilityEnumValues>;

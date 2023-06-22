@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 import {
     AvailabilityEnum,
-    AvailabilityEnumType,
+    AvailabilityEnumValues,
     EventActionEnum,
 } from "~/constants";
 import {
@@ -20,7 +20,7 @@ import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { AllAvailability, EventResponse } from "~/typescript";
 
-type OwnAvailability = Record<string, AvailabilityEnumType>;
+type OwnAvailability = Record<string, AvailabilityEnumValues>;
 
 const DayColorTypeEnum = {
     MY_AVAILABLE: "MY_AVAILABLE",
@@ -77,7 +77,7 @@ const dayColor: Record<DayColorType, string> = {
     UNSELECTED: "hover:bg-white/10",
 } as const;
 
-const ownAvailabilityChoice: Record<AvailabilityEnumType, DayColorType> = {
+const ownAvailabilityChoice: Record<AvailabilityEnumValues, DayColorType> = {
     [AvailabilityEnum.AVAILABLE]: DayColorTypeEnum.MY_AVAILABLE,
     [AvailabilityEnum.MAYBE_AVAILABLE]: DayColorTypeEnum.MAYBE_AVAILABLE,
     [AvailabilityEnum.UNAVAILABLE]: DayColorTypeEnum.UNAVAILABLE,
@@ -113,7 +113,7 @@ function getColorType(
     selectedMonth: number,
     usersCount: number,
     allChoices: OwnAvailability,
-    ownChoice: AvailabilityEnumType,
+    ownChoice: AvailabilityEnumValues,
 ): DayColorType {
     if (selectedMonth !== day.month) {
         return DayColorTypeEnum.DIFFERENT_MONTH;
