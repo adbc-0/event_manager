@@ -304,6 +304,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     const { calendarDate } = eventControl;
 
     // ToDo: Runs one extra time because of changing username
+    // I just want to recalculate choices without fetching choices again
     useEffect(() => {
         const abortController = new AbortController();
 

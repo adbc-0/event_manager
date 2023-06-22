@@ -111,13 +111,14 @@ export async function GET(request: Request, { params }: RequestParams) {
     const nonEmptyAvailabilities = Object.keys(availabilityGrouped).reduce(
         (prev, k) => {
             const userData = prev[k];
-            if (!("available" in userData)) {
+
+            if (!userData.available) {
                 prev[k].available = [];
             }
-            if (!("unavailable" in userData)) {
+            if (!userData.unavailable) {
                 prev[k].unavailable = [];
             }
-            if (!("maybe_available" in userData)) {
+            if (!userData.maybe_available) {
                 prev[k].maybe_available = [];
             }
 
@@ -137,12 +138,12 @@ export async function GET(request: Request, { params }: RequestParams) {
         return clone;
     };
 
-    const r = cleanUpGroupedChoices(nonEmptyAvailabilities);
+    const cleanedUpUserChoices = cleanUpGroupedChoices(nonEmptyAvailabilities);
 
     const composedResponse = {
         eventName: event.name,
         time: date,
-        users: r,
+        users: cleanedUpUserChoices,
     };
 
     return NextResponse.json(composedResponse);
