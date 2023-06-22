@@ -1,15 +1,25 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 import { postgres } from "~/services/postgres";
-import { CurrentDate, OwnAvailability } from "~/typescript";
 
-export async function changeAvailability(
-    eventId: string,
-    choices: OwnAvailability,
-    { month, year }: CurrentDate,
-) {
+const changeAvailabilitySchema = z.object({
+    eventId: z.string(),
+    choices: z.record(z.string(), z.string()),
+    date: z.object({
+        day: z.number(),
+        month: z.number(),
+        year: z.number(),
+    }),
+});
+
+type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
+
+export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
+    const { choices, date, eventId } = changeAvailabilitySchema.parse(payload);
+
     // ToDo: I can take user value from localstorage/token
     const ownerId = 1;
     const [{ id: monthId }] = await postgres<{ id: number }[]>`
@@ -18,8 +28,8 @@ export async function changeAvailability(
         FROM event.events_months
         WHERE
             event_id=${eventId}
-            AND year=${year}
-            AND month=${month}
+            AND year=${date.year}
+            AND month=${date.month}
         ;
     `;
 

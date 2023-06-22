@@ -4,7 +4,7 @@ import { useRef, useTransition } from "react";
 import Image from "next/image";
 
 import addIcon from "~/public/new.svg";
-import { addEvent } from "../api/events/actions";
+import { AddEvent } from "../api/events/actions";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 
@@ -24,10 +24,7 @@ export function NewEventAction() {
 
         startTransition(async () => {
             try {
-                await addEvent({
-                    owner_id: 1,
-                    event_name: inputRef.current?.value,
-                });
+                await AddEvent({ event_name: inputRef.current?.value });
             } catch (exception) {
                 if (!(exception instanceof Error)) {
                     throw new Error("unexpected exception type");

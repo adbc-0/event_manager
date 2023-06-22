@@ -2,7 +2,7 @@ import { startTransition } from "react";
 import { useParams } from "next/navigation";
 
 import { EventActionEnum } from "~/constants";
-import { changeAvailability } from "~/api/events/[id]/actions";
+import { ChangeAvailability } from "~/api/events/[id]/actions";
 import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
 
@@ -15,8 +15,14 @@ export function DialogControl() {
     const { isDirty, ownChoices, calendarDate, eventDispatch } = useEvent();
 
     const onSubmitClick = () => {
+        const payload = {
+            choices: ownChoices,
+            date: calendarDate,
+            eventId,
+        };
+
         startTransition(() => {
-            changeAvailability(eventId, ownChoices, calendarDate);
+            ChangeAvailability(payload);
             eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP });
         });
     };

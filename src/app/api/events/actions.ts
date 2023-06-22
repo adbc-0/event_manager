@@ -15,19 +15,26 @@ export async function DeleteEvent(eventId: string) {
 }
 
 const newEventSchema = z.object({
-    owner_id: z.number(),
     event_name: z.string().trim().min(1).max(80),
 });
 
 type NewEventSchema = Partial<z.infer<typeof newEventSchema>>;
 
-export async function addEvent(newEvent: NewEventSchema) {
+export async function AddEvent(newEvent: NewEventSchema) {
     const payload = newEventSchema.parse(newEvent);
+    // ToDo: Take owner from token/storage
+    const onwerId = 1;
 
-    await postgres`
-        INSERT INTO event.events (name, owner_id)
-        VALUES (${payload.event_name}, ${payload.owner_id});
-    `;
+    const event = {
+        name: payload.event_name,
+        owner_id: onwerId,
+    };
+
+    await postgres`INSERT INTO event.events ${postgres(
+        event,
+        "name",
+        "owner_id",
+    )};`;
 
     revalidatePath(`/events`);
 }
