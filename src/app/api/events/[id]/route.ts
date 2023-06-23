@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
+import { AvailabilityEnumValues } from "~/constants";
 import { postgres } from "~/services/postgres";
 import {
     decodeEventParamDate,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { groupBy } from "~/utils/index";
 import { HashId } from "~/typescript";
-import { AvailabilityEnumValues } from "~/constants";
 
 type Event = {
     event_id: HashId;
@@ -87,63 +86,31 @@ export async function GET(request: Request, { params }: RequestParams) {
         WHERE c.event_month_id = ${event.month_id};
     `;
 
-    type GroupedAvailability = {
-        [k: string]: {
-            [k in AvailabilityEnumValues]: Availability[];
-        };
-    };
+    type GroupedChoices = Record<
+        string,
+        Record<AvailabilityEnumValues, string[]>
+    >;
 
-    // ToDo: Tidy Up
-    const userGrouped = groupBy(availabilityRows, (predicate) =>
-        predicate.user_id.toString(),
-    );
-    const availabilityGrouped = Object.entries(userGrouped).reduce(
-        (prev, [k, v]) => {
-            prev[k] = groupBy(v, (predicate) => predicate.choice) as Record<
-                AvailabilityEnumValues,
-                Availability[]
-            >;
-            return prev;
-        },
-        {} as GroupedAvailability,
-    );
+    const groupedChoices = availabilityRows.reduce((prev, curr) => {
+        const { choice, day, user_id } = curr;
 
-    const nonEmptyAvailabilities = Object.keys(availabilityGrouped).reduce(
-        (prev, k) => {
-            const userData = prev[k];
+        if (!prev[user_id]) {
+            prev[user_id] = {
+                available: [],
+                maybe_available: [],
+                unavailable: [],
+            };
+        }
 
-            if (!userData.available) {
-                prev[k].available = [];
-            }
-            if (!userData.unavailable) {
-                prev[k].unavailable = [];
-            }
-            if (!userData.maybe_available) {
-                prev[k].maybe_available = [];
-            }
+        prev[user_id][choice].push(day);
 
-            return prev;
-        },
-        availabilityGrouped,
-    );
-
-    // can this be written recurseively?
-    const cleanUpGroupedChoices = (choices: GroupedAvailability) => {
-        const clone = structuredClone(choices);
-        Object.keys(clone).forEach((c) => {
-            Object.entries(clone[c]).forEach(([k, v]) => {
-                clone[c][k] = v.map(({ day }) => day);
-            });
-        });
-        return clone;
-    };
-
-    const cleanedUpUserChoices = cleanUpGroupedChoices(nonEmptyAvailabilities);
+        return prev;
+    }, {} as GroupedChoices);
 
     const composedResponse = {
         eventName: event.name,
         time: date,
-        users: cleanedUpUserChoices,
+        users: groupedChoices,
     };
 
     return NextResponse.json(composedResponse);

@@ -46,14 +46,15 @@ export function truncateString(cutAfter: number) {
     };
 }
 
-export const groupBy = <T>(
-    array: T[],
-    predicate: (value: T, index: number, array: T[]) => string,
-) =>
-    array.reduce((acc, value, index, array) => {
-        (acc[predicate(value, index, array)] ||= []).push(value);
-        return acc;
-    }, {} as { [key: string]: T[] });
+// Currently unused
+// export const groupBy = <T>(
+//     array: T[],
+//     predicate: (value: T, index: number, array: T[]) => string,
+// ) =>
+//     array.reduce((acc, value, index, array) => {
+//         (acc[predicate(value, index, array)] ||= []).push(value);
+//         return acc;
+//     }, {} as { [key: string]: T[] });
 
 export class ServerError extends Error {
     status: number;
