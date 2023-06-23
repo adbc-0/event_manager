@@ -17,7 +17,6 @@ import {
 import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
-import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { AllAvailability, EventResponse } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumValues>;
@@ -226,10 +225,7 @@ export function EventCalendar() {
 
     return (
         <div>
-            <GlassmorphicPane
-                outerClassName="max-w-sm m-auto my-3"
-                innerClassName="p-3"
-            >
+            <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">
                 <div className="flex justify-between items-center">
                     <button
                         className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
@@ -330,7 +326,7 @@ export function EventCalendar() {
                         ))}
                     </tbody>
                 </table>
-            </GlassmorphicPane>
+            </div>
         </div>
     );
 }
