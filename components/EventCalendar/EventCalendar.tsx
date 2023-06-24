@@ -111,17 +111,20 @@ function getColorType(
     day: MonthDay,
     selectedMonth: number,
     usersCount: number,
-    allChoices: OwnAvailability,
-    ownChoice: AvailabilityEnumValues,
+    allChoicesForDay: OwnAvailability,
+    ownChoiceForDay: AvailabilityEnumValues,
 ): DayColorType {
     if (selectedMonth !== day.month) {
         return DayColorTypeEnum.DIFFERENT_MONTH;
     }
-    if (areAllAvailable(allChoices, usersCount)) {
+    if (!allChoicesForDay) {
+        throw new Error("undefined choice");
+    }
+    if (areAllAvailable(allChoicesForDay, usersCount)) {
         return DayColorTypeEnum.ALL_SELECTED;
     }
-    if (ownAvailabilityChoice[ownChoice]) {
-        return ownAvailabilityChoice[ownChoice];
+    if (ownAvailabilityChoice[ownChoiceForDay]) {
+        return ownAvailabilityChoice[ownChoiceForDay];
     }
     if (isToday(day)) {
         return DayColorTypeEnum.TODAY;

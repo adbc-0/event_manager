@@ -106,10 +106,8 @@ export function getPrevMonthDate(currentDate: CurrentDate): CurrentDate {
 }
 
 export function getLastDayOfMonth(currentDate: CurrentDate): number {
-    return transformCurrentDateToDaysJs(currentDate)
-        .utc()
-        .endOf("month")
-        .date();
+    // ToDo: Adding utc causes problems (why? does it diff time to utc)
+    return transformCurrentDateToDaysJs(currentDate).endOf("month").date();
 }
 
 export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
