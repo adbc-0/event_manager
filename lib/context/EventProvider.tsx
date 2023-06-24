@@ -110,10 +110,10 @@ const nilCalendarReducer: EventState = {
 
 const EventContext = createContext<EventProviderReturn>({
     ...nilCalendarReducer,
-    eventDispatch: () => {
+    eventDispatch() {
         throw new Error("function was called before proper initialization");
     },
-    getCurrentMonthInChunks: () => {
+    getCurrentMonthInChunks() {
         throw new Error("function was called before proper initialization");
     },
 });
@@ -333,7 +333,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     throw new ServerError(error.message, response.status);
                 }
 
-                const event = (await response.json()) as EventResponse;
+                const [event] = (await response.json()) as EventResponse[];
 
                 eventDispatch({
                     type: EventActionEnum.LOAD_CHOICES,

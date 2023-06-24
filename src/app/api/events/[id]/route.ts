@@ -12,6 +12,9 @@ type Event = {
     event_id: HashId;
     name: string;
     owner_id: HashId;
+};
+
+type EventMonth = {
     month_id: number;
     month: number;
 };
@@ -23,7 +26,7 @@ type Availability = {
 };
 
 type RouteParams = {
-    id: string;
+    id: string; // event_id
 };
 
 type RequestParams = {
@@ -58,16 +61,11 @@ export async function GET(request: Request, { params }: RequestParams) {
         SELECT
             e.id AS event_id,
             e.name,
-            e.owner_id,
-            m.id AS month_id,
-            m.month
+            e.owner_id
         FROM event.events AS e
-        JOIN event.events_months AS m ON e.id=m.event_id
         WHERE
             e.id = ${params.id}
-            AND e.owner_id = ${owner_id}
-            AND m.year = ${year}
-            AND m.month = ${month};
+            AND e.owner_id = ${owner_id};
     `;
 
     if (!event) {
@@ -77,13 +75,34 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
+    const [eventMonth] = await postgres<EventMonth[]>`
+        SELECT
+            m.id AS month_id,
+            m.month
+        FROM event.events_months AS m
+        WHERE
+            m.event_id=${event.event_id}
+            AND m.year = ${year}
+            AND m.month = ${month};
+    `;
+
+    if (!eventMonth) {
+        const composedResponse = {
+            eventName: event.name,
+            time: date,
+            users: {},
+        };
+
+        return NextResponse.json([composedResponse]);
+    }
+
     const availabilityRows = await postgres<Availability[]>`
         SELECT
             c.day,
             c.choice,
             c.user_id
         FROM event.availability_choices as c
-        WHERE c.event_month_id = ${event.month_id};
+        WHERE c.event_month_id = ${eventMonth.month_id};
     `;
 
     type GroupedChoices = Record<
@@ -113,5 +132,5 @@ export async function GET(request: Request, { params }: RequestParams) {
         users: groupedChoices,
     };
 
-    return NextResponse.json(composedResponse);
+    return NextResponse.json([composedResponse]);
 }
