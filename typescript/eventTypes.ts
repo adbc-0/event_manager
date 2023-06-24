@@ -9,9 +9,8 @@ export type AllUsersAvailabilityChoices = {
     [key: string]: AvailabilityChoices;
 };
 export type EventResponse = {
-    eventName: string;
-    time: string;
-    users: AllUsersAvailabilityChoices;
+    name: string;
+    months: { time: string; usersChoices: AllUsersAvailabilityChoices }[];
 };
 export type CurrentDate = {
     readonly day: number;

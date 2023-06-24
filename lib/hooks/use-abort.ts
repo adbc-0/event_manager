@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export function useAbort() {
-    const [abortController, setAbortController] = useState(
-        new AbortController(),
-    );
+    const abortController = useRef(new AbortController());
 
     useEffect(() => {
-        setAbortController(new AbortController());
+        abortController.current = new AbortController();
         return () => {
-            abortController.abort();
+            abortController.current.abort();
         };
     }, []);
 
-    return abortController.signal;
+    return abortController.current.signal;
 }

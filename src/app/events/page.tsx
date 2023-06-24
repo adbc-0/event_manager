@@ -3,12 +3,12 @@ import Link from "next/link";
 
 import { NewEventAction } from "./NewEventAction";
 
-type EventResponse = {
+type EventListResponse = {
     id: number;
     name: string;
 };
 
-async function fetchEvents(): Promise<EventResponse[]> {
+async function fetchEvents(): Promise<EventListResponse[]> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/events`);
     if (!response.ok) {
         throw new Error("failed to fetch the data");

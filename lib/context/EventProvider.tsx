@@ -236,20 +236,28 @@ function eventReducer(state: EventState, action: EventActions) {
             const clone = structuredClone(state);
             const { event, username } = action.payload;
 
-            const eventParamDate = decodeEventParamDate(event.time);
+            const month = event.months[0];
+            if (!month) {
+                throw new Error("expected choices data for given month");
+            }
+
+            const eventParamDate = decodeEventParamDate(month.time);
             const dayJsDate = eventDateToDate(eventParamDate);
             const newCurrentDate = transformDayJsToCurrentDate(dayJsDate);
             const maxMonthDay = getLastDayOfMonth(newCurrentDate);
 
-            clone.event.name = event.eventName;
+            clone.event.name = event.name;
             clone.calendarDate = newCurrentDate;
-            clone.allChoices = parseAllChoices(event.users, maxMonthDay);
-            clone.allChoicesBackup = parseAllChoices(event.users, maxMonthDay);
+            clone.allChoices = parseAllChoices(month.usersChoices, maxMonthDay);
+            clone.allChoicesBackup = parseAllChoices(
+                month.usersChoices,
+                maxMonthDay,
+            );
             clone.ownChoices = username
-                ? parseOwnChoices(event.users[username], maxMonthDay)
+                ? parseOwnChoices(month.usersChoices[username], maxMonthDay)
                 : {};
             clone.ownChoicesBackup = username
-                ? parseOwnChoices(event.users[username], maxMonthDay)
+                ? parseOwnChoices(month.usersChoices[username], maxMonthDay)
                 : {};
             clone.isDirty = false;
 
@@ -333,12 +341,12 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     throw new ServerError(error.message, response.status);
                 }
 
-                const [event] = (await response.json()) as EventResponse[];
+                const event = (await response.json()) as EventResponse;
 
                 eventDispatch({
                     type: EventActionEnum.LOAD_CHOICES,
                     payload: {
-                        event,
+                        event: event,
                         username,
                     },
                 });

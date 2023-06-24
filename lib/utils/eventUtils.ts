@@ -5,13 +5,13 @@ export function encodeEventParamDate(month: number, year: number) {
 
 export function validateEventParamDate(date: string) {
     const [month, year] = date.split("-");
-
     if (!month || Number.isNaN(month)) {
-        throw new Error("Incorrect event date format");
+        return false;
     }
     if (!year || Number.isNaN(year)) {
-        throw new Error("Incorrect event date format");
+        return false;
     }
+    return true;
 }
 
 export function decodeEventParamDate(date: string) {

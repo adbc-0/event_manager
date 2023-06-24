@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 
 import { AvailabilityEnumValues } from "~/constants";
+import { groupBy } from "~/utils/index";
 import { postgres } from "~/services/postgres";
 import {
     decodeEventParamDate,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { HashId } from "~/typescript";
+import { AvailabilityChoices, EventResponse, HashId } from "~/typescript";
 
 type Event = {
     event_id: HashId;
@@ -14,14 +15,14 @@ type Event = {
     owner_id: HashId;
 };
 
-type EventMonth = {
+type GroupedChoices = Record<string, AvailabilityChoices>;
+
+type MonthsChoices = {
+    choice: AvailabilityEnumValues;
+    day: number;
     month_id: number;
     month: number;
-};
-
-type Availability = {
-    day: string;
-    choice: AvailabilityEnumValues;
+    year: number;
     user_id: HashId;
 };
 
@@ -33,29 +34,35 @@ type RequestParams = {
     params: RouteParams;
 };
 
+const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
+    const { choice, day, user_id } = curr;
+
+    if (!prev[user_id]) {
+        prev[user_id] = {
+            available: [],
+            maybe_available: [],
+            unavailable: [],
+        };
+    }
+
+    prev[user_id][choice].push(day);
+
+    return prev;
+};
+
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
     const owner_id = 1;
 
-    // ToDo: Make it not required
     const date = searchParams.get("date");
-    if (!date) {
-        return NextResponse.json(
-            { message: "Missing required param" },
-            { status: 404 },
-        );
-    }
+    const isValid = date ? validateEventParamDate(date) : null;
 
-    try {
-        validateEventParamDate(date);
-    } catch {
+    if (isValid === false) {
         return NextResponse.json(
             { message: "Wrong event date param format" },
             { status: 400 },
         );
     }
-
-    const [month, year] = decodeEventParamDate(date);
 
     const [event] = await postgres<Event[]>`
         SELECT
@@ -75,62 +82,49 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
-    const [eventMonth] = await postgres<EventMonth[]>`
-        SELECT
-            m.id AS month_id,
-            m.month
-        FROM event.events_months AS m
-        WHERE
-            m.event_id=${event.event_id}
+    const filterByDate = (rawDateParam: string) => {
+        const [month, year] = decodeEventParamDate(rawDateParam);
+        return postgres`
             AND m.year = ${year}
             AND m.month = ${month};
-    `;
+        `;
+    };
 
-    if (!eventMonth) {
-        const composedResponse = {
-            eventName: event.name,
-            time: date,
-            users: {},
-        };
-
-        return NextResponse.json([composedResponse]);
-    }
-
-    const availabilityRows = await postgres<Availability[]>`
+    const eventMonths = await postgres<MonthsChoices[]>`
         SELECT
+            m.id AS month_id,
+            m.month,
+            m.year,
             c.day,
             c.choice,
             c.user_id
-        FROM event.availability_choices as c
-        WHERE c.event_month_id = ${eventMonth.month_id};
+        FROM event.events_months AS m
+        JOIN event.availability_choices AS c ON c.event_month_id=m.id
+        WHERE
+            m.event_id=${event.event_id}
+            ${date ? filterByDate(date) : postgres``}
     `;
 
-    type GroupedChoices = Record<
-        string,
-        Record<AvailabilityEnumValues, string[]>
-    >;
-
-    const groupedChoices = availabilityRows.reduce((prev, curr) => {
-        const { choice, day, user_id } = curr;
-
-        if (!prev[user_id]) {
-            prev[user_id] = {
-                available: [],
-                maybe_available: [],
-                unavailable: [],
-            };
-        }
-
-        prev[user_id][choice].push(day);
-
-        return prev;
-    }, {} as GroupedChoices);
-
-    const composedResponse = {
-        eventName: event.name,
+    const groupedMonths = groupBy(eventMonths, (v) => `${v.month}-${v.year}`);
+    const groupedChoices = Object.entries(groupedMonths).map(([date, m]) => ({
         time: date,
-        users: groupedChoices,
+        usersChoices: m.reduce(groupUserChoices, {} as GroupedChoices),
+    }));
+
+    const generateNilChoices = date && !groupedChoices.length;
+    if (generateNilChoices) {
+        const nilChoicesResponse: EventResponse = {
+            name: event.name,
+            months: [{ time: date, usersChoices: {} }],
+        };
+
+        return NextResponse.json(nilChoicesResponse);
+    }
+
+    const response: EventResponse = {
+        name: event.name,
+        months: groupedChoices,
     };
 
-    return NextResponse.json([composedResponse]);
+    return NextResponse.json(response);
 }

@@ -176,7 +176,7 @@ export function EventCalendar() {
                 `/api/events/${eventId}?${searchParams.toString()}`,
                 { signal: abortSignal },
             );
-            const [event] = (await response.json()) as EventResponse[];
+            const event = (await response.json()) as EventResponse;
             eventDispatch({
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
@@ -201,7 +201,7 @@ export function EventCalendar() {
                 `/api/events/${eventId}?${searchParams.toString()}`,
                 { signal: abortSignal },
             );
-            const [event] = (await response.json()) as EventResponse[];
+            const event = (await response.json()) as EventResponse;
             eventDispatch({
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
