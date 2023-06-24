@@ -17,6 +17,7 @@ import {
 import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
+import { useAbort } from "~/hooks/use-abort";
 import { AllAvailability, EventResponse } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumValues>;
@@ -103,6 +104,7 @@ function areAllAvailable(choices: OwnAvailability, usersCount: number) {
     return choicesList.every((choice) => choice === AvailabilityEnum.AVAILABLE);
 }
 
+// ToDo: mark all unused code as @unused
 // function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
 //     return ownAvailabilityChoice[ownChoice] ?? 'UNSELECTED';
 // }
@@ -148,6 +150,7 @@ export function EventCalendar() {
     }
 
     const { username } = useAuth();
+    const abortSignal = useAbort();
     const {
         allChoices,
         ownChoices,
@@ -164,7 +167,6 @@ export function EventCalendar() {
     const onPrevMonthClick = async () => {
         const newDate = getPrevMonthDate(calendarDate);
 
-        // ToDo: add to every fetch call abortController
         async function initEventCalendar() {
             const { month, year } = newDate;
             const searchParams = new URLSearchParams({
@@ -172,6 +174,7 @@ export function EventCalendar() {
             });
             const response = await fetch(
                 `/api/events/${eventId}?${searchParams.toString()}`,
+                { signal: abortSignal },
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
@@ -190,13 +193,13 @@ export function EventCalendar() {
         const newDate = getNextMonthDate(calendarDate);
 
         async function initEventCalendar() {
-            // ToDo: Abort controller
             const { month, year } = newDate;
             const searchParams = new URLSearchParams({
                 date: `${month}-${year}`,
             });
             const response = await fetch(
                 `/api/events/${eventId}?${searchParams.toString()}`,
+                { signal: abortSignal },
             );
             const [event] = (await response.json()) as EventResponse[];
             eventDispatch({
@@ -265,6 +268,7 @@ export function EventCalendar() {
                                 {week.chunk.map((dayData) => (
                                     <td key={dayData.key}>
                                         <div className="aspect-square relative">
+                                            {/* Use onpointerdown or onmousedown */}
                                             <button
                                                 className={`w-full h-full disabled:cursor-not-allowed
                                                         ${

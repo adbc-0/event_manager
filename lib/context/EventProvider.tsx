@@ -295,8 +295,8 @@ function eventReducer(state: EventState, action: EventActions) {
 }
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
-    const { replace } = useRouter();
     const { username } = useAuth();
+    const { replace } = useRouter();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
         nilCalendarReducer,
