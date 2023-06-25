@@ -67,8 +67,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
 }
 
 // ToDo: before release
-// Add marks to see how many responses
-// Improve username handling
+// Improve username handling -> get account from token, 
 // Add hash ids
+// Add list view
 // Last style tweaks
-// Maybe add list view
