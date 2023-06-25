@@ -8,7 +8,6 @@ export const AvailabilityEnum = {
     UNAVAILABLE: "unavailable",
     AVAILABLE: "available",
 } as const;
-// export type AvailabilityEnumKeys = keyof typeof AvailabilityEnum;
 export type AvailabilityEnumValues =
     (typeof AvailabilityEnum)[keyof typeof AvailabilityEnum];
 

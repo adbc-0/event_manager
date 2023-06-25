@@ -10,6 +10,7 @@ export type ErrorMessage = {
 };
 export type HashId = string;
 
+// @unused
 // Typings for div html node
 // React.DetailedHTMLProps<
 //     React.HTMLAttributes<HTMLDivElement>,

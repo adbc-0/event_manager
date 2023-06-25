@@ -104,11 +104,6 @@ function areAllAvailable(choices: OwnAvailability, usersCount: number) {
     return choicesList.every((choice) => choice === AvailabilityEnum.AVAILABLE);
 }
 
-// ToDo: mark all unused code as @unused
-// function getOwnChoiceColor(ownChoice: AvailabilityEnum): DayColorType {
-//     return ownAvailabilityChoice[ownChoice] ?? 'UNSELECTED';
-// }
-
 function getColorType(
     day: MonthDay,
     selectedMonth: number,
@@ -229,6 +224,7 @@ export function EventCalendar() {
         });
     };
 
+    // ToDo: get allChoices[dayData.day] and filter by availability and do Object.keys().len
     return (
         <div>
             <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">
@@ -302,9 +298,15 @@ export function EventCalendar() {
                                                         }
                                                     `}
                                                 type="button"
-                                                onClick={() =>
-                                                    onDayClick(dayData)
-                                                }
+                                                onMouseDown={(e) => {
+                                                    const isLeftClick =
+                                                        e.button.valueOf() ===
+                                                        0;
+                                                    if (!isLeftClick) {
+                                                        return;
+                                                    }
+                                                    onDayClick(dayData);
+                                                }}
                                                 disabled={
                                                     dayData.month !==
                                                     calendarDate.month
@@ -312,20 +314,50 @@ export function EventCalendar() {
                                             >
                                                 {dayData.day}
                                             </button>
-                                            {/* <div className="flex gap-1 justify-center absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-[90%]"> */}
-                                            {/* ToDo: Dont render if all selected */}
-                                            {/* {dayData.month === calendarDate.month && Object
-                                                            .entries(allChoices[dayData.day])
-                                                            .map(([user, choice]) => <span key={user} className={`rounded-full h-2 w-2 border border-black ${dayColor[getOwnChoiceColor(choice)]}`} />)
-                                                        } */}
-                                            {/* </div> */}
-                                            {/* {dayData.month === currentMonth && <div>
-                                                        <p>Tooltip</p>
-                                                        {Object
-                                                            .entries(usersChoices[dayData.day])
-                                                            .map(([user, choice]) => <p key={user}>{user} - {choice}</p>)
+                                            {/* {dayData.month ===
+                                                calendarDate.month && (
+                                                <div className="flex gap-1 justify-center absolute bottom-0 left-1/2 transform -translate-x-1/2 text-black">
+                                                    <p>
+                                                        {
+                                                            Object.values(
+                                                                allChoices[
+                                                                    dayData.day
+                                                                ],
+                                                            ).filter(
+                                                                (choice) =>
+                                                                    choice ===
+                                                                    "available",
+                                                            ).length
                                                         }
-                                                    </div>} */}
+                                                    </p>
+                                                    <p>
+                                                        {
+                                                            Object.values(
+                                                                allChoices[
+                                                                    dayData.day
+                                                                ],
+                                                            ).filter(
+                                                                (choice) =>
+                                                                    choice ===
+                                                                    "maybe_available",
+                                                            ).length
+                                                        }
+                                                    </p>
+                                                    <p>
+                                                        {
+                                                            Object.values(
+                                                                allChoices[
+                                                                    dayData.day
+                                                                ],
+                                                            ).filter(
+                                                                (choice) =>
+                                                                    choice ===
+                                                                    "unavailable",
+                                                            ).length
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )} */}
                                         </div>
                                     </td>
                                 ))}
