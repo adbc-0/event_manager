@@ -30,7 +30,14 @@ export default function EventView() {
         <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
             <h1 className="text-center text-3xl p-5">{event.name}</h1>
             <UsernameSection openModal={openIdentityModal} />
-            <EventCalendar />
+            <div>
+                <div className="max-w-sm m-auto">
+                    <p>List view</p>
+                    <p>Settings</p>
+                    <p>Remove calendar</p>
+                </div>
+                <EventCalendar />
+            </div>
             <DialogControl />
             <UsernameDialog ref={usernameDialogRef} />
         </div>

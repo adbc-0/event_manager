@@ -224,47 +224,45 @@ export function EventCalendar() {
     };
 
     return (
-        <div>
-            <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">
-                <div className="flex justify-between items-center">
-                    <button
-                        className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
-                        type="button"
-                        onClick={onPrevMonthClick}
-                    >
-                        {"<"}
-                    </button>
-                    <p className="px-7">
-                        {capitalize(MONTHS[calendarDate.month])}{" "}
-                        {calendarDate.year}
-                    </p>
-                    <button
-                        className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
-                        type="button"
-                        onClick={onNextMonthClick}
-                    >
-                        {">"}
-                    </button>
-                </div>
-                <table className="table-fixed text-center w-full">
-                    <thead>
-                        <tr>
-                            {WEEKDAYS.map((weekday) => (
-                                <td key={weekday} className="py-3">
-                                    {trimWeekday(weekday)}
-                                </td>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {getCurrentMonthInChunks().map((week) => (
-                            <tr key={week.key}>
-                                {week.chunk.map((dayData) => (
-                                    <td key={dayData.key}>
-                                        <div className="aspect-square relative">
-                                            {/* Use onpointerdown or onmousedown */}
-                                            <button
-                                                className={`w-full h-full disabled:cursor-not-allowed
+        <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">
+            <div className="flex justify-between items-center">
+                <button
+                    className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
+                    type="button"
+                    onClick={onPrevMonthClick}
+                >
+                    {"<"}
+                </button>
+                <p className="px-7">
+                    {capitalize(MONTHS[calendarDate.month])} {calendarDate.year}
+                </p>
+                <button
+                    className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
+                    type="button"
+                    onClick={onNextMonthClick}
+                >
+                    {">"}
+                </button>
+            </div>
+            <table className="table-fixed text-center w-full">
+                <thead>
+                    <tr>
+                        {WEEKDAYS.map((weekday) => (
+                            <td key={weekday} className="py-3">
+                                {trimWeekday(weekday)}
+                            </td>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {getCurrentMonthInChunks().map((week) => (
+                        <tr key={week.key}>
+                            {week.chunk.map((dayData) => (
+                                <td key={dayData.key}>
+                                    <div className="aspect-square relative">
+                                        {/* Use onpointerdown or onmousedown */}
+                                        <button
+                                            className={`w-full h-full disabled:cursor-not-allowed
                                                         ${
                                                             dayData.month ===
                                                             calendarDate.month
@@ -295,24 +293,23 @@ export function EventCalendar() {
                                                             ]
                                                         }
                                                     `}
-                                                type="button"
-                                                onMouseDown={(e) => {
-                                                    const isLeftClick =
-                                                        e.button.valueOf() ===
-                                                        0;
-                                                    if (!isLeftClick) {
-                                                        return;
-                                                    }
-                                                    onDayClick(dayData);
-                                                }}
-                                                disabled={
-                                                    dayData.month !==
-                                                    calendarDate.month
+                                            type="button"
+                                            onMouseDown={(e) => {
+                                                const isLeftClick =
+                                                    e.button.valueOf() === 0;
+                                                if (!isLeftClick) {
+                                                    return;
                                                 }
-                                            >
-                                                {dayData.day}
-                                            </button>
-                                            {/* {dayData.month ===
+                                                onDayClick(dayData);
+                                            }}
+                                            disabled={
+                                                dayData.month !==
+                                                calendarDate.month
+                                            }
+                                        >
+                                            {dayData.day}
+                                        </button>
+                                        {/* {dayData.month ===
                                                 calendarDate.month && (
                                                 <div className="flex gap-1 justify-center absolute bottom-0 left-1/2 transform -translate-x-1/2 text-black">
                                                     <p>
@@ -356,14 +353,13 @@ export function EventCalendar() {
                                                     </p>
                                                 </div>
                                             )} */}
-                                        </div>
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                                    </div>
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }
