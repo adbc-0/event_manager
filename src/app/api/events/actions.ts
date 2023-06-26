@@ -4,13 +4,15 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { postgres } from "~/services/postgres";
+import { hashIds } from "~/services/hashId";
 
 // ToDo: @authenticated
 export async function DeleteEvent(eventId: string) {
+    const trueEventId = hashIds.decode(eventId).toString();
     await postgres`
-        DELETE FROM event.events WHERE id=${eventId};
+        DELETE FROM event.events WHERE id=${trueEventId};
     `;
-    revalidatePath(`/calendar/${eventId}`);
+    revalidatePath(`/calendar/${trueEventId}`);
 }
 
 const newEventSchema = z.object({

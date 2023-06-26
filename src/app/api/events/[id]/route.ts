@@ -8,6 +8,7 @@ import {
     validateEventParamDate,
 } from "~/utils/eventUtils";
 import { AvailabilityChoices, EventResponse, HashId } from "~/typescript";
+import { hashIds } from "~/services/hashId";
 
 type Event = {
     event_id: HashId;
@@ -53,6 +54,7 @@ const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
 
+    const trueEventId = hashIds.decode(params.id).toString();
     const date = searchParams.get("date");
     const isValid = date ? validateEventParamDate(date) : null;
 
@@ -69,7 +71,7 @@ export async function GET(request: Request, { params }: RequestParams) {
             e.name,
             e.owner_id
         FROM event.events AS e
-        WHERE e.id = ${params.id};
+        WHERE e.id = ${trueEventId};
     `;
 
     if (!event) {

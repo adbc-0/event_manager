@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { hashIds } from "~/services/hashId";
 
 import { postgres } from "~/services/postgres";
 
@@ -14,5 +15,10 @@ export async function GET() {
         SELECT id, name, owner_id FROM event.events;
     `;
 
-    return NextResponse.json(rows);
+    const decoratedRows = rows.map((row) => ({
+        ...row,
+        id: hashIds.encode(row.id),
+    }));
+
+    return NextResponse.json(decoratedRows);
 }
