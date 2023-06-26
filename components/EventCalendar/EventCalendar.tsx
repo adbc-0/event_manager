@@ -137,7 +137,6 @@ function getUserCountFromChoices(choices: AllAvailability) {
 
 const trimWeekday = pipe(truncateString(3), capitalize);
 
-// ToDo: Add list view
 export function EventCalendar() {
     const { id: eventId } = useParams();
     if (!eventId) {
@@ -224,7 +223,6 @@ export function EventCalendar() {
         });
     };
 
-    // ToDo: get allChoices[dayData.day] and filter by availability and do Object.keys().len
     return (
         <div>
             <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">

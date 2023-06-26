@@ -1,7 +1,5 @@
 "use server";
 
-// ToDo: Add HashIds -> npm i hashids
-
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -24,7 +22,6 @@ type NewEventSchema = Partial<z.infer<typeof newEventSchema>>;
 // ToDo: @authenticated
 export async function AddEvent(newEvent: NewEventSchema) {
     const payload = newEventSchema.parse(newEvent);
-    // ToDo: Take owner from token/storage
     const onwerId = 1;
 
     const event = {
