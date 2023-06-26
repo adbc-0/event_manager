@@ -8,6 +8,7 @@ type EventsResponse = {
     owner_id: number;
 };
 
+// ToDo: @authenticated
 export async function GET() {
     const rows = await postgres<EventsResponse[]>`
         SELECT id, name, owner_id FROM event.events;

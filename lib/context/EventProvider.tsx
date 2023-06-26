@@ -20,6 +20,7 @@ import {
 } from "~/services/dayJsFacade";
 import { ServerError, chunks } from "~/utils/index";
 import { useAuth } from "~/hooks/use-auth";
+import { useSsc } from "~/hooks/use-ssc";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
     AllAvailability,
@@ -61,7 +62,6 @@ type UsernameChangeRecalculateAction = {
     type: (typeof EventActionEnum)["USER_CHANGE"];
     payload: {
         username: string;
-        allChoices: AllUsersAvailabilityChoices;
     };
 };
 type DaySelectAction = {
@@ -210,24 +210,9 @@ function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
         case EventActionEnum.USER_CHANGE: {
             const clone = structuredClone(state);
-            const maxMonthDay = getLastDayOfMonth(state.calendarDate);
 
-            clone.allChoices = parseAllChoices(
-                action.payload.allChoices,
-                maxMonthDay,
-            );
-            clone.allChoicesBackup = parseAllChoices(
-                action.payload.allChoices,
-                maxMonthDay,
-            );
-            clone.ownChoices = parseOwnChoices(
-                action.payload.allChoices["orzel"],
-                maxMonthDay,
-            );
-            clone.ownChoicesBackup = parseOwnChoices(
-                action.payload.allChoices["orzel"],
-                maxMonthDay,
-            );
+            clone.allChoices = state.allChoicesBackup;
+            clone.ownChoices = state.ownChoicesBackup;
             clone.isDirty = false;
 
             return state;
@@ -303,6 +288,7 @@ function eventReducer(state: EventState, action: EventActions) {
 }
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
+    const { isServer } = useSsc();
     const { username } = useAuth();
     const { replace } = useRouter();
     const [eventControl, eventDispatch] = useReducer(
@@ -311,9 +297,11 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     );
     const { calendarDate } = eventControl;
 
-    // ToDo: Runs one extra time because of changing username
-    // I just want to recalculate choices without fetching choices again
     useEffect(() => {
+        if (isServer) {
+            return;
+        }
+
         const abortController = new AbortController();
 
         async function initEventCalendar() {
@@ -371,7 +359,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         return () => {
             abortController.abort();
         };
-    }, [eventId, username, replace]);
+    }, [eventId, username, replace, isServer]);
 
     const getCurrentMonthInChunks = useCallback(() => {
         const monthDaysData = createMonthDays(calendarDate);

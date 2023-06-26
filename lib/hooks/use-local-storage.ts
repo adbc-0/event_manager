@@ -1,31 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { LocalStorageKeys } from "~/constants";
-import { Nullable, Values } from "~/typescript";
-
-type StorageKey = Values<typeof LocalStorageKeys>;
-
-type EventUserStore = {
-    name: string;
-};
-
-type StorageObject<T extends StorageKey> = T extends "event_user_name"
-    ? Nullable<EventUserStore>
-    : never;
-
-function readKeyFromStorage<T extends StorageKey>(storageKey: T) {
-    const raw = window.localStorage.getItem(storageKey);
-    if (!raw) {
-        return null;
-    }
-
-    try {
-        return JSON.parse(raw) as StorageObject<T>;
-    } catch (exception) {
-        window.localStorage.removeItem(storageKey);
-        throw exception;
-    }
-}
+import { readKeyFromStorage } from "~/services/localStorage";
+import { Nullable, StorageKey, StorageObject } from "~/typescript";
 
 const STORAGE_EVENT = "storage"; // https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event
 

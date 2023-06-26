@@ -52,7 +52,6 @@ const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
-    const owner_id = 1;
 
     const date = searchParams.get("date");
     const isValid = date ? validateEventParamDate(date) : null;
@@ -70,9 +69,7 @@ export async function GET(request: Request, { params }: RequestParams) {
             e.name,
             e.owner_id
         FROM event.events AS e
-        WHERE
-            e.id = ${params.id}
-            AND e.owner_id = ${owner_id};
+        WHERE e.id = ${params.id};
     `;
 
     if (!event) {

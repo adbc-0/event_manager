@@ -4,24 +4,34 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { postgres } from "~/services/postgres";
+import { getAnonymousUserId } from "../../genericQueries";
 
 const changeAvailabilitySchema = z.object({
-    eventId: z.string(),
     choices: z.record(z.string(), z.string()),
     date: z.object({
         day: z.number(),
         month: z.number(),
         year: z.number(),
     }),
+    eventId: z.string(),
+    userName: z.string().optional(),
 });
 
 type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
 
+// ToDo: @authenticated
 export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
-    const { choices, date, eventId } = changeAvailabilitySchema.parse(payload);
+    const { choices, date, eventId, userName } =
+        changeAvailabilitySchema.parse(payload);
 
-    // ToDo: I can take user value from localstorage/token
-    const ownerId = 1;
+    const authUser = null;
+
+    const ownerId = authUser ? authUser : await getAnonymousUserId(userName);
+
+    if (!ownerId) {
+        throw new Error("unauthorized");
+    }
+
     const [{ id: monthId }] = await postgres<{ id: number }[]>`
         SELECT
             id
@@ -67,7 +77,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
 }
 
 // ToDo: before release
-// Improve username handling -> get account from token, 
+// Improve username handling -> get account from token,
 // Add hash ids
 // Add list view
 // Last style tweaks

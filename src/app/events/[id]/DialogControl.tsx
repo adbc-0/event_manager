@@ -4,10 +4,12 @@ import { useParams } from "next/navigation";
 import { EventActionEnum } from "~/constants";
 import { ChangeAvailability } from "~/api/events/[id]/actions";
 import { useEvent } from "~/context/EventProvider";
+import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 
 export function DialogControl() {
     const { id: eventId } = useParams();
+    const { username } = useAuth();
     if (!eventId) {
         throw new Error("Missing event url param");
     }
@@ -22,7 +24,7 @@ export function DialogControl() {
         };
 
         startTransition(() => {
-            ChangeAvailability(payload);
+            ChangeAvailability({ ...payload, userName: username });
             eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP });
         });
     };

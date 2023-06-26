@@ -55,7 +55,10 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
             }
 
             setUsername(newUsername);
-            eventDispatch({ type: EventActionEnum.RESET_CHOICES });
+            eventDispatch({
+                type: EventActionEnum.USER_CHANGE,
+                payload: { username: newUsername },
+            });
         };
 
         return (
