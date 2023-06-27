@@ -53,10 +53,17 @@ const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
-
     const trueEventId = hashIds.decode(params.id).toString();
+
     const date = searchParams.get("date");
     const isValid = date ? validateEventParamDate(date) : null;
+
+    if (!trueEventId) {
+        return NextResponse.json(
+            { message: "Invalid event id format" },
+            { status: 400 },
+        );
+    }
 
     if (isValid === false) {
         return NextResponse.json(
