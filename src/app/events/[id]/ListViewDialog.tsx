@@ -33,7 +33,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
 
             ref.current.close();
         };
-        console.log(allChoices);
+
         return (
             <dialog ref={ref} className="p-0 rounded-md" open={false}>
                 <GlassmorphicPane
@@ -55,22 +55,34 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                             onClick={closeModal}
                         />
                     </Button>
-                    <div>
-                        {Object.entries(allChoices).map(([day, dayChoices]) => (
-                            <div key={day}>
-                                <p>{day}</p>
-                                <div>
-                                    {Object.entries(dayChoices).map(
-                                        ([user, choice]) => (
-                                            <p key={day + user} className="inline">
-                                                {user}: {choice}
-                                            </p>
-                                        ),
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <table className="table-fixed">
+                        <thead>
+                            <tr>
+                                {/* get all unique users */}
+                                <th>&nbsp;</th>
+                                <th>orzel</th>
+                                <th>1</th>
+                                <th>2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(allChoices).map(
+                                ([day, dayChoices]) => (
+                                    <tr key={day}>
+                                        <td>{day}</td>
+                                        {/* print choices by users order in header */}
+                                        {Object.entries(dayChoices).map(
+                                            ([user, choice]) => (
+                                                <td key={day + user}>
+                                                    {choice}
+                                                </td>
+                                            ),
+                                        )}
+                                    </tr>
+                                ),
+                            )}
+                        </tbody>
+                    </table>
                 </GlassmorphicPane>
             </dialog>
         );
