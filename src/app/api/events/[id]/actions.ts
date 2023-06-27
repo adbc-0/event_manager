@@ -75,8 +75,3 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
 
     revalidatePath(`/calendar/${eventId}`);
 }
-
-// ToDo: before release
-// Add hash ids
-// Add list view
-// Last style tweaks

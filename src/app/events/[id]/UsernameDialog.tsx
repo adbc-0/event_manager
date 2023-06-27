@@ -101,7 +101,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                         <div className="flex justify-evenly">
                             <Button
                                 theme="DISCARD"
-                                className="flex-auto mx-2 py-2"
+                                className="flex-1 mx-2 py-2"
                                 type="button"
                                 disabled={!username}
                                 onClick={closeIdentityModal}
@@ -110,7 +110,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             </Button>
                             <Button
                                 theme="SAVE"
-                                className="flex-auto mx-2 py-2"
+                                className="flex-1 mx-2 py-2"
                                 type="submit"
                             >
                                 Submit

@@ -68,11 +68,11 @@ const MONTHS = [
 
 const dayColor: Record<DayColorType, string> = {
     ALL_SELECTED:
-        "bg-gradient-to-br from-sky-400 via-teal-400 to-green-400 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800",
+        "bg-gradient-to-br from-sky-400 via-teal-400 to-emerald-400 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800",
     DIFFERENT_MONTH: "opacity-50",
-    MAYBE_AVAILABLE: "bg-orange-400 hover:bg-orange-400/80 text-neutral-800",
-    MY_AVAILABLE: "bg-green-400 hover:bg-green-400/80 text-neutral-800",
-    UNAVAILABLE: "bg-rose-400 hover:bg-rose-400/80 text-neutral-800",
+    MAYBE_AVAILABLE: "bg-orange-300 hover:bg-orange-300/80 text-neutral-800",
+    MY_AVAILABLE: "bg-emerald-300 hover:bg-emerald-300/80 text-neutral-800",
+    UNAVAILABLE: "bg-rose-300 hover:bg-rose-300/80 text-neutral-800",
     TODAY: "bg-white/10",
     UNSELECTED: "hover:bg-white/10",
 } as const;
@@ -224,7 +224,7 @@ export function EventCalendar() {
     };
 
     return (
-        <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-3 p-3">
+        <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-1 p-3">
             <div className="flex justify-between items-center">
                 <button
                     className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
@@ -260,7 +260,6 @@ export function EventCalendar() {
                             {week.chunk.map((dayData) => (
                                 <td key={dayData.key}>
                                     <div className="aspect-square relative">
-                                        {/* Use onpointerdown or onmousedown */}
                                         <button
                                             className={`w-full h-full disabled:cursor-not-allowed
                                                         ${

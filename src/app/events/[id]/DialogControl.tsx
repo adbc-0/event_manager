@@ -7,7 +7,7 @@ import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 
-export function DialogControl() {
+export function CalendarControl() {
     const { id: eventId } = useParams();
     const { username } = useAuth();
     if (!eventId) {

@@ -20,6 +20,7 @@ export function UsernameSection({ openModal }: UsernameSectionProps) {
         <section className="flex justify-center items-center gap-1 m-5">
             <h2 className="text-2xl">Welcome {username}</h2>
             <Button
+                aria-label="edit username"
                 type="button"
                 theme="BASIC"
                 className="w-9 h-9"
