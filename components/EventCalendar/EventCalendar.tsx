@@ -14,11 +14,16 @@ import {
     getNextMonthDate,
     getPrevMonthDate,
 } from "~/services/dayJsFacade";
-import { capitalize, truncateString, pipe } from "~/utils/index";
+import {
+    capitalize,
+    truncateString,
+    pipe,
+    getUsersFromChoices,
+} from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAuth } from "~/hooks/use-auth";
 import { useAbort } from "~/hooks/use-abort";
-import { AllAvailability, EventResponse } from "~/typescript";
+import { EventResponse } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumValues>;
 
@@ -129,12 +134,6 @@ function getColorType(
     return DayColorTypeEnum.UNSELECTED;
 }
 
-function getUserCountFromChoices(choices: AllAvailability) {
-    return [
-        ...new Set(Object.values(choices).flatMap((obj) => Object.keys(obj))),
-    ].length;
-}
-
 const trimWeekday = pipe(truncateString(3), capitalize);
 
 export function EventCalendar() {
@@ -154,7 +153,7 @@ export function EventCalendar() {
     } = useEvent();
 
     const usersCount = useMemo(
-        () => getUserCountFromChoices(allChoices),
+        () => getUsersFromChoices(allChoices).length,
         [allChoices],
     );
 

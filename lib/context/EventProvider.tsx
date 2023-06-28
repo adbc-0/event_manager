@@ -165,7 +165,7 @@ function searchChoicesForMatch(
     return null;
 }
 
-// fixable with currying and checking before if choices exists
+// ToDo: fixable with currying and checking before if choices exists
 function parseOwnChoices(choices: AvailabilityChoices, maxMonthDay: number) {
     if (!choices) {
         return {};
