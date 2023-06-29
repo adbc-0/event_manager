@@ -29,6 +29,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     const ownerId = authUser ? authUser : await getAnonymousUserId(userName);
 
     if (!ownerId) {
+        // ToDo: create new anonymous user
         throw new Error("unauthorized");
     }
 
