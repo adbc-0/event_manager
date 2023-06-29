@@ -3,6 +3,9 @@ import { forwardRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 
 import closeIcon from "~/public/close.svg";
+import checkCircleIcon from "~/public/check_circle.svg";
+import deleteCircleIcon from "~/public/delete_circle.svg";
+import questionCircleIcon from "~/public/question_cricle.svg";
 
 import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
@@ -40,17 +43,13 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
         );
 
         const availabilityColor = {
-            available: "bg-green-500 backdrop-filter bg-opacity-10",
-            maybe_available: "bg-green-900",
-            unavailable: "bg-green-900",
+            available: "bg-green-600 backdrop-filter bg-opacity-10",
+            maybe_available: "bg-orange-600 backdrop-filter bg-opacity-10",
+            unavailable: "bg-red-600 backdrop-filter bg-opacity-10",
         };
 
         return (
-            <dialog
-                ref={ref}
-                className="p-0 rounded-md h-[128] w-full"
-                open={false}
-            >
+            <dialog ref={ref} className="p-0 rounded-md w-full" open={false}>
                 <GlassmorphicPane innerClassName="py-6 px-4">
                     <div className="flex flex-col">
                         <div className="flex justify-end mb-4">
@@ -58,7 +57,8 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                 aria-label="close list view button"
                                 type="button"
                                 theme="BASIC"
-                                className="w-9 h-9"
+                                className="w-9 h-9 bg-transparent border-opacity-40"
+                                onClick={closeModal}
                             >
                                 <Image
                                     src={closeIcon}
@@ -66,14 +66,13 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                     width={24}
                                     height={24}
                                     alt="close modal icon"
-                                    onClick={closeModal}
                                 />
                             </Button>
                         </div>
                         <div className="relative basis-96">
-                            <div className="absolute overflow-auto inset-0 shadow-md sm:rounded-lg">
-                                <table className="table-fixed w-full text-center text-sm text-gray-400">
-                                    <thead className="text-xs uppercase text-gray-400 h-10 bg-gray-900 backdrop-filter bg-opacity-10">
+                            <div className="absolute overflow-auto inset-0 shadow-md rounded-lg">
+                                <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
+                                    <thead className="text-xs uppercase text-gray-300 h-10 bg-gray-900 backdrop-filter bg-opacity-30">
                                         <tr>
                                             <th
                                                 scope="col"
@@ -97,11 +96,11 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                             ([day, dayChoices]) => (
                                                 <tr
                                                     key={day}
-                                                    className="border-b border-gray-900 bg-gray-100 backdrop-filter bg-opacity-10"
+                                                    className="bg-gray-300 backdrop-filter bg-opacity-10"
                                                 >
                                                     <th
                                                         scope="row"
-                                                        className="px-2 py-2 font-medium text-gray-400 whitespace-nowrap"
+                                                        className="px-2 py-2 font-medium text-gray-300"
                                                     >
                                                         {day}
                                                     </th>
@@ -116,7 +115,29 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                                                 ]
                                                             }`}
                                                         >
-                                                            {dayChoices[user]}
+                                                            {dayChoices[
+                                                                user
+                                                            ] ? (
+                                                                <Image
+                                                                    src={
+                                                                        dayChoices[
+                                                                            user
+                                                                        ] ===
+                                                                        "available"
+                                                                            ? checkCircleIcon
+                                                                            : dayChoices[
+                                                                                  user
+                                                                              ] ===
+                                                                              "maybe_available"
+                                                                            ? questionCircleIcon
+                                                                            : deleteCircleIcon
+                                                                    }
+                                                                    className="m-auto"
+                                                                    width={24}
+                                                                    height={24}
+                                                                    alt="close modal icon"
+                                                                />
+                                                            ) : null}
                                                         </td>
                                                     ))}
                                                 </tr>
