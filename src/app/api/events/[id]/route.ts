@@ -61,7 +61,7 @@ export async function GET(request: Request, { params }: RequestParams) {
     if (!trueEventId) {
         return NextResponse.json(
             { message: "Invalid event id format" },
-            { status: 400 },
+            { status: 404 },
         );
     }
 
