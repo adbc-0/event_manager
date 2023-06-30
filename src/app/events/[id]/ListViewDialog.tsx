@@ -3,15 +3,13 @@ import { forwardRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 
 import closeIcon from "~/public/close.svg";
-import checkCircleIcon from "~/public/check_circle.svg";
-import deleteCircleIcon from "~/public/delete_circle.svg";
-import questionCircleIcon from "~/public/question_cricle.svg";
 
 import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { ReactProps } from "~/typescript";
 import { getUsersFromChoices } from "~/utils/eventUtils";
+import { ChoiceRow } from "./ChoiceRow";
 
 type ListViewDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -42,12 +40,6 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
             [allChoices],
         );
 
-        const availabilityColor = {
-            available: "bg-green-600 backdrop-filter bg-opacity-10",
-            maybe_available: "bg-orange-600 backdrop-filter bg-opacity-10",
-            unavailable: "bg-red-600 backdrop-filter bg-opacity-10",
-        };
-
         return (
             <dialog ref={ref} className="p-0 rounded-md w-full" open={false}>
                 <GlassmorphicPane innerClassName="py-6 px-4">
@@ -72,7 +64,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                         <div className="relative basis-96">
                             <div className="absolute overflow-auto inset-0 shadow-md rounded-lg">
                                 <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
-                                    <thead className="text-xs uppercase text-gray-300 h-10 bg-gray-900 backdrop-filter bg-opacity-30">
+                                    <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-neutral-900 backdrop-filter backdrop-blur-3xl bg-opacity-30">
                                         <tr>
                                             <th
                                                 scope="col"
@@ -94,53 +86,11 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                     <tbody>
                                         {Object.entries(allChoices).map(
                                             ([day, dayChoices]) => (
-                                                <tr
-                                                    key={day}
-                                                    className="bg-gray-300 backdrop-filter bg-opacity-10"
-                                                >
-                                                    <th
-                                                        scope="row"
-                                                        className="px-2 py-2 font-medium text-gray-300"
-                                                    >
-                                                        {day}
-                                                    </th>
-                                                    {users.map((user) => (
-                                                        <td
-                                                            key={day + user}
-                                                            className={`px-2 py-2 ${
-                                                                availabilityColor[
-                                                                    dayChoices[
-                                                                        user
-                                                                    ]
-                                                                ]
-                                                            }`}
-                                                        >
-                                                            {dayChoices[
-                                                                user
-                                                            ] ? (
-                                                                <Image
-                                                                    src={
-                                                                        dayChoices[
-                                                                            user
-                                                                        ] ===
-                                                                        "available"
-                                                                            ? checkCircleIcon
-                                                                            : dayChoices[
-                                                                                  user
-                                                                              ] ===
-                                                                              "maybe_available"
-                                                                            ? questionCircleIcon
-                                                                            : deleteCircleIcon
-                                                                    }
-                                                                    className="m-auto"
-                                                                    width={24}
-                                                                    height={24}
-                                                                    alt="close modal icon"
-                                                                />
-                                                            ) : null}
-                                                        </td>
-                                                    ))}
-                                                </tr>
+                                                <ChoiceRow
+                                                    day={day}
+                                                    dayChoices={dayChoices}
+                                                    users={users}
+                                                />
                                             ),
                                         )}
                                     </tbody>
