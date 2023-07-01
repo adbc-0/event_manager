@@ -88,6 +88,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                             {Object.entries(allChoices).map(
                                                 ([day, dayChoices]) => (
                                                     <ChoiceRow
+                                                        key={day}
                                                         day={day}
                                                         dayChoices={dayChoices}
                                                         users={users}

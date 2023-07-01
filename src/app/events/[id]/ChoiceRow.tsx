@@ -29,7 +29,7 @@ const iconSwitch: Record<AvailabilityEnumValues, any> = {
 
 export function ChoiceRow({ day, dayChoices, users }: ChoiceRowProps) {
     return (
-        <tr key={day} className="bg-gray-300 backdrop-filter bg-opacity-10">
+        <tr className="bg-gray-300 backdrop-filter bg-opacity-10">
             <th scope="row" className="px-2 py-2 font-medium text-gray-300">
                 {day}
             </th>
