@@ -1,4 +1,8 @@
 import { forwardRef } from "react";
+import Image from "next/image";
+
+import okIcon from "~/public/acceptRemovalButton.svg";
+import cancelIcon from "~/public/rejectButton.svg";
 
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
@@ -36,19 +40,33 @@ export const RemovalDialog = forwardRef<Ref, RemovalDialogProps>(
                         </p>
                         <div className="flex justify-evenly mt-6">
                             <Button
+                                aria-label="Close dialog"
                                 type="reset"
-                                theme="DISCARD"
+                                theme="BASIC"
                                 className="flex-1 mx-2 py-2"
                                 onClick={closeModal}
                             >
-                                Cancel
+                                <Image
+                                    src={cancelIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="cancel icon"
+                                />
                             </Button>
                             <Button
+                                aria-label="Remove calendar"
                                 type="submit"
-                                theme="SAVE"
+                                theme="DISCARD"
                                 className="flex-1 mx-2 py-2"
                             >
-                                Ok
+                                <Image
+                                    src={okIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="accept icon"
+                                />
                             </Button>
                         </div>
                     </form>

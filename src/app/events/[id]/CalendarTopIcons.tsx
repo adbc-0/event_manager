@@ -31,7 +31,7 @@ export function CalendarTopIcons({
                         className="cursor-pointer m-auto"
                         width={24}
                         height={24}
-                        alt="edit username"
+                        alt="list icon"
                     />
                 </Button>
                 <Button
@@ -46,7 +46,7 @@ export function CalendarTopIcons({
                         className="cursor-pointer m-auto"
                         width={24}
                         height={24}
-                        alt="edit username"
+                        alt="trash can icon"
                     />
                 </Button>
             </div>

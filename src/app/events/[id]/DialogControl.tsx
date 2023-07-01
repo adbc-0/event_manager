@@ -1,5 +1,9 @@
 import { startTransition } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
+
+import okIcon from "~/public/acceptButton.svg";
+import cancelIcon from "~/public/rejectButton.svg";
 
 import { EventActionEnum } from "~/constants";
 import { ChangeAvailability } from "~/api/events/[id]/actions";
@@ -38,22 +42,36 @@ export function CalendarControl() {
     }
 
     return (
-        <div className="flex self-start md:w-128 md:justify-self-center gap-4 mx-1">
+        <div className="flex self-start md:w-128 md:justify-self-center gap-4 mx-1 mt-3">
             <Button
+                aria-label="Revert choices"
                 className="flex-auto py-2"
-                theme="DISCARD"
+                theme="BASIC"
                 type="reset"
                 onClick={onResetClick}
             >
-                Reset
+                <Image
+                    src={cancelIcon}
+                    className="cursor-pointer m-auto"
+                    width={24}
+                    height={24}
+                    alt="cancel icon"
+                />
             </Button>
             <Button
+                aria-label="Submit choices"
                 className="flex-auto py-2"
                 theme="SAVE"
                 type="submit"
                 onClick={onSubmitClick}
             >
-                Submit
+                <Image
+                    src={okIcon}
+                    className="cursor-pointer m-auto"
+                    width={24}
+                    height={24}
+                    alt="accept icon"
+                />
             </Button>
         </div>
     );

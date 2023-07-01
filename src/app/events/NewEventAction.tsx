@@ -3,6 +3,9 @@
 import { useRef, useTransition } from "react";
 import Image from "next/image";
 
+import okIcon from "~/public/acceptButton.svg";
+import cancelIcon from "~/public/rejectButton.svg";
+
 import addIcon from "~/public/new.svg";
 import { AddEvent } from "../api/events/actions";
 import { Button } from "~/components/Button/Button";
@@ -48,7 +51,7 @@ export function NewEventAction() {
                     className="cursor-pointer m-auto"
                     width={24}
                     height={24}
-                    alt="edit username"
+                    alt="add new entity icon"
                 />
             </Button>
             <dialog ref={dialogRef} className="p-0 rounded-md">
@@ -73,19 +76,33 @@ export function NewEventAction() {
                         />
                         <div className="flex justify-evenly gap-2">
                             <Button
+                                aria-label="Close dialog"
                                 type="reset"
-                                theme="DISCARD"
+                                theme="BASIC"
                                 className="flex-1 py-2"
                                 onClick={() => dialogRef.current?.close()}
                             >
-                                Cancel
+                                <Image
+                                    src={cancelIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="cancel icon"
+                                />
                             </Button>
                             <Button
+                                aria-label="Submit new event"
                                 type="submit"
                                 theme="SAVE"
                                 className="flex-1 py-2"
                             >
-                                Submit
+                                <Image
+                                    src={okIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="accept icon"
+                                />
                             </Button>
                         </div>
                     </form>

@@ -31,7 +31,7 @@ export function UsernameSection({ openModal }: UsernameSectionProps) {
                     className="cursor-pointer m-auto"
                     width={24}
                     height={24}
-                    alt="edit username"
+                    alt="edit icon"
                 />
             </Button>
         </section>

@@ -1,4 +1,8 @@
 import { FormEvent, forwardRef, useRef } from "react";
+import Image from "next/image";
+
+import okIcon from "~/public/acceptButton.svg";
+import cancelIcon from "~/public/rejectButton.svg";
 
 import { EventActionEnum } from "~/constants";
 import { useEvent } from "~/context/EventProvider";
@@ -101,20 +105,34 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                         />
                         <div className="flex justify-evenly">
                             <Button
-                                theme="DISCARD"
+                                aria-label="Close dialog"
+                                theme="BASIC"
                                 className="flex-1 mx-2 py-2"
                                 type="button"
                                 disabled={!username}
                                 onClick={closeIdentityModal}
                             >
-                                Cancel
+                                <Image
+                                    src={cancelIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="cancel icon"
+                                />
                             </Button>
                             <Button
+                                aria-label="Submit changes"
                                 theme="SAVE"
                                 className="flex-1 mx-2 py-2"
                                 type="submit"
                             >
-                                Submit
+                                <Image
+                                    src={okIcon}
+                                    className="cursor-pointer m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="accept icon"
+                                />
                             </Button>
                         </div>
                     </form>
