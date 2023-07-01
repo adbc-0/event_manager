@@ -42,8 +42,8 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
 
         return (
             <dialog ref={ref} className="p-0 rounded-md w-full" open={false}>
-                <GlassmorphicPane innerClassName="py-6 px-4">
-                    <div className="flex flex-col">
+                <GlassmorphicPane innerClassName="py-6 px-4 h-96">
+                    <div className="flex flex-col h-full">
                         <div className="flex justify-end mb-4">
                             <Button
                                 aria-label="close list view button"
@@ -61,40 +61,42 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                 />
                             </Button>
                         </div>
-                        <div className="relative basis-96">
-                            <div className="absolute overflow-auto inset-0 shadow-md rounded-lg">
-                                <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
-                                    <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-neutral-900 backdrop-filter backdrop-blur-3xl bg-opacity-30">
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                className="px-2 py-2"
-                                            >
-                                                &nbsp;
-                                            </th>
-                                            {users.map((user) => (
+                        <div className="grow">
+                            <div className="relative h-full">
+                                <div className="absolute overflow-auto inset-0 shadow-md">
+                                    <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
+                                        <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-zinc-800">
+                                            <tr>
                                                 <th
                                                     scope="col"
-                                                    key={user}
                                                     className="px-2 py-2"
                                                 >
-                                                    {user}
+                                                    &nbsp;
                                                 </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Object.entries(allChoices).map(
-                                            ([day, dayChoices]) => (
-                                                <ChoiceRow
-                                                    day={day}
-                                                    dayChoices={dayChoices}
-                                                    users={users}
-                                                />
-                                            ),
-                                        )}
-                                    </tbody>
-                                </table>
+                                                {users.map((user) => (
+                                                    <th
+                                                        scope="col"
+                                                        key={user}
+                                                        className="px-2 py-2"
+                                                    >
+                                                        {user}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {Object.entries(allChoices).map(
+                                                ([day, dayChoices]) => (
+                                                    <ChoiceRow
+                                                        day={day}
+                                                        dayChoices={dayChoices}
+                                                        users={users}
+                                                    />
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
