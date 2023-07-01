@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
-import { getAnonymousUserId } from "../../genericQueries";
+import { createMonth, getAnonymousUserId } from "../../queries";
 
 const changeAvailabilitySchema = z.object({
     choices: z.record(z.string(), z.string()),
@@ -21,11 +22,19 @@ type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
 
 // ToDo: @authenticated
 export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
-    const { choices, date, eventId, userName } =
-        changeAvailabilitySchema.parse(payload);
+    const {
+        choices,
+        date,
+        eventId: encodedEventId,
+        userName,
+    } = changeAvailabilitySchema.parse(payload);
+
+    const [eventId, decodingError] = hashId.decode(encodedEventId);
+    if (decodingError) {
+        throw new Error(decodingError);
+    }
 
     const authUser = null;
-
     const ownerId = authUser ? authUser : await getAnonymousUserId(userName);
 
     if (!ownerId) {
@@ -33,9 +42,8 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         throw new Error("unauthorized");
     }
 
-    const [{ id: monthId }] = await postgres<{ id: number }[]>`
-        SELECT
-            id
+    const [maybeMonth] = await postgres<{ id: number }[]>`
+        SELECT id
         FROM event.events_months
         WHERE
             event_id=${eventId}
@@ -44,14 +52,12 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         ;
     `;
 
-    if (!monthId) {
-        throw new Error("unknown month id");
-    }
+    const month = maybeMonth ? maybeMonth : await createMonth(date);
 
     const newEvents = Object.entries(choices).map(([k, v]) => ({
         day: k,
         choice: v,
-        event_month_id: monthId,
+        event_month_id: month.id,
         user_id: ownerId,
     }));
 
@@ -59,7 +65,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         await postgres`
             DELETE FROM event.availability_choices
             WHERE
-                event_month_id=${monthId}
+                event_month_id=${month.id}
                 AND user_id=${ownerId};
         `;
 

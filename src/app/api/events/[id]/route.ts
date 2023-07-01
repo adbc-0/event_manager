@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 
 import { AvailabilityEnumValues } from "~/constants";
 import { groupBy } from "~/utils/index";
+import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import {
     decodeEventParamDate,
     validateEventParamDate,
 } from "~/utils/eventUtils";
 import { AvailabilityChoices, EventResponse, HashId } from "~/typescript";
-import { hashIds } from "~/services/hashId";
 
 type Event = {
     event_id: HashId;
@@ -53,12 +53,12 @@ const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
-    const trueEventId = hashIds.decode(params.id).toString();
+    const [eventId, decodingError] = hashId.decode(params.id);
 
     const date = searchParams.get("date");
     const isValid = date ? validateEventParamDate(date) : null;
 
-    if (!trueEventId) {
+    if (decodingError) {
         return NextResponse.json(
             { message: "Invalid event id format" },
             { status: 404 },
@@ -78,7 +78,7 @@ export async function GET(request: Request, { params }: RequestParams) {
             e.name,
             e.owner_id
         FROM event.events AS e
-        WHERE e.id = ${trueEventId};
+        WHERE e.id = ${eventId};
     `;
 
     if (!event) {

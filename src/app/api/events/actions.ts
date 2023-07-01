@@ -4,15 +4,20 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { postgres } from "~/services/postgres";
-import { hashIds } from "~/services/hashId";
+import { hashId } from "~/services/hashId";
 
 // ToDo: @authenticated
-export async function DeleteEvent(eventId: string) {
-    const trueEventId = hashIds.decode(eventId).toString();
+export async function DeleteEvent(encodedEventId: string) {
+    const [eventId, decodingError] = hashId.decode(encodedEventId);
+    if (decodingError) {
+        throw new Error(decodingError);
+    }
+
     await postgres`
-        DELETE FROM event.events WHERE id=${trueEventId};
+        DELETE FROM event.events WHERE id=${eventId};
     `;
-    revalidatePath(`/calendar/${trueEventId}`);
+
+    revalidatePath(`/calendar/${eventId}`);
 }
 
 const newEventSchema = z.object({
