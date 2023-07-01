@@ -7,6 +7,7 @@ import addIcon from "~/public/new.svg";
 import { AddEvent } from "../api/events/actions";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
+import { Input } from "~/components/Input/Input";
 
 export function NewEventAction() {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
@@ -58,10 +59,10 @@ export function NewEventAction() {
                         onSubmit={submitNewEvent}
                     >
                         <h2 className="text-xl mb-2">Create new event</h2>
-                        <input
+                        <Input
                             ref={inputRef}
                             aria-label="new event name"
-                            className="text-center border border-black my-6 py-2 block m-auto rounded-md bg-zinc-900 autofill:bg-zinc-950 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40"
+                            className="text-center my-6 py-2 mx-auto"
                             type="text"
                             placeholder="event name"
                             name="event_name"

@@ -6,6 +6,7 @@ import { useSsc } from "~/hooks/use-ssc";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
+import { Input } from "~/components/Input/Input";
 import { ReactProps } from "~/typescript";
 
 type UsernameDialogProps = ReactProps;
@@ -85,10 +86,10 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             warning: using someone elses identifier will make
                             you an sus impostor
                         </p>
-                        <input
+                        <Input
                             ref={nameInputRef}
                             type="text"
-                            className="text-center border border-black my-6 py-2 block m-auto rounded-md bg-zinc-900 autofill:bg-zinc-950 bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-40"
+                            className="text-center my-6 py-2 mx-auto"
                             name="username"
                             autoComplete="username"
                             autoCorrect="off"

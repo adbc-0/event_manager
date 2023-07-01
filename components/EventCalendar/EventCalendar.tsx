@@ -223,7 +223,7 @@ export function EventCalendar() {
     };
 
     return (
-        <div className="bg-neutral-700 rounded-md border border-black max-w-sm m-auto my-1 p-3">
+        <div className="bg-neutral-700 rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
             <div className="flex justify-between items-center">
                 <button
                     className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"

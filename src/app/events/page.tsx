@@ -33,14 +33,14 @@ export default async function Page() {
                     <h2>Events</h2>
                     <NewEventAction />
                 </div>
-                <div className="border border-black bg-neutral-700 mt-1 rounded-md">
+                <div className="border border-zinc-900 bg-neutral-700 mt-1 rounded-md">
                     {events.length ? (
-                        <div className="my-10 w-60 m-auto border border-black">
+                        <div className="my-10 w-60 m-auto border border-zinc-900">
                             {events.map(({ id, name }) => (
                                 <Link
                                     key={id}
                                     href={`/events/${id}`}
-                                    className="block py-2 bg-neutral-800 hover:bg-emerald-200 hover:text-black last:border-b-0 border-b border-b-zinc-900"
+                                    className="block py-2 bg-neutral-800 hover:bg-cyan-200 hover:text-black last:border-b-0 border-b border-b-zinc-900"
                                 >
                                     {name}
                                 </Link>

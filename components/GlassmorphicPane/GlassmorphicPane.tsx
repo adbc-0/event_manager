@@ -8,7 +8,7 @@ type GlassmorphicPaneProps = ReactProps & {
 };
 
 const outerBorderStyle =
-    "rounded-md bg-clip-border border border-black bg-gray-500 backdrop-filter backdrop-blur-3xl bg-opacity-10";
+    "rounded-md bg-clip-border border border-zinc-900 bg-gray-500 backdrop-filter backdrop-blur-3xl bg-opacity-10";
 const innerBorderStyle = "rounded-md bg-clip-border border border-white/25";
 
 export function GlassmorphicPane({

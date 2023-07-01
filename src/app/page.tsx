@@ -6,7 +6,7 @@ export default function Home() {
             <section>
                 <Link
                     href="/events"
-                    className="block bg-neutral-700 py-3 px-10 border border-black"
+                    className="block bg-neutral-700 py-3 px-10 border border-zinc-900"
                 >
                     Events
                 </Link>
