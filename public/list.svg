@@ -1,6 +1,1 @@
-<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M30 10V70" stroke="#FFFFFF" fill="red" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M70 30L10 30" stroke="#FFFFFF" fill="red" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M70 50L10 50" stroke="#FFFFFF" fill="red" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M10 14C10 11.7909 11.7909 10 14 10H66C68.2091 10 70 11.7909 70 14V66C70 68.2091 68.2091 70 66 70H14C11.7909 70 10 68.2091 10 66V14Z" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" fill="#fff"><path d="M149.825-280Q137-280 128.5-288.675q-8.5-8.676-8.5-21.5 0-12.825 8.675-21.325 8.676-8.5 21.5-8.5 12.825 0 21.325 8.675 8.5 8.676 8.5 21.5 0 12.825-8.675 21.325-8.676 8.5-21.5 8.5Zm0-170Q137-450 128.5-458.675q-8.5-8.676-8.5-21.5 0-12.825 8.675-21.325 8.676-8.5 21.5-8.5 12.825 0 21.325 8.675 8.5 8.676 8.5 21.5 0 12.825-8.675 21.325-8.676 8.5-21.5 8.5Zm0-170Q137-620 128.5-628.675q-8.5-8.676-8.5-21.5 0-12.825 8.675-21.325 8.676-8.5 21.5-8.5 12.825 0 21.325 8.675 8.5 8.676 8.5 21.5 0 12.825-8.675 21.325-8.676 8.5-21.5 8.5ZM290-280v-60h550v60H290Zm0-170v-60h550v60H290Zm0-170v-60h550v60H290Z"/></svg>
