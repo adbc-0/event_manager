@@ -8,12 +8,12 @@ import {
     decodeEventParamDate,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { AvailabilityChoices, EventResponse, HashId } from "~/typescript";
+import { AvailabilityChoices, EventResponse } from "~/typescript";
 
 type Event = {
-    event_id: HashId;
+    event_id: string;
     name: string;
-    owner_id: HashId;
+    owner_id: string;
 };
 
 type GroupedChoices = Record<string, AvailabilityChoices>;
@@ -24,7 +24,7 @@ type MonthsChoices = {
     month_id: number;
     month: number;
     year: number;
-    user_id: HashId;
+    username: string;
 };
 
 type RouteParams = {
@@ -36,7 +36,7 @@ type RequestParams = {
 };
 
 const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
-    const { choice, day, user_id } = curr;
+    const { choice, day, username: user_id } = curr;
 
     if (!prev[user_id]) {
         prev[user_id] = {
@@ -103,9 +103,10 @@ export async function GET(request: Request, { params }: RequestParams) {
             m.year,
             c.day,
             c.choice,
-            c.user_id
+            u.name AS username
         FROM event.events_months AS m
         JOIN event.availability_choices AS c ON c.event_month_id=m.id
+        JOIN system_user.system_users AS u ON u.id=c.user_id
         WHERE
             m.event_id=${event.event_id}
             ${date ? filterByDate(date) : postgres``}
