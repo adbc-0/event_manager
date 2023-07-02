@@ -18,13 +18,14 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${firaSans.className} min-h-full-dvh`}>
-
-                    <main>{children}</main>
-                    <div className="fixed bottom-0 w-full">
-                        <div className="flex w-full">
-                            <Button theme="BASIC" className="grow py-3 m-2">Login</Button>
-                        </div>
+                <main>{children}</main>
+                <div className="fixed bottom-0 w-full">
+                    <div className="flex w-full">
+                        <Button theme="BASIC" className="grow py-3 m-2">
+                            Login
+                        </Button>
                     </div>
+                </div>
             </body>
         </html>
     );
