@@ -18,7 +18,7 @@ const themeColors: Record<ButtonTheme, string> = {
 } as const;
 
 const baseButtonStyle =
-    "rounded-md shadow-md transform hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90 active:outline active:outline-offset-3";
+    "rounded-md shadow-md hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90 active:outline active:outline-offset-3";
 
 export function Button({ children, theme, className, ...props }: ButtonProps) {
     return (

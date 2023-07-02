@@ -26,7 +26,7 @@ export const RemovalDialog = forwardRef<Ref, RemovalDialogProps>(
         };
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md">
+            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
                 <GlassmorphicPane
                     outerClassName="max-w-sm"
                     innerClassName="py-6 px-4"
@@ -36,14 +36,15 @@ export const RemovalDialog = forwardRef<Ref, RemovalDialogProps>(
                             Are you sure you want to remove this event?
                         </h2>
                         <p className="text-sm text-orange-400">
-                            All event related data will be permamently removed.
+                            All data related to this event will be permamently
+                            removed.
                         </p>
                         <div className="flex justify-evenly mt-6">
                             <Button
                                 aria-label="Close dialog"
                                 type="reset"
                                 theme="BASIC"
-                                className="flex-1 mx-2 py-2"
+                                className="flex-1 mx-2 py-2 "
                                 onClick={closeModal}
                             >
                                 <Image

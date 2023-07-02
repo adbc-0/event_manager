@@ -54,7 +54,10 @@ export function NewEventAction() {
                     alt="add new entity icon"
                 />
             </Button>
-            <dialog ref={dialogRef} className="p-0 rounded-md">
+            <dialog
+                ref={dialogRef}
+                className="p-0 rounded-md open:animate-fade-in"
+            >
                 <GlassmorphicPane innerClassName="py-8 px-12">
                     <form
                         className="text-center"

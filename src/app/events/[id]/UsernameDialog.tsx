@@ -69,7 +69,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
         return (
             <dialog
                 ref={ref}
-                className="p-0 rounded-md"
+                className="p-0 rounded-md open:animate-fade-in"
                 open={!username && isBrowser}
             >
                 <GlassmorphicPane

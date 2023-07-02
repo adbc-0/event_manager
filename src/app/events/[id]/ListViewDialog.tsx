@@ -41,7 +41,11 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
         );
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md w-full" open={false}>
+            <dialog
+                ref={ref}
+                className="p-0 rounded-md w-full open:animate-fade-in"
+                open={false}
+            >
                 <GlassmorphicPane innerClassName="py-6 px-4 h-96">
                     <div className="flex flex-col h-full">
                         <div className="flex justify-end mb-4">

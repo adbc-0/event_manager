@@ -13,6 +13,13 @@
         @apply bg-transparent;
     }
 
+    dialog::backdrop {
+        @apply bg-gray-500;
+        @apply backdrop-filter;
+        @apply backdrop-blur-sm;
+        @apply bg-opacity-5;
+    }
+
     .min-h-full-dvh {
         @apply min-h-[100dvh];
     }
