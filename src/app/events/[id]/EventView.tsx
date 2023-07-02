@@ -37,7 +37,7 @@ export default function EventView() {
     };
 
     return (
-        <div className="grid grid-cols-1 items-center auto-rows-min min-h-full-dvh md:auto-rows-3">
+        <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-3">
             <h1 className="text-center text-3xl p-5">{event.name}</h1>
             <UsernameSection openModal={openIdentityModal} />
             <CalendarTopIcons
