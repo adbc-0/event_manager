@@ -5,7 +5,11 @@ import { z } from "zod";
 
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
-import { createMonth, getAnonymousUserId } from "../../queries";
+import {
+    createAnynomousUser,
+    createMonth,
+    getAnonymousUserId,
+} from "../../queries";
 
 const changeAvailabilitySchema = z.object({
     choices: z.record(z.string(), z.string()),
@@ -35,10 +39,19 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     }
 
     const authUser = null;
-    const ownerId = authUser ? authUser : await getAnonymousUserId(userName);
+    const maybeExistingUserId = authUser
+        ? authUser
+        : await getAnonymousUserId(userName);
+    const shouldCreateAnonymousUser =
+        !maybeExistingUserId && !userName && !authUser;
+    const maybeUserId = maybeExistingUserId
+        ? maybeExistingUserId
+        : shouldCreateAnonymousUser
+        ? // ToDo: non null assertion
+          await createAnynomousUser(userName!)
+        : null;
 
-    if (!ownerId) {
-        // ToDo: create new anonymous user
+    if (!maybeUserId) {
         throw new Error("unauthorized");
     }
 
@@ -52,13 +65,14 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         ;
     `;
 
-    const month = maybeMonth ? maybeMonth : await createMonth(date);
+    // ToDo: non null assertion
+    const month = maybeMonth ? maybeMonth : await createMonth(date, eventId!);
 
     const newEvents = Object.entries(choices).map(([k, v]) => ({
         day: k,
         choice: v,
         event_month_id: month.id,
-        user_id: ownerId,
+        user_id: maybeExistingUserId,
     }));
 
     await postgres.begin(async (postgres) => {
@@ -66,7 +80,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
             DELETE FROM event.availability_choices
             WHERE
                 event_month_id=${month.id}
-                AND user_id=${ownerId};
+                AND user_id=${maybeExistingUserId};
         `;
 
         await postgres`

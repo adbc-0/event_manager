@@ -86,10 +86,6 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                         <p className="text-sm">
                             choices you make will be linked to this identifier
                         </p>
-                        <p className="text-sm text-orange-400">
-                            warning: using someone elses identifier will make
-                            you an sus impostor
-                        </p>
                         <Input
                             ref={nameInputRef}
                             type="text"

@@ -21,7 +21,7 @@ export async function getAnonymousUserId(
 
 export async function createAnynomousUser(userName: string): Promise<string> {
     const [newUser] = await postgres<{ id: string }[]>`
-        INSERT INTO system_user.system_users(name,role_id)
+        INSERT INTO system_user.system_users (name,role_id)
         VALUES (${userName}, 2)
         RETURNING id;
     `;
@@ -29,10 +29,10 @@ export async function createAnynomousUser(userName: string): Promise<string> {
     return newUser.id;
 }
 
-export async function createMonth(date: CurrentDate) {
+export async function createMonth(date: CurrentDate, eventId: string) {
     const [month] = await postgres<{ id: number }[]>`
         INSERT INTO event.events_months (month, year, event_id)
-        VALUES (${date.month}, ${date.year}, {eventId})
+        VALUES (${date.month}, ${date.year}, ${eventId})
         RETURNING id;
     `;
 

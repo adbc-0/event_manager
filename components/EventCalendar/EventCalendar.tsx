@@ -274,7 +274,6 @@ export function EventCalendar() {
                                                         }
                                                         ${
                                                             dayColor[
-                                                                // ToDo: Pass the whole event
                                                                 getColorType(
                                                                     dayData,
                                                                     calendarDate.month,
@@ -307,50 +306,6 @@ export function EventCalendar() {
                                         >
                                             {dayData.day}
                                         </button>
-                                        {/* {dayData.month ===
-                                                calendarDate.month && (
-                                                <div className="flex gap-1 justify-center absolute bottom-0 left-1/2 transform -translate-x-1/2 text-black">
-                                                    <p>
-                                                        {
-                                                            Object.values(
-                                                                allChoices[
-                                                                    dayData.day
-                                                                ],
-                                                            ).filter(
-                                                                (choice) =>
-                                                                    choice ===
-                                                                    "available",
-                                                            ).length
-                                                        }
-                                                    </p>
-                                                    <p>
-                                                        {
-                                                            Object.values(
-                                                                allChoices[
-                                                                    dayData.day
-                                                                ],
-                                                            ).filter(
-                                                                (choice) =>
-                                                                    choice ===
-                                                                    "maybe_available",
-                                                            ).length
-                                                        }
-                                                    </p>
-                                                    <p>
-                                                        {
-                                                            Object.values(
-                                                                allChoices[
-                                                                    dayData.day
-                                                                ],
-                                                            ).filter(
-                                                                (choice) =>
-                                                                    choice ===
-                                                                    "unavailable",
-                                                            ).length
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )} */}
                                     </div>
                                 </td>
                             ))}
