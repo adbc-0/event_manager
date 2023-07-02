@@ -226,7 +226,7 @@ export function EventCalendar() {
         <div className="bg-neutral-700 rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
             <div className="flex justify-between items-center">
                 <button
-                    className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
+                    className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
                     onClick={onPrevMonthClick}
                 >
@@ -236,7 +236,7 @@ export function EventCalendar() {
                     {capitalize(MONTHS[calendarDate.month])} {calendarDate.year}
                 </p>
                 <button
-                    className="h-10 w-10 rounded-md hover:bg-white/10 transform active:scale-90 transition-transform"
+                    className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
                     onClick={onNextMonthClick}
                 >
@@ -264,7 +264,7 @@ export function EventCalendar() {
                                                         ${
                                                             dayData.month ===
                                                             calendarDate.month
-                                                                ? "transform active:scale-75 transition-transform"
+                                                                ? "active:scale-75 transition-transform"
                                                                 : ""
                                                         }
                                                         ${
