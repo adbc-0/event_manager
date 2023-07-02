@@ -48,7 +48,7 @@ export function NewEventAction() {
             >
                 <Image
                     src={addIcon}
-                    className="cursor-pointer m-auto"
+                    className="m-auto"
                     width={24}
                     height={24}
                     alt="add new entity icon"
@@ -87,7 +87,7 @@ export function NewEventAction() {
                             >
                                 <Image
                                     src={cancelIcon}
-                                    className="cursor-pointer m-auto"
+                                    className="m-auto"
                                     width={24}
                                     height={24}
                                     alt="cancel icon"
@@ -101,7 +101,7 @@ export function NewEventAction() {
                             >
                                 <Image
                                     src={okIcon}
-                                    className="cursor-pointer m-auto"
+                                    className="m-auto"
                                     width={24}
                                     height={24}
                                     alt="accept icon"

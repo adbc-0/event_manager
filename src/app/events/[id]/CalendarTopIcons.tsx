@@ -28,7 +28,7 @@ export function CalendarTopIcons({
                 >
                     <Image
                         src={listIcon}
-                        className="cursor-pointer m-auto"
+                        className="m-auto"
                         width={24}
                         height={24}
                         alt="list icon"
@@ -43,7 +43,7 @@ export function CalendarTopIcons({
                 >
                     <Image
                         src={trashIcon}
-                        className="cursor-pointer m-auto"
+                        className="m-auto"
                         width={24}
                         height={24}
                         alt="trash can icon"

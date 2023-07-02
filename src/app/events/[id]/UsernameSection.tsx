@@ -28,7 +28,7 @@ export function UsernameSection({ openModal }: UsernameSectionProps) {
             >
                 <Image
                     src={editIcon}
-                    className="cursor-pointer m-auto"
+                    className="m-auto"
                     width={24}
                     height={24}
                     alt="edit icon"

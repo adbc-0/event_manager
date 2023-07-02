@@ -58,7 +58,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                             >
                                 <Image
                                     src={closeIcon}
-                                    className="cursor-pointer m-auto"
+                                    className="m-auto"
                                     width={24}
                                     height={24}
                                     alt="close modal icon"

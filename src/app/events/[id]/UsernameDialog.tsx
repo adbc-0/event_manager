@@ -111,7 +111,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             >
                                 <Image
                                     src={cancelIcon}
-                                    className="cursor-pointer m-auto"
+                                    className="m-auto"
                                     width={24}
                                     height={24}
                                     alt="cancel icon"
@@ -125,7 +125,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                             >
                                 <Image
                                     src={okIcon}
-                                    className="cursor-pointer m-auto"
+                                    className="m-auto"
                                     width={24}
                                     height={24}
                                     alt="accept icon"
