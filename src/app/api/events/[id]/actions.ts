@@ -47,8 +47,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     const maybeUserId = maybeExistingUserId
         ? maybeExistingUserId
         : shouldCreateAnonymousUser
-        ? // ToDo: non null assertion
-          await createAnynomousUser(userName!)
+        ? await createAnynomousUser(userName!)
         : null;
 
     if (!maybeUserId) {
@@ -65,7 +64,6 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         ;
     `;
 
-    // ToDo: non null assertion
     const month = maybeMonth ? maybeMonth : await createMonth(date, eventId!);
 
     const newEvents = Object.entries(choices).map(([k, v]) => ({
