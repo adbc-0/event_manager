@@ -69,7 +69,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                             <div className="relative h-full">
                                 <div className="absolute overflow-auto inset-0 shadow-md">
                                     <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
-                                        <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-zinc-800">
+                                        <thead className="sticky top-[-1px] text-xs uppercase text-gray-300 h-10 bg-zinc-800">
                                             <tr>
                                                 <th
                                                     scope="col"
