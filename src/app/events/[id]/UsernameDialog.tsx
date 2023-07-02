@@ -88,6 +88,7 @@ export const UsernameDialog = forwardRef<Ref, UsernameDialogProps>(
                         </p>
                         <Input
                             ref={nameInputRef}
+                            placeholder="username"
                             type="text"
                             className="text-center my-6 py-2 mx-auto"
                             name="username"
