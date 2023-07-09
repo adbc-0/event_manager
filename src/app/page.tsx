@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+export const metadata = {
+    title: "Chaos",
+    description: "Chaos manager",
+};
+
 export default function Home() {
     return (
         <div className="flex flex-col items-center justify-between p-24">
