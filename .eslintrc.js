@@ -5,6 +5,7 @@ module.exports = {
         node: true,
     },
     extends: [
+        "next/core-web-vitals",
         "eslint:recommended",
         "plugin:jsx-a11y/recommended",
         "plugin:@typescript-eslint/recommended",
@@ -36,6 +37,9 @@ module.exports = {
         "import/resolver": {
             typescript: true,
             node: true,
+        },
+        react: {
+            version: "detect",
         },
     },
 };
