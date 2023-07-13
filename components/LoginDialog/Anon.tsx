@@ -20,7 +20,7 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
         throw new Error("Unexpected ref type");
     }
 
-    const { username } = useAuth();
+    const { username, setUsername } = useAuth();
 
     const nameInputRef = useRef<HTMLInputElement>(null);
     const usernameFormRef = useRef<HTMLFormElement>(null);
@@ -50,6 +50,8 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
         if (!newUsername) {
             return;
         }
+
+        setUsername(newUsername);
     };
 
     return (

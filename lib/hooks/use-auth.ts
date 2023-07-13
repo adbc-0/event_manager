@@ -3,7 +3,11 @@ import { useLocalStorage } from "./use-local-storage";
 import { useCallback } from "react";
 
 export function useAuth() {
-    const [username, setStorage] = useLocalStorage(LocalStorageKeys.EVENT_NAME);
+    const {
+        storageValue: username,
+        setStorage,
+        storageCleanup,
+    } = useLocalStorage(LocalStorageKeys.EVENT_NAME);
 
     const setUsername = useCallback(
         (newUserName: string) => {
@@ -12,8 +16,13 @@ export function useAuth() {
         [setStorage],
     );
 
+    const logout = useCallback(() => {
+        storageCleanup();
+    }, [storageCleanup]);
+
     return {
         username: username?.name,
         setUsername,
+        logout,
     } as const;
 }

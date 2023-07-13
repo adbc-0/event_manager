@@ -36,5 +36,14 @@ export function useLocalStorage<T extends StorageKey>(storageKey: T) {
         [storageKey],
     );
 
-    return [storageValue, setStorage] as const;
+    const storageCleanup = useCallback(() => {
+        window.localStorage.removeItem(storageKey);
+        window.dispatchEvent(new Event(STORAGE_EVENT));
+    }, [storageKey]);
+
+    return {
+        storageValue,
+        setStorage,
+        storageCleanup,
+    } as const;
 }
