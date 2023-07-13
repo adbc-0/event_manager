@@ -38,6 +38,8 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
     };
 
     const saveUserName = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         if (!usernameFormRef.current) {
             throw new Error("Ref not found");
         }
