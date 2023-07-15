@@ -27,9 +27,17 @@ export const LoginDialog = forwardRef<Ref, UsernameDialogProps>(
                 >
                     <div role="tablist" className="flex mb-5 border-collapse">
                         <button
-                            aria-selected={tab === "SIGN_IN"}
+                            aria-selected={tab === "ANONYMOUS"}
                             role="tab"
                             className="grow py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-l-md"
+                            onClick={() => setTab("ANONYMOUS")}
+                        >
+                            Anon
+                        </button>
+                        <button
+                            aria-selected={tab === "SIGN_IN"}
+                            role="tab"
+                            className="grow py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900"
                             onClick={() => setTab("SIGN_IN")}
                         >
                             Sign
@@ -37,25 +45,17 @@ export const LoginDialog = forwardRef<Ref, UsernameDialogProps>(
                         <button
                             aria-selected={tab === "LOGIN"}
                             role="tab"
-                            className="grow py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900"
+                            className="grow py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
                             onClick={() => setTab("LOGIN")}
                         >
                             Login
                         </button>
-                        <button
-                            aria-selected={tab === "ANONYMOUS"}
-                            role="tab"
-                            className="grow py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
-                            onClick={() => setTab("ANONYMOUS")}
-                        >
-                            Anon
-                        </button>
                     </div>
                     <div role="tabpanel">
                         {match(tab)
+                            .with("ANONYMOUS", () => <Anon ref={ref} />)
                             .with("LOGIN", () => <Login ref={ref} />)
                             .with("SIGN_IN", () => <Sign ref={ref} />)
-                            .with("ANONYMOUS", () => <Anon ref={ref} />)
                             .exhaustive()}
                     </div>
                 </GlassmorphicPane>

@@ -6,7 +6,7 @@ import cancelIcon from "~/public/rejectButton.svg";
 
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
-import { Input } from "../Input/Input";
+import { LabelledInput } from "../LabelledInput/LabelledInput";
 import { ReactProps } from "~/typescript";
 
 type Ref = HTMLDialogElement;
@@ -63,12 +63,18 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
             method="dialog"
             onSubmit={saveUserName}
         >
-            <h2 className="text-xl mb-2">Insert identifier</h2>
+            <h2 className="text-xl mb-2">Insert just name</h2>
             <p className="text-sm">
-                choices you make will be linked to this identifier
+                Use this identifier to make choices across devices.
             </p>
-            <Input
+            <p className="text-sm text-orange-200">
+                Anyone who inserts same name will be able to overwrite your
+                choices.
+            </p>
+            <LabelledInput
                 ref={nameInputRef}
+                label="username"
+                labelId="username-input"
                 placeholder="username"
                 type="text"
                 className="text-center my-6 py-2 mx-auto"
