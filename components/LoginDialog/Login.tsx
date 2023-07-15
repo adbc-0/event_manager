@@ -58,7 +58,7 @@ export const Login = forwardRef<Ref, UsernameDialogProps>(
                 method="dialog"
                 onSubmit={saveUserName}
             >
-                <h2 className="text-xl mb-2">Create account</h2>
+                <h2 className="text-xl mb-2">Log in to existing account</h2>
                 <LabelledInput
                     ref={nameInputRef}
                     label="email"

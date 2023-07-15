@@ -51,7 +51,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                             className="grow py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
                             onClick={() => setTab("LOGIN")}
                         >
-                            Login
+                            Log in
                         </button>
                     </div>
                     <div role="tabpanel">
