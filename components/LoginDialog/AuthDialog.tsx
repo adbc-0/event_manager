@@ -3,7 +3,7 @@ import { match } from "ts-pattern";
 
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { Login } from "./Login";
-import { Sign } from "./Sign";
+import { SignIn } from "./Sign";
 import { Anon } from "./Anon";
 import { ReactProps } from "~/typescript";
 
@@ -20,9 +20,12 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
         const [tab, setTab] = useState<Tab>("ANONYMOUS");
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
+            <dialog
+                ref={ref}
+                className="p-0 w-full rounded-md open:animate-fade-in"
+            >
                 <GlassmorphicPane
-                    outerClassName="max-w-sm"
+                    outerClassName="max-w-sm m-auto"
                     innerClassName="py-6 px-4"
                 >
                     <div role="tablist" className="flex mb-5 border-collapse">
@@ -55,7 +58,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                         {match(tab)
                             .with("ANONYMOUS", () => <Anon ref={ref} />)
                             .with("LOGIN", () => <Login ref={ref} />)
-                            .with("SIGN_IN", () => <Sign ref={ref} />)
+                            .with("SIGN_IN", () => <SignIn ref={ref} />)
                             .exhaustive()}
                     </div>
                 </GlassmorphicPane>

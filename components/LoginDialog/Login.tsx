@@ -4,9 +4,8 @@ import Image from "next/image";
 import okIcon from "~/public/acceptButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
-import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
-import { Input } from "../Input/Input";
+import { LabelledInput } from "../LabelledInput/LabelledInput";
 import { ReactProps } from "~/typescript";
 
 type Ref = HTMLDialogElement;
@@ -20,8 +19,6 @@ export const Login = forwardRef<Ref, UsernameDialogProps>(
         if (typeof ref === "function") {
             throw new Error("Unexpected ref type");
         }
-
-        const { username } = useAnonAuth();
 
         const nameInputRef = useRef<HTMLInputElement>(null);
         const usernameFormRef = useRef<HTMLFormElement>(null);
@@ -61,23 +58,28 @@ export const Login = forwardRef<Ref, UsernameDialogProps>(
                 method="dialog"
                 onSubmit={saveUserName}
             >
-                <h2 className="text-xl mb-2">Insert identifier</h2>
-                <p className="text-sm">
-                    choices you make will be linked to this identifier
-                </p>
-                <Input
+                <h2 className="text-xl mb-2">Create account</h2>
+                <LabelledInput
                     ref={nameInputRef}
-                    placeholder="username"
-                    type="text"
+                    label="email"
+                    type="email"
                     className="text-center my-6 py-2 mx-auto"
-                    name="username"
-                    autoComplete="username"
+                    name="email"
+                    autoComplete="email"
                     autoCorrect="off"
-                    aria-label="username input field"
-                    defaultValue={username}
                     required
                     maxLength={20}
-                    onFocus={(e) => e.target.select()}
+                />
+                <LabelledInput
+                    ref={nameInputRef}
+                    label="password"
+                    type="password"
+                    className="text-center my-6 py-2 mx-auto"
+                    name="password"
+                    autoComplete="password"
+                    autoCorrect="off"
+                    required
+                    maxLength={20}
                 />
                 <div className="flex justify-evenly">
                     <Button

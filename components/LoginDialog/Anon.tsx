@@ -63,7 +63,7 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
             method="dialog"
             onSubmit={saveUserName}
         >
-            <h2 className="text-xl mb-2">Insert just name</h2>
+            <h2 className="text-xl mb-2">Use without account</h2>
             <p className="text-sm">
                 Use this identifier to make choices across devices.
             </p>
@@ -74,8 +74,6 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
             <LabelledInput
                 ref={nameInputRef}
                 label="username"
-                labelId="username-input"
-                placeholder="username"
                 type="text"
                 className="text-center my-6 py-2 mx-auto"
                 name="username"
@@ -85,7 +83,6 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
                 defaultValue={username}
                 required
                 maxLength={20}
-                onFocus={(e) => e.target.select()}
             />
             <div className="flex justify-evenly">
                 <Button
