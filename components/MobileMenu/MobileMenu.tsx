@@ -7,7 +7,7 @@ import loginIcon from "~/public/login.svg";
 
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
-import { LoginDialog } from "../LoginDialog/LoginDialog";
+import { AuthDialog } from "../LoginDialog/AuthDialog";
 
 export function MobileMenu() {
     const { username, logout } = useAnonAuth();
@@ -54,7 +54,7 @@ export function MobileMenu() {
                 </div>
             </div>
             {/* DIALOGS */}
-            <LoginDialog ref={usernameDialogRef} />
+            <AuthDialog ref={usernameDialogRef} />
         </>
     );
 }

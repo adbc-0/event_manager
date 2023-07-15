@@ -11,8 +11,8 @@ type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
 type Tab = "LOGIN" | "SIGN_IN" | "ANONYMOUS";
 
-export const LoginDialog = forwardRef<Ref, UsernameDialogProps>(
-    function UsernameDialog(_, ref) {
+export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
+    function AuthDialog(_, ref) {
         if (typeof ref === "function") {
             throw new Error("Unexpected ref type");
         }
