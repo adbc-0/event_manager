@@ -12,6 +12,7 @@ type CalendarTopIconsProps = ReactProps & {
     openRemovalDialog(): void;
 };
 
+// ToDo: Remove dialog icond should be conditional
 export function CalendarTopIcons({
     openRemovalDialog,
     openViewListDialog,

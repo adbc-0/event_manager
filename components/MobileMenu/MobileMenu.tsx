@@ -5,12 +5,12 @@ import Image from "next/image";
 
 import loginIcon from "~/public/login.svg";
 
-import { useAuth } from "~/hooks/use-auth";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
 import { LoginDialog } from "../LoginDialog/LoginDialog";
 
 export function MobileMenu() {
-    const { username, logout } = useAuth();
+    const { username, logout } = useAnonAuth();
 
     const usernameDialogRef = useRef<HTMLDialogElement>(null);
 

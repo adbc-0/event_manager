@@ -21,7 +21,7 @@ import {
     getUsersFromChoices,
 } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
-import { useAuth } from "~/hooks/use-auth";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useAbort } from "~/hooks/use-abort";
 import { EventResponse } from "~/typescript";
 
@@ -142,7 +142,7 @@ export function EventCalendar() {
         throw new Error("Missing event url param");
     }
 
-    const { username } = useAuth();
+    const { username } = useAnonAuth();
     const abortSignal = useAbort();
     const {
         allChoices,

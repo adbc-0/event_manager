@@ -8,12 +8,12 @@ import cancelIcon from "~/public/rejectButton.svg";
 import { EventActionEnum } from "~/constants";
 import { ChangeAvailability } from "~/api/events/[id]/actions";
 import { useEvent } from "~/context/EventProvider";
-import { useAuth } from "~/hooks/use-auth";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 
 export function CalendarControl() {
     const { id: eventId } = useParams();
-    const { username } = useAuth();
+    const { username } = useAnonAuth();
     if (!eventId) {
         throw new Error("Missing event url param");
     }

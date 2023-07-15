@@ -19,7 +19,7 @@ import {
     transformDayJsToCurrentDate,
 } from "~/services/dayJsFacade";
 import { ServerError, chunks } from "~/utils/index";
-import { useAuth } from "~/hooks/use-auth";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useSsc } from "~/hooks/use-ssc";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
@@ -288,7 +288,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
     const { isServer } = useSsc();
-    const { username } = useAuth();
+    const { username } = useAnonAuth();
     const { replace } = useRouter();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,

@@ -4,7 +4,7 @@ import Image from "next/image";
 import okIcon from "~/public/acceptButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
-import { useAuth } from "~/hooks/use-auth";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
 import { ReactProps } from "~/typescript";
@@ -20,7 +20,7 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
         throw new Error("Unexpected ref type");
     }
 
-    const { username, setUsername } = useAuth();
+    const { username, setUsername } = useAnonAuth();
 
     const nameInputRef = useRef<HTMLInputElement>(null);
     const usernameFormRef = useRef<HTMLFormElement>(null);
@@ -87,7 +87,6 @@ export const Anon = forwardRef<Ref, UsernameDialogProps>(function Anon(_, ref) {
                     theme="BASIC"
                     className="flex-1 mx-2 py-2"
                     type="button"
-                    disabled={!username}
                     onClick={closeIdentityModal}
                 >
                     <Image

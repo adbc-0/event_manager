@@ -1,8 +1,6 @@
 import { forwardRef, useState } from "react";
 import { match } from "ts-pattern";
 
-import { useSsc } from "~/hooks/use-ssc";
-import { useAuth } from "~/hooks/use-auth";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { Login } from "./Login";
 import { Sign } from "./Sign";
@@ -19,17 +17,10 @@ export const LoginDialog = forwardRef<Ref, UsernameDialogProps>(
             throw new Error("Unexpected ref type");
         }
 
-        const { isBrowser } = useSsc();
-        const { username } = useAuth();
-
         const [tab, setTab] = useState<Tab>("ANONYMOUS");
 
         return (
-            <dialog
-                ref={ref}
-                className="p-0 rounded-md open:animate-fade-in"
-                open={!username && isBrowser}
-            >
+            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
                 <GlassmorphicPane
                     outerClassName="max-w-sm"
                     innerClassName="py-6 px-4"

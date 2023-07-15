@@ -2,7 +2,7 @@ import { LocalStorageKeys } from "~/constants";
 import { useLocalStorage } from "./use-local-storage";
 import { useCallback } from "react";
 
-export function useAuth() {
+export function useAnonAuth() {
     const {
         storageValue: username,
         setStorage,
