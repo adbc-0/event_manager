@@ -7,6 +7,7 @@ import questionCircleIcon from "~/public/question_cricle.svg";
 
 import { AvailabilityEnumValues } from "~/constants";
 import { ReactProps } from "~/typescript";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 type ChoiceRowProps = ReactProps & {
     day: string;
@@ -22,7 +23,7 @@ const availabilityColor = {
     unavailable: `bg-red-600`,
 } as const;
 
-const iconSwitch: Record<AvailabilityEnumValues, any> = {
+const iconSwitch: Record<AvailabilityEnumValues, StaticImport> = {
     available: checkCircleIcon,
     maybe_available: questionCircleIcon,
     unavailable: deleteCircleIcon,
