@@ -21,6 +21,10 @@ export function CalendarControl() {
     const { isDirty, ownChoices, calendarDate, eventDispatch } = useEvent();
 
     const onSubmitClick = () => {
+        if (Array.isArray(eventId)) {
+            throw new Error("Unexpected catch all segments");
+        }
+
         const payload = {
             choices: ownChoices,
             date: calendarDate,
