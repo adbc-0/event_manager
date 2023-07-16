@@ -20,9 +20,6 @@ export default function Home() {
     );
 }
 
-// if I use useAuth then all will be client components
-
 // ToDo:
 // Anonymous user should be able to access only calendar
 // If tries to access unaccessible part then send to /login
-// Remove login form auto showing up

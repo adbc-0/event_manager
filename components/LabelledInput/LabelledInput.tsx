@@ -6,11 +6,11 @@ import { Input } from "../Input/Input";
 type InputProps = React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
-> & { label: string };
+> & { label: string; inputClass: string };
 type Ref = HTMLInputElement;
 
 export const LabelledInput = forwardRef<Ref, InputProps>(function LabelledInput(
-    { className, label, ...props },
+    { className, inputClass, label, ...props },
     ref,
 ) {
     if (typeof ref === "function") {
@@ -18,12 +18,12 @@ export const LabelledInput = forwardRef<Ref, InputProps>(function LabelledInput(
     }
 
     return (
-        <div className="relative">
+        <div className={twMerge("relative", className)}>
             <Input
                 {...props}
                 ref={ref}
                 id={label}
-                className={twMerge("w-full peer", className)}
+                className={twMerge("w-full peer", inputClass)}
                 placeholder=" "
             />
             <label
