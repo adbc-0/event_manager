@@ -3,7 +3,7 @@ import { match } from "ts-pattern";
 
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { Login } from "./Login";
-import { SignIn } from "./Sign";
+import { SignIn } from "./SignIn";
 import { Anon } from "./Anon";
 import { ReactProps } from "~/typescript";
 
@@ -32,7 +32,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                         <button
                             aria-selected={tab === "ANONYMOUS"}
                             role="tab"
-                            className="grow py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-l-md"
+                            className="grow basis-0 py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-l-md"
                             onClick={() => setTab("ANONYMOUS")}
                         >
                             Anon
@@ -40,7 +40,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                         <button
                             aria-selected={tab === "SIGN_IN"}
                             role="tab"
-                            className="grow py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900"
+                            className="grow basis-0 py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900"
                             onClick={() => setTab("SIGN_IN")}
                         >
                             Sign
@@ -48,7 +48,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                         <button
                             aria-selected={tab === "LOGIN"}
                             role="tab"
-                            className="grow py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
+                            className="grow basis-0 py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
                             onClick={() => setTab("LOGIN")}
                         >
                             Log in
