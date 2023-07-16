@@ -40,7 +40,7 @@ export default async function Page() {
                                 <Link
                                     key={id}
                                     href={`/events/${id}`}
-                                    className="block py-2 bg-neutral-800 hover:bg-cyan-200 hover:text-black last:border-b-0 border-b border-b-zinc-900"
+                                    className="block py-2 bg-neutral-800  border-b border-b-zinc-900 hover:bg-cyan-200 hover:text-black last:border-b-0 hover:transition-colors ease-out duration-300"
                                 >
                                     {name}
                                 </Link>
