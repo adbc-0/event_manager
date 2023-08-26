@@ -2,19 +2,29 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import { NewEventAction } from "./NewEventAction";
+import { postgres } from "~/services/postgres";
+import { hashId } from "~/services/hashId";
+
+type EventsResponse = {
+    id: number;
+    name: string;
+    owner_id: number;
+};
 
 type EventListResponse = {
-    id: number;
+    id: string;
     name: string;
 };
 
 async function fetchEvents(): Promise<EventListResponse[]> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/events`);
-    if (!response.ok) {
-        throw new Error("failed to fetch the data");
-    }
+    const rows = await postgres<EventsResponse[]>`
+        SELECT id, name, owner_id FROM event.events;
+    `;
 
-    return response.json();
+    return rows.map((row) => ({
+        ...row,
+        id: hashId.encode(row.id.toString()),
+    }));
 }
 
 export const metadata: Metadata = {
