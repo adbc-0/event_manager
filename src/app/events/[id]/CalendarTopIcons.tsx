@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import trashIcon from "~/public/trash.svg";
+import eventRepeatIcon from "~/public/event_repeat.svg";
 import listIcon from "~/public/list.svg";
 
 import { EventCalendar } from "~/components/EventCalendar/EventCalendar";
@@ -9,12 +9,12 @@ import { ReactProps } from "~/typescript";
 
 type CalendarTopIconsProps = ReactProps & {
     openViewListDialog(): void;
-    openRemovalDialog(): void;
+    openCyclickDialog(): void;
 };
 
 // ToDo: Remove dialog icond should be conditional
 export function CalendarTopIcons({
-    openRemovalDialog,
+    openCyclickDialog,
     openViewListDialog,
 }: CalendarTopIconsProps) {
     return (
@@ -40,14 +40,14 @@ export function CalendarTopIcons({
                     type="button"
                     theme="BASIC"
                     className="w-9 h-9"
-                    onClick={openRemovalDialog}
+                    onClick={openCyclickDialog}
                 >
                     <Image
-                        src={trashIcon}
+                        src={eventRepeatIcon}
                         className="m-auto"
                         width={24}
                         height={24}
-                        alt="trash can icon"
+                        alt="list icon"
                     />
                 </Button>
             </div>

@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 import Image from "next/image";
 
-import okIcon from "~/public/acceptRemovalButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
 import { Button } from "~/components/Button/Button";
@@ -32,13 +31,7 @@ export const RemovalDialog = forwardRef<Ref, RemovalDialogProps>(
                     innerClassName="py-6 px-4"
                 >
                     <form className="text-center" method="dialog">
-                        <h2 className="my-1">
-                            Are you sure you want to remove this event?
-                        </h2>
-                        <p className="text-sm text-orange-400">
-                            All data related to this event will be permamently
-                            removed.
-                        </p>
+                        <h2 className="my-1">Print all cyclic events</h2>
                         <div className="flex justify-evenly mt-6">
                             <Button
                                 aria-label="Close dialog"
@@ -56,18 +49,12 @@ export const RemovalDialog = forwardRef<Ref, RemovalDialogProps>(
                                 />
                             </Button>
                             <Button
-                                aria-label="Remove calendar"
-                                type="submit"
-                                theme="DISCARD"
+                                aria-label="Add new cyclic event"
+                                type="button"
+                                theme="BASIC"
                                 className="flex-1 mx-2 py-2"
                             >
-                                <Image
-                                    src={okIcon}
-                                    className="m-auto"
-                                    width={24}
-                                    height={24}
-                                    alt="accept icon"
-                                />
+                                Add new cyclic event
                             </Button>
                         </div>
                     </form>

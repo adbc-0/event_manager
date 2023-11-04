@@ -1,23 +1,42 @@
-import { forwardRef, useState } from "react";
-import { match } from "ts-pattern";
+import { forwardRef } from "react";
+import Image from "next/image";
+
+import cancelIcon from "~/public/rejectButton.svg";
 
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
-import { Login } from "./Login";
-import { SignIn } from "./SignIn";
-import { Anon } from "./Anon";
 import { ReactProps } from "~/typescript";
+import { Button } from "../Button/Button";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
-type Tab = "LOGIN" | "SIGN_IN" | "ANONYMOUS";
+
+// ToDo: Dynamically fetch users
 
 export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
     function AuthDialog(_, ref) {
+        const { setUsername } = useAnonAuth();
+
         if (typeof ref === "function") {
             throw new Error("Unexpected ref type");
         }
 
-        const [tab, setTab] = useState<Tab>("ANONYMOUS");
+        const closeIdentityModal = () => {
+            if (!ref?.current) {
+                throw new Error("Ref not found");
+            }
+
+            ref.current.close();
+        };
+
+        const selectUser = (username: string) => {
+            if (!ref?.current) {
+                throw new Error("Ref not found");
+            }
+
+            setUsername(username);
+            ref.current.close();
+        };
 
         return (
             <dialog
@@ -28,38 +47,51 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                     outerClassName="max-w-sm m-auto"
                     innerClassName="py-6 px-4"
                 >
-                    <div role="tablist" className="flex mb-5 border-collapse">
-                        <button
-                            aria-selected={tab === "ANONYMOUS"}
-                            role="tab"
-                            className="grow basis-0 py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-l-md"
-                            onClick={() => setTab("ANONYMOUS")}
+                    <h2 className="text-xl mb-2 text-center">Select user</h2>
+                    <Button
+                        theme="BASIC"
+                        type="button"
+                        onClick={() => selectUser("Maciek")}
+                    >
+                        Maciek
+                    </Button>
+                    <Button
+                        theme="BASIC"
+                        type="button"
+                        onClick={() => selectUser("Jasiu")}
+                    >
+                        Jasiu
+                    </Button>
+                    <Button
+                        theme="BASIC"
+                        type="button"
+                        onClick={() => selectUser("Adrian")}
+                    >
+                        Adrian
+                    </Button>
+                    <Button
+                        theme="BASIC"
+                        type="button"
+                        onClick={() => selectUser("Krzysiu")}
+                    >
+                        Krzysiu
+                    </Button>
+                    <div className="flex justify-evenly">
+                        <Button
+                            aria-label="Close dialog"
+                            theme="BASIC"
+                            className="flex-1 mx-2 py-2"
+                            type="button"
+                            onClick={closeIdentityModal}
                         >
-                            Anon
-                        </button>
-                        <button
-                            aria-selected={tab === "SIGN_IN"}
-                            role="tab"
-                            className="grow basis-0 py-1 px-2 border border-r-0 bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900"
-                            onClick={() => setTab("SIGN_IN")}
-                        >
-                            Sign
-                        </button>
-                        <button
-                            aria-selected={tab === "LOGIN"}
-                            role="tab"
-                            className="grow basis-0 py-1 px-2 border bg-neutral-700 border-zinc-900 aria-selected:bg-zinc-900 rounded-r-md"
-                            onClick={() => setTab("LOGIN")}
-                        >
-                            Log in
-                        </button>
-                    </div>
-                    <div role="tabpanel">
-                        {match(tab)
-                            .with("ANONYMOUS", () => <Anon ref={ref} />)
-                            .with("LOGIN", () => <Login ref={ref} />)
-                            .with("SIGN_IN", () => <SignIn ref={ref} />)
-                            .exhaustive()}
+                            <Image
+                                src={cancelIcon}
+                                className="m-auto"
+                                width={24}
+                                height={24}
+                                alt="cancel icon"
+                            />
+                        </Button>
                     </div>
                 </GlassmorphicPane>
             </dialog>

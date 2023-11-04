@@ -27,7 +27,7 @@ export function MobileMenu() {
                         className="grow py-3 m-2"
                         onClick={logout}
                     >
-                        Logout
+                        Make changes as: {username}
                     </Button>
                 </div>
             </div>

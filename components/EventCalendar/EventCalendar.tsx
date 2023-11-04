@@ -301,7 +301,8 @@ export function EventCalendar() {
                                             }}
                                             disabled={
                                                 dayData.month !==
-                                                calendarDate.month
+                                                    calendarDate.month ||
+                                                !username
                                             }
                                         >
                                             {dayData.day}

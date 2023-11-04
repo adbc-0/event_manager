@@ -17,7 +17,7 @@ export default function EventView() {
     }
 
     const listViewDialog = useRef<HTMLDialogElement>(null);
-    const removalDialogRef = useRef<HTMLDialogElement>(null);
+    const cyclicDialogRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         document.title = `Event - ${event.name ?? "Loading..."}`;
@@ -26,20 +26,20 @@ export default function EventView() {
     const openViewListDialog = () => {
         listViewDialog.current?.showModal();
     };
-    const openRemovalDialog = () => {
-        removalDialogRef.current?.showModal();
+    const openCyclicSelectionDialog = () => {
+        cyclicDialogRef.current?.showModal();
     };
 
     return (
         <div className="grid grid-cols-1 items-center auto-rows-min md:auto-rows-3">
             <h1 className="text-center text-3xl p-5">{event.name}</h1>
             <CalendarTopIcons
-                openRemovalDialog={openRemovalDialog}
+                openCyclickDialog={openCyclicSelectionDialog}
                 openViewListDialog={openViewListDialog}
             />
             <CalendarControl />
             {/* --- DIALOGS SECTION --- */}
-            <RemovalDialog ref={removalDialogRef} />
+            <RemovalDialog ref={cyclicDialogRef} />
             <ListViewDialog ref={listViewDialog} />
         </div>
     );
