@@ -13,7 +13,6 @@ import { AvailabilityChoices, EventResponse } from "~/typescript";
 type Event = {
     event_id: string;
     name: string;
-    owner_id: string;
 };
 
 type GroupedChoices = Record<string, AvailabilityChoices>;
@@ -75,8 +74,7 @@ export async function GET(request: Request, { params }: RequestParams) {
     const [event] = await postgres<Event[]>`
         SELECT
             e.id AS event_id,
-            e.name,
-            e.owner_id
+            e.name
         FROM event.events AS e
         WHERE e.id = ${eventId};
     `;
@@ -102,11 +100,9 @@ export async function GET(request: Request, { params }: RequestParams) {
             m.month,
             m.year,
             c.day,
-            c.choice,
-            u.name AS username
+            c.choice
         FROM event.events_months AS m
         JOIN event.availability_choices AS c ON c.event_month_id=m.id
-        JOIN system_user.system_users AS u ON u.id=c.user_id
         WHERE
             m.event_id=${event.event_id}
             ${date ? filterByDate(date) : postgres``}

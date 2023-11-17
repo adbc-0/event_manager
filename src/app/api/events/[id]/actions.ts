@@ -6,7 +6,6 @@ import { z } from "zod";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import {
-    createAnynomousUser,
     createMonth,
     getAnonymousUserId,
 } from "../../queries";
@@ -46,9 +45,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         !maybeExistingUserId && !userName && !authUser;
     const maybeUserId = maybeExistingUserId
         ? maybeExistingUserId
-        : shouldCreateAnonymousUser
-        ? await createAnynomousUser(userName!)
-        : null;
+        : shouldCreateAnonymousUser;
 
     if (!maybeUserId) {
         throw new Error("unauthorized");

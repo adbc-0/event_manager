@@ -1,6 +1,8 @@
 "use client";
 
 import { EventProvider } from "../../../../lib/context/EventProvider";
+
+import { MobileMenu } from "~/components/MobileMenu/MobileMenu";
 import EventView from "./EventView";
 
 type PageProps = {
@@ -14,6 +16,7 @@ export default function Page({ params }: PageProps) {
     return (
         <EventProvider eventId={eventId}>
             <EventView />
+            <MobileMenu />
         </EventProvider>
     );
 }

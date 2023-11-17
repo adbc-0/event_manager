@@ -297,6 +297,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     const { calendarDate } = eventControl;
 
     useEffect(() => {
+        // ToDo: is this server needed?
         if (isServer) {
             return;
         }

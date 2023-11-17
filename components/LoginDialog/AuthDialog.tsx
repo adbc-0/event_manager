@@ -1,21 +1,30 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import cancelIcon from "~/public/rejectButton.svg";
 
-import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
-import { ReactProps } from "~/typescript";
-import { Button } from "../Button/Button";
+import { ServerError } from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
+
+import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
+import { Button } from "../Button/Button";
+
+import { ErrorMessage, ReactProps } from "~/typescript";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
 
-// ToDo: Dynamically fetch users
-
 export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
     function AuthDialog(_, ref) {
+        const { id: eventId } = useParams();
+        if (!eventId) {
+            throw new Error("Missing event url param");
+        }
+
         const { setUsername } = useAnonAuth();
+
+        const [, setEventUsers] = useState([]);
 
         if (typeof ref === "function") {
             throw new Error("Unexpected ref type");
@@ -37,6 +46,31 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
             setUsername(username);
             ref.current.close();
         };
+
+        useEffect(() => {
+            async function fetchEventUsers() {
+                const response = await fetch(
+                    `/api/events/${eventId}/users`,
+                );
+                if (!response.ok) {
+                    const error = (await response.json()) as ErrorMessage;
+                    if (!error.message) {
+                        throw new ServerError(
+                            "error unhandled by server",
+                            response.status,
+                        );
+                    }
+                    throw new ServerError(error.message, response.status);
+                }
+
+                const users = (await response.json());
+                console.log(users);
+
+                setEventUsers([]);
+            }
+
+            fetchEventUsers();
+        }, [eventId]);
 
         return (
             <dialog
