@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { hashId } from "~/services/hashId";
+import { postgres } from "~/services/postgres";
 import { validateEventParamDate } from "~/utils/eventUtils";
-
 
 type RouteParams = {
     id: string; // event_id
@@ -11,6 +11,13 @@ type RouteParams = {
 type RequestParams = {
     params: RouteParams;
 };
+
+type EventUsers = {
+    id: number;
+    username: string;
+};
+
+export type RequestResponse = EventUsers[];
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
@@ -32,7 +39,16 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
-    // ToDo: Query Users
+    const users = await postgres<EventUsers[]>`
+        SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
+    `;
 
-    return NextResponse.json({ id: eventId });
+    if (!users.length) {
+        return NextResponse.json(
+            { message: "No users found for such event" },
+            { status: 404 },
+        );
+    }
+
+    return NextResponse.json(users);
 }

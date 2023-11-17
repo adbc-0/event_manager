@@ -11,6 +11,7 @@ import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane
 import { Button } from "../Button/Button";
 
 import { ErrorMessage, ReactProps } from "~/typescript";
+import { RequestResponse } from "~/app/api/events/[id]/users/route";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -24,7 +25,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
 
         const { setUsername } = useAnonAuth();
 
-        const [, setEventUsers] = useState([]);
+        const [eventUsers, setEventUsers] = useState<RequestResponse>([]);
 
         if (typeof ref === "function") {
             throw new Error("Unexpected ref type");
@@ -49,9 +50,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
 
         useEffect(() => {
             async function fetchEventUsers() {
-                const response = await fetch(
-                    `/api/events/${eventId}/users`,
-                );
+                const response = await fetch(`/api/events/${eventId}/users`);
                 if (!response.ok) {
                     const error = (await response.json()) as ErrorMessage;
                     if (!error.message) {
@@ -63,10 +62,8 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                     throw new ServerError(error.message, response.status);
                 }
 
-                const users = (await response.json());
-                console.log(users);
-
-                setEventUsers([]);
+                const users = (await response.json()) as RequestResponse;
+                setEventUsers(users);
             }
 
             fetchEventUsers();
@@ -82,34 +79,18 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                     innerClassName="py-6 px-4"
                 >
                     <h2 className="text-xl mb-2 text-center">Select user</h2>
-                    <Button
-                        theme="BASIC"
-                        type="button"
-                        onClick={() => selectUser("Maciek")}
-                    >
-                        Maciek
-                    </Button>
-                    <Button
-                        theme="BASIC"
-                        type="button"
-                        onClick={() => selectUser("Jasiu")}
-                    >
-                        Jasiu
-                    </Button>
-                    <Button
-                        theme="BASIC"
-                        type="button"
-                        onClick={() => selectUser("Adrian")}
-                    >
-                        Adrian
-                    </Button>
-                    <Button
-                        theme="BASIC"
-                        type="button"
-                        onClick={() => selectUser("Krzysiu")}
-                    >
-                        Krzysiu
-                    </Button>
+                    <div>
+                        {eventUsers.map(({ username, id }) => (
+                            <Button
+                                key={id}
+                                theme="BASIC"
+                                type="button"
+                                onClick={() => selectUser(username)}
+                            >
+                                {username}
+                            </Button>
+                        ))}
+                    </div>
                     <div className="flex justify-evenly">
                         <Button
                             aria-label="Close dialog"

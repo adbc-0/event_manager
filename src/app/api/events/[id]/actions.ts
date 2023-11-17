@@ -5,10 +5,7 @@ import { z } from "zod";
 
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
-import {
-    createMonth,
-    getAnonymousUserId,
-} from "../../queries";
+import { createMonth, getAnonymousUserId } from "../../queries";
 
 const changeAvailabilitySchema = z.object({
     choices: z.record(z.string(), z.string()),
