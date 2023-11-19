@@ -317,7 +317,6 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                         signal: abortController.signal,
                     },
                 );
-
                 if (!response.ok) {
                     const error = (await response.json()) as ErrorMessage;
                     if (!error.message) {

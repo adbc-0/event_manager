@@ -100,7 +100,8 @@ export async function GET(request: Request, { params }: RequestParams) {
             m.month,
             m.year,
             c.day,
-            c.choice
+            c.choice,
+            c.user_id
         FROM event.events_months AS m
         JOIN event.availability_choices AS c ON c.event_month_id=m.id
         WHERE
@@ -108,13 +109,13 @@ export async function GET(request: Request, { params }: RequestParams) {
             ${date ? filterByDate(date) : postgres``}
     `;
 
-    const groupedMonths = groupBy(eventMonths, (v) => `${v.month}-${v.year}`);
-    const groupedChoices = Object.entries(groupedMonths).map(([date, m]) => ({
+    const groupedByMonth = groupBy(eventMonths, (v) => `${v.month}-${v.year}`);
+    const groupedByUser = Object.entries(groupedByMonth).map(([date, m]) => ({
         time: date,
         usersChoices: m.reduce(groupUserChoices, {} as GroupedChoices),
     }));
 
-    const generateNilChoices = date && !groupedChoices.length;
+    const generateNilChoices = date && !groupedByUser.length;
     if (generateNilChoices) {
         const nilChoicesResponse: EventResponse = {
             name: event.name,
@@ -126,7 +127,7 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     const response: EventResponse = {
         name: event.name,
-        months: groupedChoices,
+        months: groupedByUser,
     };
 
     return NextResponse.json(response);
