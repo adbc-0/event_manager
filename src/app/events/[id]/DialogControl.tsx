@@ -13,7 +13,7 @@ import { Button } from "~/components/Button/Button";
 
 export function CalendarControl() {
     const { id: eventId } = useParams();
-    const { username } = useAnonAuth();
+    const { userId } = useAnonAuth();
     if (!eventId) {
         throw new Error("Missing event url param");
     }
@@ -32,7 +32,7 @@ export function CalendarControl() {
         };
 
         startTransition(() => {
-            ChangeAvailability({ ...payload, userName: username });
+            ChangeAvailability({ ...payload, userId });
             eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP });
         });
     };

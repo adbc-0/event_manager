@@ -61,14 +61,14 @@ type EventProviderReturn = EventState & {
 type UsernameChangeRecalculateAction = {
     type: (typeof EventActionEnum)["USER_CHANGE"];
     payload: {
-        username: string;
+        userId: number;
     };
 };
 type DaySelectAction = {
     type: (typeof EventActionEnum)["DAY_SELECT"];
     payload: {
         selectedDay: number;
-        username: string | undefined;
+        userId: number | undefined;
     };
 };
 type ResetChoicesAction = {
@@ -78,7 +78,7 @@ type SetChoicesAction = {
     type: (typeof EventActionEnum)["LOAD_CHOICES"];
     payload: {
         event: EventResponse;
-        username: string | undefined;
+        userId: number | undefined;
     };
 };
 type SubmitCleanupAction = {
@@ -218,7 +218,7 @@ function eventReducer(state: EventState, action: EventActions) {
         }
         case EventActionEnum.LOAD_CHOICES: {
             const clone = structuredClone(state);
-            const { event, username } = action.payload;
+            const { event, userId: username } = action.payload;
 
             const month = event.months[0];
             if (!month) {
@@ -249,8 +249,8 @@ function eventReducer(state: EventState, action: EventActions) {
         }
         case EventActionEnum.DAY_SELECT: {
             const clone = structuredClone(state);
-            const { selectedDay, username } = action.payload;
-            if (!username) {
+            const { selectedDay, userId } = action.payload;
+            if (!userId) {
                 throw new Error("cannot select the day without username");
             }
 
@@ -258,7 +258,7 @@ function eventReducer(state: EventState, action: EventActions) {
             const nextChoice = getNextChoice(currentChoice);
 
             clone.ownChoices[selectedDay] = nextChoice;
-            clone.allChoices[selectedDay][username] = nextChoice;
+            clone.allChoices[selectedDay][userId] = nextChoice;
             clone.isDirty = true;
 
             return clone;
@@ -288,7 +288,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
     const { isServer } = useSsc();
-    const { username } = useAnonAuth();
+    const { userId } = useAnonAuth();
     const { replace } = useRouter();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
@@ -334,7 +334,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     type: EventActionEnum.LOAD_CHOICES,
                     payload: {
                         event: event,
-                        username,
+                        userId: userId,
                     },
                 });
             } catch (exception) {
@@ -358,7 +358,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
         return () => {
             abortController.abort();
         };
-    }, [eventId, username, replace, isServer]);
+    }, [eventId, userId, replace, isServer]);
 
     const getCurrentMonthInChunks = useCallback(() => {
         const monthDaysData = createMonthDays(calendarDate);

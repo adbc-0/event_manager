@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
-import { createMonth, getAnonymousUserId } from "../../queries";
+import { createMonth } from "../../queries";
 
 const changeAvailabilitySchema = z.object({
     choices: z.record(z.string(), z.string()),
@@ -15,7 +15,7 @@ const changeAvailabilitySchema = z.object({
         year: z.number(),
     }),
     eventId: z.string(),
-    userName: z.string().optional(),
+    userId: z.number().optional(),
 });
 
 type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
@@ -26,26 +26,15 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         choices,
         date,
         eventId: encodedEventId,
-        userName,
+        userId,
     } = changeAvailabilitySchema.parse(payload);
+    if (!userId) {
+        throw new Error("unauthorized");
+    }
 
     const [eventId, decodingError] = hashId.decode(encodedEventId);
     if (decodingError) {
         throw new Error(decodingError);
-    }
-
-    const authUser = null;
-    const maybeExistingUserId = authUser
-        ? authUser
-        : await getAnonymousUserId(userName);
-    const shouldCreateAnonymousUser =
-        !maybeExistingUserId && !userName && !authUser;
-    const maybeUserId = maybeExistingUserId
-        ? maybeExistingUserId
-        : shouldCreateAnonymousUser;
-
-    if (!maybeUserId) {
-        throw new Error("unauthorized");
     }
 
     const [maybeMonth] = await postgres<{ id: number }[]>`
@@ -64,7 +53,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         day: k,
         choice: v,
         event_month_id: month.id,
-        user_id: maybeExistingUserId,
+        user_id: userId,
     }));
 
     await postgres.begin(async (postgres) => {
@@ -72,7 +61,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
             DELETE FROM event.availability_choices
             WHERE
                 event_month_id=${month.id}
-                AND user_id=${maybeExistingUserId};
+                AND user_id=${userId};
         `;
 
         await postgres`

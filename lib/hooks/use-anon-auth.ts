@@ -9,9 +9,9 @@ export function useAnonAuth() {
         storageCleanup,
     } = useLocalStorage(LocalStorageKeys.EVENT_NAME);
 
-    const setUsername = useCallback(
-        (newUserName: string) => {
-            setStorage({ name: newUserName });
+    const setUserId = useCallback(
+        (newUserId: number) => {
+            setStorage({ id: newUserId });
         },
         [setStorage],
     );
@@ -21,8 +21,8 @@ export function useAnonAuth() {
     }, [storageCleanup]);
 
     return {
-        username: username?.name,
-        setUsername,
+        userId: username?.id,
+        setUsername: setUserId,
         logout,
     } as const;
 }

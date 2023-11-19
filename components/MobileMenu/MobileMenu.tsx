@@ -11,7 +11,7 @@ import { Button } from "../Button/Button";
 import { AuthDialog } from "../LoginDialog/AuthDialog";
 
 export function MobileMenu() {
-    const { username, logout } = useAnonAuth();
+    const { userId, logout } = useAnonAuth();
 
     const usernameDialogRef = useRef<HTMLDialogElement>(null);
 
@@ -19,12 +19,12 @@ export function MobileMenu() {
         usernameDialogRef.current?.showModal();
     };
 
-    if (username) {
+    if (userId) {
         return (
             <div className="fixed bottom-0 w-full">
                 <div className="flex w-full gap-2 p-2">
                     <p className="basis-10/12 py-3 text-center border border-black rounded-md shadow-inner bg-zinc-900">
-                        {username}
+                        {userId}
                     </p>
                     <Button
                         theme="BASIC"

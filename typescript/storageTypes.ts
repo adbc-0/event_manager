@@ -2,7 +2,7 @@ import { LocalStorageKeys } from "~/constants";
 import { Nullable, Values } from "./index";
 
 type EventUserStore = {
-    name: string;
+    id: number;
 };
 
 export type StorageKey = Values<typeof LocalStorageKeys>;

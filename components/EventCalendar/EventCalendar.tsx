@@ -142,7 +142,7 @@ export function EventCalendar() {
         throw new Error("Missing event url param");
     }
 
-    const { username } = useAnonAuth();
+    const { userId } = useAnonAuth();
     const abortSignal = useAbort();
     const {
         allChoices,
@@ -174,7 +174,7 @@ export function EventCalendar() {
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
-                    username,
+                    userId: userId,
                 },
             });
         }
@@ -199,7 +199,7 @@ export function EventCalendar() {
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
-                    username,
+                    userId: userId,
                 },
             });
         }
@@ -208,7 +208,7 @@ export function EventCalendar() {
     };
 
     const onDayClick = ({ day, month }: MonthDay) => {
-        if (!username) {
+        if (!userId) {
             return null;
         }
 
@@ -218,7 +218,7 @@ export function EventCalendar() {
 
         eventDispatch({
             type: EventActionEnum.DAY_SELECT,
-            payload: { selectedDay: day, username },
+            payload: { selectedDay: day, userId },
         });
     };
 
@@ -302,7 +302,7 @@ export function EventCalendar() {
                                             disabled={
                                                 dayData.month !==
                                                     calendarDate.month ||
-                                                !username
+                                                !userId
                                             }
                                         >
                                             {dayData.day}

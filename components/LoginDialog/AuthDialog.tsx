@@ -39,12 +39,12 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
             ref.current.close();
         };
 
-        const selectUser = (username: string) => {
+        const selectUser = (userId: number) => {
             if (!ref?.current) {
                 throw new Error("Ref not found");
             }
 
-            setUsername(username);
+            setUsername(userId);
             ref.current.close();
         };
 
@@ -85,7 +85,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                                 key={id}
                                 theme="BASIC"
                                 type="button"
-                                onClick={() => selectUser(username)}
+                                onClick={() => selectUser(id)}
                             >
                                 {username}
                             </Button>

@@ -23,7 +23,7 @@ type MonthsChoices = {
     month_id: number;
     month: number;
     year: number;
-    username: string;
+    user_id: string;
 };
 
 type RouteParams = {
@@ -35,7 +35,7 @@ type RequestParams = {
 };
 
 const groupUserChoices = (prev: GroupedChoices, curr: MonthsChoices) => {
-    const { choice, day, username: user_id } = curr;
+    const { choice, day, user_id } = curr;
 
     if (!prev[user_id]) {
         prev[user_id] = {
@@ -110,10 +110,15 @@ export async function GET(request: Request, { params }: RequestParams) {
     `;
 
     const groupedByMonth = groupBy(eventMonths, (v) => `${v.month}-${v.year}`);
-    const groupedByUser = Object.entries(groupedByMonth).map(([date, m]) => ({
-        time: date,
-        usersChoices: m.reduce(groupUserChoices, {} as GroupedChoices),
-    }));
+    const groupedByUser = Object.entries(groupedByMonth).map(
+        ([date, monthsList]) => ({
+            time: date,
+            usersChoices: monthsList.reduce(
+                groupUserChoices,
+                {} as GroupedChoices,
+            ),
+        }),
+    );
 
     const generateNilChoices = date && !groupedByUser.length;
     if (generateNilChoices) {
