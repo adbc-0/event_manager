@@ -5,9 +5,7 @@ export type AvailabilityChoices = {
     unavailable: number[];
     maybe_available: number[];
 };
-export type AllUsersAvailabilityChoices = {
-    [key: string]: AvailabilityChoices;
-};
+export type AllUsersAvailabilityChoices = Record<string, AvailabilityChoices>;
 export type EventResponse = {
     name: string;
     months: { time: string; usersChoices: AllUsersAvailabilityChoices }[];
@@ -19,6 +17,6 @@ export type CurrentDate = {
 };
 export type AllAvailability = Record<
     string,
-    { [k: string]: AvailabilityEnumValues }
+    Record<string, AvailabilityEnumValues>
 >;
 export type OwnAvailability = Record<string, AvailabilityEnumValues>;

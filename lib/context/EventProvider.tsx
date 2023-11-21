@@ -9,7 +9,12 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
-import { AvailabilityEnum, EventActionEnum } from "~/constants";
+import {
+    AvailabilityEnum,
+    EventActionEnum,
+    ViewModes,
+    ViewModesEnumValues,
+} from "~/constants";
 import {
     MonthDay,
     createMonthDays,
@@ -33,6 +38,10 @@ import {
     ReactProps,
 } from "~/typescript";
 
+const nilEvent = {
+    name: null,
+} as const;
+
 type DayAvailability = {
     user: string;
     choice: string;
@@ -46,13 +55,14 @@ type MonthChunk = {
     chunk: MonthDay[];
 };
 type EventState = {
-    isDirty: boolean;
     allChoices: AllAvailability;
     allChoicesBackup: AllAvailability;
     calendarDate: CurrentDate;
     event: EventBasicDetails;
+    isDirty: boolean;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
+    viewMode: ViewModesEnumValues;
 };
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
@@ -84,19 +94,19 @@ type SetChoicesAction = {
 type SubmitCleanupAction = {
     type: (typeof EventActionEnum)["SUBMIT_CLEANUP"];
 };
+type CycleViewMode = {
+    type: (typeof EventActionEnum)["CYCLE_VIEW_MODE"];
+};
 type EventActions =
-    | UsernameChangeRecalculateAction
     | DaySelectAction
+    | CycleViewMode
+    | UsernameChangeRecalculateAction
     | ResetChoicesAction
     | SetChoicesAction
     | SubmitCleanupAction;
 type EventProviderProps = ReactProps & {
     eventId: string;
 };
-
-const nilEvent = {
-    name: null,
-} as const;
 
 const nilCalendarReducer: EventState = {
     allChoices: parseAllChoices({}, getLastDayOfMonth(getCurrentDate())),
@@ -106,6 +116,7 @@ const nilCalendarReducer: EventState = {
     isDirty: false,
     ownChoices: {},
     ownChoicesBackup: {},
+    viewMode: ViewModes.DAY,
 } as const;
 
 const EventContext = createContext<EventProviderReturn>({
@@ -123,7 +134,6 @@ export function useEvent() {
     if (!event) {
         throw new Error("wrap component with provider to access context");
     }
-
     return event;
 }
 
@@ -131,11 +141,9 @@ function getNextChoice(currentChoice: string) {
     if (currentChoice === AvailabilityEnum.AVAILABLE) {
         return AvailabilityEnum.MAYBE_AVAILABLE;
     }
-
     if (currentChoice === AvailabilityEnum.MAYBE_AVAILABLE) {
         return AvailabilityEnum.UNAVAILABLE;
     }
-
     return AvailabilityEnum.AVAILABLE;
 }
 
@@ -153,15 +161,12 @@ function searchChoicesForMatch(
     if (choices.available.some((day) => condition === day)) {
         return AvailabilityEnum.AVAILABLE;
     }
-
     if (choices.maybe_available.some((day) => condition === day)) {
         return AvailabilityEnum.MAYBE_AVAILABLE;
     }
-
     if (choices.unavailable.some((day) => condition === day)) {
         return AvailabilityEnum.UNAVAILABLE;
     }
-
     return null;
 }
 
@@ -203,6 +208,16 @@ function parseAllChoices(
     });
 
     return choices;
+}
+
+function getNextViewMode(viewMode: ViewModesEnumValues) {
+    const viewModesList = Object.values(ViewModes);
+    const modesAmount = viewModesList.length;
+    const nextModeIdx = viewModesList.findIndex((mode) => mode === viewMode) + 1;
+    if (nextModeIdx === 0) {
+        throw new Error("unexpected mode");
+    }
+    return viewModesList[((nextModeIdx % modesAmount) + modesAmount) % modesAmount];
 }
 
 function eventReducer(state: EventState, action: EventActions) {
@@ -281,6 +296,13 @@ function eventReducer(state: EventState, action: EventActions) {
 
             return clone;
         }
+        case EventActionEnum.CYCLE_VIEW_MODE: {
+            const clone = structuredClone(state);
+
+            clone.viewMode = getNextViewMode(state.viewMode);
+
+            return clone;
+        }
         default:
             throw new Error("unhandled reducer action");
     }
@@ -334,7 +356,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     type: EventActionEnum.LOAD_CHOICES,
                     payload: {
                         event: event,
-                        userId: userId,
+                        userId,
                     },
                 });
             } catch (exception) {

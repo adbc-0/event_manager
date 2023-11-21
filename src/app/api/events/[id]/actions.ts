@@ -20,7 +20,6 @@ const changeAvailabilitySchema = z.object({
 
 type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
 
-// ToDo: @authenticated
 export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     const {
         choices,

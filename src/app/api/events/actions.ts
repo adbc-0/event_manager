@@ -6,6 +6,7 @@ import { postgres } from "~/services/postgres";
 import { hashId } from "~/services/hashId";
 
 // ToDo: @authenticated
+// ToDo: @unused
 // ToDo: Remove all anonymous users
 export async function DeleteEvent(encodedEventId: string) {
     const [eventId, decodingError] = hashId.decode(encodedEventId);

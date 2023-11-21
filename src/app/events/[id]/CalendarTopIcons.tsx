@@ -5,41 +5,39 @@ import listIcon from "~/public/list.svg";
 
 import { Button } from "~/components/Button/Button";
 import { ReactProps } from "~/typescript";
+import { useEvent } from "~/context/EventProvider";
+import { EventActionEnum, ViewModesEnumValues } from "~/constants";
+import { twMerge } from "tailwind-merge";
 
 type CalendarTopIconsProps = ReactProps & {
     openViewListDialog(): void;
     openCyclickDialog(): void;
 };
+const viewModeStyles: Record<ViewModesEnumValues, string> = {
+    choices: "bg-white text-neutral-700",
+    day: "bg-neutral-700 text-white",
+} as const;
 
 export function CalendarTopIcons({
     openCyclickDialog,
     openViewListDialog,
 }: CalendarTopIconsProps) {
+    const { viewMode, eventDispatch } = useEvent();
+
+    const toggleViewMode = () => {
+        eventDispatch({ type: EventActionEnum.CYCLE_VIEW_MODE });
+    };
+
     return (
         <div className="flex max-w-sm m-auto justify-end gap-1">
             <Button
                 aria-label="show list view of events"
                 type="button"
                 theme="BASIC"
-                className="w-9 h-9"
-                onClick={() => {}}
+                className={twMerge("w-9 h-9", viewModeStyles[viewMode])}
+                onClick={toggleViewMode}
             >
                 T
-            </Button>
-            <Button
-                aria-label="show list view of events"
-                type="button"
-                theme="BASIC"
-                className="w-9 h-9"
-                onClick={openViewListDialog}
-            >
-                <Image
-                    src={listIcon}
-                    className="m-auto"
-                    width={24}
-                    height={24}
-                    alt="list icon"
-                />
             </Button>
             <Button
                 aria-label="remove event"
@@ -50,6 +48,21 @@ export function CalendarTopIcons({
             >
                 <Image
                     src={eventRepeatIcon}
+                    className="m-auto"
+                    width={24}
+                    height={24}
+                    alt="list icon"
+                />
+            </Button>
+            <Button
+                aria-label="show list view of events"
+                type="button"
+                theme="BASIC"
+                className="w-9 h-9"
+                onClick={openViewListDialog}
+            >
+                <Image
+                    src={listIcon}
                     className="m-auto"
                     width={24}
                     height={24}
