@@ -1,11 +1,12 @@
-import dayjs from "dayjs";
+import dayjs, { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { range } from "../utils";
 import { CurrentDate } from "~/typescript";
 
-// eslint-disable-next-line import/no-named-as-default-member
-dayjs.extend(utc);
+extend(utc);
+extend(customParseFormat);
 
 export type MonthDay = {
     key: string;
@@ -14,9 +15,7 @@ export type MonthDay = {
     year: number;
 };
 
-function newDate(day: number, month: number, year: number): MonthDay {
-    return { day, month, year, key: `${day}-${month}-${year}` };
-}
+export type DayJs = dayjs.Dayjs;
 
 type NewMonth =
     | {
@@ -27,6 +26,10 @@ type NewMonth =
           beginning: dayjs.Dayjs;
           end: null;
       };
+
+function newDate(day: number, month: number, year: number): MonthDay {
+    return { day, month, year, key: `${day}-${month}-${year}` };
+}
 
 function newMonth({ beginning, end }: NewMonth) {
     const fromDate = beginning ?? end.startOf("month");
@@ -132,4 +135,8 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
         ...newMonth({ beginning: curr.startOf("month"), end: null }),
         ...nextMonth,
     ];
+}
+
+export function convertStringToDate(dateString: string) {
+    return dayjs(dateString, "DD-MM-YYYY");
 }

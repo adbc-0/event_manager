@@ -223,7 +223,6 @@ export function EventCalendar() {
         if (!userId) {
             return null;
         }
-
         if (month !== calendarDate.month) {
             return null;
         }

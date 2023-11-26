@@ -154,18 +154,19 @@ function createEmptyDays(daysInMonth = 0): EmptyDays {
     );
 }
 
+// unavailable take precedence over maybe_available and available
 function searchChoicesForMatch(
     choices: AvailabilityChoices,
     condition: number,
 ) {
-    if (choices.available.some((day) => condition === day)) {
-        return AvailabilityEnum.AVAILABLE;
+    if (choices.unavailable.some((day) => condition === day)) {
+        return AvailabilityEnum.UNAVAILABLE;
     }
     if (choices.maybe_available.some((day) => condition === day)) {
         return AvailabilityEnum.MAYBE_AVAILABLE;
     }
-    if (choices.unavailable.some((day) => condition === day)) {
-        return AvailabilityEnum.UNAVAILABLE;
+    if (choices.available.some((day) => condition === day)) {
+        return AvailabilityEnum.AVAILABLE;
     }
     return null;
 }
@@ -176,12 +177,12 @@ function parseOwnChoices(choices: AvailabilityChoices, maxMonthDay: number) {
     }
 
     const emptyDays = createEmptyDays(maxMonthDay);
-    return Object.keys(emptyDays).reduce((acc, curr) => {
-        const type = searchChoicesForMatch(choices, Number.parseInt(curr));
-        if (type) {
-            acc[curr] = type;
+    return Object.keys(emptyDays).reduce((o, day) => {
+        const choice = searchChoicesForMatch(choices, Number.parseInt(day));
+        if (choice) {
+            o[day] = choice;
         }
-        return acc;
+        return o;
     }, {} as OwnAvailability);
 }
 
@@ -213,11 +214,14 @@ function parseAllChoices(
 function getNextViewMode(viewMode: ViewModesEnumValues) {
     const viewModesList = Object.values(ViewModes);
     const modesAmount = viewModesList.length;
-    const nextModeIdx = viewModesList.findIndex((mode) => mode === viewMode) + 1;
+    const nextModeIdx =
+        viewModesList.findIndex((mode) => mode === viewMode) + 1;
     if (nextModeIdx === 0) {
         throw new Error("unexpected mode");
     }
-    return viewModesList[((nextModeIdx % modesAmount) + modesAmount) % modesAmount];
+    return viewModesList[
+        ((nextModeIdx % modesAmount) + modesAmount) % modesAmount
+    ];
 }
 
 function eventReducer(state: EventState, action: EventActions) {
@@ -234,30 +238,28 @@ function eventReducer(state: EventState, action: EventActions) {
         case EventActionEnum.LOAD_CHOICES: {
             const clone = structuredClone(state);
             const { event, userId: username } = action.payload;
-
-            const month = event.months[0];
-            if (!month) {
+            if (!event) {
                 throw new Error("expected choices data for given month");
             }
 
-            const eventParamDate = decodeEventParamDate(month.time);
+            const eventParamDate = decodeEventParamDate(event.time);
             const dayJsDate = eventDateToDate(eventParamDate);
             const newCurrentDate = transformDayJsToCurrentDate(dayJsDate);
             const maxMonthDay = getLastDayOfMonth(newCurrentDate);
+            const parsedAllChoices = parseAllChoices(
+                event.groupedChoices,
+                maxMonthDay,
+            );
+            const parsedOwnChoices = username
+                ? parseOwnChoices(event.groupedChoices[username], maxMonthDay)
+                : {};
 
             clone.event.name = event.name;
             clone.calendarDate = newCurrentDate;
-            clone.allChoices = parseAllChoices(month.usersChoices, maxMonthDay);
-            clone.allChoicesBackup = parseAllChoices(
-                month.usersChoices,
-                maxMonthDay,
-            );
-            clone.ownChoices = username
-                ? parseOwnChoices(month.usersChoices[username], maxMonthDay)
-                : {};
-            clone.ownChoicesBackup = username
-                ? parseOwnChoices(month.usersChoices[username], maxMonthDay)
-                : {};
+            clone.allChoices = parsedAllChoices;
+            clone.allChoicesBackup = structuredClone(parsedAllChoices);
+            clone.ownChoices = parsedOwnChoices;
+            clone.ownChoicesBackup = structuredClone(parsedOwnChoices);
             clone.isDirty = false;
 
             return clone;
@@ -319,8 +321,8 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     const { calendarDate } = eventControl;
 
     useEffect(() => {
-        // ToDo: is this server needed?
         if (isServer) {
+            // So request won't run and be aborted
             return;
         }
 
@@ -351,11 +353,10 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 }
 
                 const event = (await response.json()) as EventResponse;
-
                 eventDispatch({
                     type: EventActionEnum.LOAD_CHOICES,
                     payload: {
-                        event: event,
+                        event,
                         userId,
                     },
                 });

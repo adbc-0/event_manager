@@ -8,7 +8,8 @@ export type AvailabilityChoices = {
 export type AllUsersAvailabilityChoices = Record<string, AvailabilityChoices>;
 export type EventResponse = {
     name: string;
-    months: { time: string; usersChoices: AllUsersAvailabilityChoices }[];
+    time: string;
+    groupedChoices: AllUsersAvailabilityChoices;
 };
 export type CurrentDate = {
     readonly day: number;
