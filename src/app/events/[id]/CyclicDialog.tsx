@@ -6,6 +6,8 @@ import cancelIcon from "~/public/rejectButton.svg";
 
 import { Button } from "~/components/Button/Button";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
+import { NewCyclicEvent } from "./NewCyclicEvent";
+import { CyclicEventsList } from "./CyclicEventsList";
 import { ReactProps } from "~/typescript";
 
 type RemovalDialogProps = ReactProps;
@@ -72,8 +74,8 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                         </div>
                         <div role="tabpanel">
                             {match(tab)
-                                .with(Tabs.NEW, () => <div />)
-                                .with(Tabs.LIST, () => <div />)
+                                .with(Tabs.NEW, () => <NewCyclicEvent />)
+                                .with(Tabs.LIST, () => <CyclicEventsList />)
                                 .exhaustive()}
                         </div>
                     </section>
