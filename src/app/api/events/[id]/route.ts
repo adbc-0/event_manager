@@ -146,14 +146,17 @@ function dedupe(choices: number[]) {
     return [...new Set(choices)];
 }
 
-// function searchForConflicts(userChoices: GroupedChoices) {
-//     return Object.values(userChoices).map((choices) => {
-//         const allChoices = choices.available
-//             .concat(choices.maybe_available)
-//             .concat(choices.unavailable);
-//         return !(allChoices.length === dedupe(allChoices).length);
-//     });
-// }
+function preferManualChoiceOverRule(
+    manualChoices: AvailabilityChoices,
+    ruleDays: number[],
+) {
+    const mergedChoices = manualChoices.available
+        .concat(manualChoices.maybe_available)
+        .concat(manualChoices.unavailable);
+    return ruleDays.filter(
+        (day) => !mergedChoices.some((choice) => choice === day),
+    );
+}
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
@@ -237,7 +240,17 @@ export async function GET(request: Request, { params }: RequestParams) {
         }));
     const choicesWithRules = rulesWithSearchedDays.reduce((o, curr) => {
         const { user_id, choice, selectedDays } = curr;
-        o[user_id][choice] = dedupe([...o[user_id][choice], ...selectedDays]);
+        if (!o[user_id]) {
+            o[user_id] = createNilChoices();
+        }
+        const filteredChoices = preferManualChoiceOverRule(
+            o[user_id],
+            selectedDays,
+        );
+        o[user_id][choice] = dedupe([
+            ...o[user_id][choice],
+            ...filteredChoices,
+        ]);
         return o;
     }, structuredClone(groupedChoices));
 

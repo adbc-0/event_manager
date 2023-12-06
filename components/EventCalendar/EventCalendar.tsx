@@ -122,7 +122,7 @@ function getColorType(
         return DayColorTypeEnum.DIFFERENT_MONTH;
     }
     if (!allChoicesForDay) {
-        throw new Error("undefined choice");
+        throw new Error("GetColorDay Error: undefined choice");
     }
     if (areAllAvailable(allChoicesForDay, usersCount)) {
         return DayColorTypeEnum.ALL_SELECTED;
