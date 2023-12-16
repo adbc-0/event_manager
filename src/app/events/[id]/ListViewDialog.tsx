@@ -1,11 +1,8 @@
-import Image from "next/image";
 import { forwardRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 
-import closeIcon from "~/public/close.svg";
-
 import { useEvent } from "~/context/EventProvider";
-import { Button } from "~/components/Button/Button";
+import { ClosePaneButton } from "~/components/GlassmorphicPane/ClosePane";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { ReactProps } from "~/typescript";
 import { getUsersFromChoices } from "~/utils/eventUtils";
@@ -46,25 +43,9 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                 className="p-0 rounded-md w-full open:animate-fade-in"
                 open={false}
             >
-                <GlassmorphicPane innerClassName="py-6 px-4 h-96">
+                <GlassmorphicPane innerClassName="pt-4 pb-6 px-4 h-[calc(100vh-8rem)]">
                     <div className="flex flex-col h-full">
-                        <div className="flex justify-end mb-4">
-                            <Button
-                                aria-label="close list view button"
-                                type="button"
-                                theme="BASIC"
-                                className="w-9 h-9 bg-transparent border-opacity-40"
-                                onClick={closeModal}
-                            >
-                                <Image
-                                    src={closeIcon}
-                                    className="m-auto"
-                                    width={24}
-                                    height={24}
-                                    alt="close modal icon"
-                                />
-                            </Button>
-                        </div>
+                        <ClosePaneButton closeModal={closeModal} />
                         <div className="grow">
                             <div className="relative h-full">
                                 <div className="absolute overflow-auto inset-0 shadow-md">
