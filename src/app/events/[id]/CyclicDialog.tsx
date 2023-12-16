@@ -42,7 +42,7 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
         return (
             <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
                 <GlassmorphicPane
-                    outerClassName="max-w-sm"
+                    outerClassName="max-w-m"
                     innerClassName="py-6 px-4"
                 >
                     <h2 className="mb-5 text-xl text text-center">

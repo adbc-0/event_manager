@@ -3,6 +3,7 @@ import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { range } from "../utils";
+import { MILLISECONDS_IN_WEEK } from "~/constants";
 import { CurrentDate } from "~/typescript";
 
 extend(utc);
@@ -81,16 +82,6 @@ export function transformDayJsToCurrentDate(
     };
 }
 
-// @unused
-// export function transformISO_8601ToCurrentDate(iso: string): CurrentDate {
-//     const date = dayjs(iso);
-//     return {
-//         day: date.date(),
-//         month: date.month(),
-//         year: date.year(),
-//     };
-// }
-
 export function eventDateToDate([month, year]: readonly [string, string]) {
     return dayjs(`${year}-${parseInt(month) + 1}-${1}`);
 }
@@ -139,4 +130,19 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
 
 export function convertStringToDate(dateString: string) {
     return dayjs(dateString, "DD-MM-YYYY");
+}
+
+export function getNextOccurenceBeginning(
+    interval: string,
+    ruleCreationDate: Date,
+    startMonthDate: dayjs.Dayjs,
+) {
+    const intervalInt = Number.parseInt(interval);
+    const parsedCreationDate = dayjs(ruleCreationDate);
+    const weeksSinceRuleCreationToStartDate = Math.trunc(
+        startMonthDate.diff(parsedCreationDate) / MILLISECONDS_IN_WEEK + 1,
+    );
+    const nextOccurence =
+        intervalInt - (weeksSinceRuleCreationToStartDate % intervalInt);
+    return startMonthDate.add(nextOccurence - 1, "weeks");
 }

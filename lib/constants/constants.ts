@@ -23,3 +23,6 @@ export const ViewModes = {
     CHOICES: "choices",
 } as const;
 export type ViewModesEnumValues = (typeof ViewModes)[keyof typeof ViewModes];
+
+export const MILLISECONDS_IN_WEEK = 604_800_000;
+export const DAYS_IN_WEEK = 7;
