@@ -11,7 +11,7 @@ type ClosePaneProps = ReactProps & {
 
 export function ClosePaneButton({ closeModal }: ClosePaneProps) {
     return (
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end">
             <Button
                 aria-label="close list view button"
                 type="button"
