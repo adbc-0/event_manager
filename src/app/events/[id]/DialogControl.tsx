@@ -6,7 +6,7 @@ import okIcon from "~/public/acceptButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
 import { EventActionEnum } from "~/constants";
-import { ChangeAvailability } from "~/api/events/[id]/actions";
+import { ChangeAvailability } from "~/app/api/events/[eventId]/actions";
 import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";

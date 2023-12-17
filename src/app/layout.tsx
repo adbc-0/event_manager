@@ -1,7 +1,14 @@
-import "./globals.css";
+import { Viewport } from "next";
 import { Fira_Sans_Condensed } from "next/font/google";
 
+import "./globals.css";
+
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
+
+// ToDo: Forced dark mode
+export const viewport: Viewport = {
+    colorScheme: "dark",
+};
 
 export default function RootLayout({
     children,

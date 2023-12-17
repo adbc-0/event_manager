@@ -5,7 +5,7 @@ import { postgres } from "~/services/postgres";
 import { validateEventParamDate } from "~/utils/eventUtils";
 
 type RouteParams = {
-    id: string; // event_id
+    eventId: string;
 };
 
 type RequestParams = {
@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
 
-    const [eventId, decodingError] = hashId.decode(params.id);
+    const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
             { message: "Invalid event id format" },

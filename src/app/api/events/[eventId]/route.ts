@@ -47,7 +47,7 @@ type ParsedRule = {
 };
 
 type RouteParams = {
-    id: string; // event_id
+    eventId: string;
 };
 
 type RequestParams = {
@@ -132,6 +132,7 @@ function getDaysFromRuleForMonth(date: string) {
             Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
         );
 
+        // ToDo: Create type for FREQ
         if (rule.FREQ === "WEEKLY") {
             return splitDayToNo(rule)
                 .map((dayLabel) => DayToNoMap[dayLabel])
@@ -182,7 +183,7 @@ function preferManualChoiceOverRule(
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
 
-    const [eventId, decodingError] = hashId.decode(params.id);
+    const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
             { message: "Event not found" },

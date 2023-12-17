@@ -1,17 +1,14 @@
 import { forwardRef, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Image from "next/image";
-
-import cancelIcon from "~/public/rejectButton.svg";
 
 import { ServerError } from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
-import { Button } from "../Button/Button";
+import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
 
 import { ErrorMessage, ReactProps } from "~/typescript";
-import { RequestResponse } from "~/app/api/events/[id]/users/route";
+import { RequestResponse } from "~/app/api/events/[eventId]/users/route";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -76,37 +73,25 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
             >
                 <GlassmorphicPane
                     outerClassName="max-w-sm m-auto"
-                    innerClassName="py-6 px-4"
+                    innerClassName="pt-4 pb-6 px-4"
                 >
-                    <h2 className="text-xl mb-2 text-center">Select user</h2>
-                    <div>
-                        {eventUsers.map(({ username, id }) => (
-                            <Button
-                                key={id}
-                                theme="BASIC"
-                                type="button"
-                                onClick={() => selectUser(id)}
-                            >
-                                {username}
-                            </Button>
-                        ))}
-                    </div>
-                    <div className="flex justify-evenly">
-                        <Button
-                            aria-label="Close dialog"
-                            theme="BASIC"
-                            className="flex-1 mx-2 py-2"
-                            type="button"
-                            onClick={closeIdentityModal}
-                        >
-                            <Image
-                                src={cancelIcon}
-                                className="m-auto"
-                                width={24}
-                                height={24}
-                                alt="cancel icon"
-                            />
-                        </Button>
+                    <div className="flex flex-col h-full">
+                        <ClosePaneButton closeModal={closeIdentityModal} />
+                        <h2 className="text-xl mb-2 text-center">
+                            Select user
+                        </h2>
+                        <div className="flex flex-col">
+                            {eventUsers.map(({ username, id }) => (
+                                <button
+                                    key={id}
+                                    type="button"
+                                    className="grow border border-zinc-900 border-b-0 last:border-b block py-2 bg-neutral-800 hover:bg-cyan-200 hover:text-black hover:transition-colors ease-out duration-300"
+                                    onClick={() => selectUser(id)}
+                                >
+                                    {username}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </GlassmorphicPane>
             </dialog>

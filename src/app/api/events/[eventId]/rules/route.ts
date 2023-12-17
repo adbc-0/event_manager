@@ -4,7 +4,7 @@ import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 
 type RouteParams = {
-    id: string; // event_id
+    eventId: string;
 };
 
 type RequestParams = {
@@ -13,6 +13,7 @@ type RequestParams = {
 
 type EventRules = {
     id: number;
+    name: string;
     rule: string;
     user_id: number;
 };
@@ -20,7 +21,7 @@ type EventRules = {
 export type RequestResponse = EventRules[];
 
 export async function GET(_: Request, { params }: RequestParams) {
-    const [eventId, decodingError] = hashId.decode(params.id);
+    const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
             { message: "Invalid event id format" },
@@ -29,7 +30,7 @@ export async function GET(_: Request, { params }: RequestParams) {
     }
 
     const rules = await postgres<EventRules[]>`
-        SELECT id, rule, user_id
+        SELECT id, name, rule, user_id
         FROM event.availability_rules
         WHERE event_id = ${eventId};
     `;
