@@ -1,4 +1,4 @@
-import { AvailabilityEnumValues } from "~/constants";
+import { AvailabilityEnumValues, FreqEnumValues } from "~/constants";
 
 export type AvailabilityChoices = {
     available: number[];
@@ -21,3 +21,8 @@ export type AllAvailability = Record<
     Record<string, AvailabilityEnumValues>
 >;
 export type OwnAvailability = Record<string, AvailabilityEnumValues>;
+export type RRule = {
+    freq: FreqEnumValues;
+    interval: number;
+    byDay: string[];
+};

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { AvailabilityEnumValues, DAYS_IN_WEEK } from "~/constants";
+import { AvailabilityEnumValues, DAYS_IN_WEEK, FreqEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import {
@@ -132,8 +132,7 @@ function getDaysFromRuleForMonth(date: string) {
             Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
         );
 
-        // ToDo: Create type for FREQ
-        if (rule.FREQ === "WEEKLY") {
+        if (rule.FREQ === FreqEnum.WEEKLY) {
             return splitDayToNo(rule)
                 .map((dayLabel) => DayToNoMap[dayLabel])
                 .map(getNextDayInstance(nextOccurenceBeginning))

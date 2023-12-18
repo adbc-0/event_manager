@@ -1,8 +1,6 @@
 export const LocalStorageKeys = {
     EVENT_NAME: "event_user_name",
 } as const;
-
-// Event related constants
 export const AvailabilityEnum = {
     MAYBE_AVAILABLE: "maybe_available",
     UNAVAILABLE: "unavailable",
@@ -23,6 +21,9 @@ export const ViewModes = {
     CHOICES: "choices",
 } as const;
 export type ViewModesEnumValues = (typeof ViewModes)[keyof typeof ViewModes];
-
+export const FreqEnum = {
+    WEEKLY: "WEEKLY",
+} as const;
+export type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
 export const MILLISECONDS_IN_WEEK = 604_800_000;
 export const DAYS_IN_WEEK = 7;

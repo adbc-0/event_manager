@@ -66,7 +66,9 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                                     role="tab"
                                     className={twMerge(
                                         "grow basis-0 py-1 px-2",
-                                        tab === Tabs.LIST ? "border-b-2" : "",
+                                        tab === Tabs.LIST
+                                            ? "border-b-2 border-teal-300 text-teal-300"
+                                            : "",
                                     )}
                                     onClick={() => setTab(Tabs.LIST)}
                                 >
@@ -78,7 +80,9 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                                     role="tab"
                                     className={twMerge(
                                         "grow basis-0 py-1 px-2",
-                                        tab === Tabs.NEW ? "border-b-2" : "",
+                                        tab === Tabs.NEW
+                                            ? "border-b-2 border-teal-300 text-teal-300"
+                                            : "",
                                     )}
                                     onClick={() => setTab(Tabs.NEW)}
                                 >
