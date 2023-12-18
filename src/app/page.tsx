@@ -6,8 +6,7 @@ export const metadata = {
 export default function Home() {
     return (
         <div className="flex flex-col items-center justify-between p-24">
-            What are you doing on this page? What did you expect to find here
-            anyway?
+            Nothing interesting here...
         </div>
     );
 }
