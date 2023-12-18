@@ -3,11 +3,12 @@ import Image from "next/image";
 import eventRepeatIcon from "~/public/event_repeat.svg";
 import listIcon from "~/public/list.svg";
 import changeViewMode from "~/public/changeViewMode.svg";
+import changeViewModeNegative from "~/public/changeViewModeNegative.svg";
 
 import { Button } from "~/components/Button/Button";
 import { ReactProps } from "~/typescript";
 import { useEvent } from "~/context/EventProvider";
-import { EventActionEnum, ViewModesEnumValues } from "~/constants";
+import { EventActionEnum, ViewModes, ViewModesEnumValues } from "~/constants";
 import { twMerge } from "tailwind-merge";
 
 type CalendarTopIconsProps = ReactProps & {
@@ -39,7 +40,11 @@ export function CalendarTopIcons({
                 onClick={toggleViewMode}
             >
                 <Image
-                    src={changeViewMode}
+                    src={
+                        viewMode === ViewModes.DAY
+                            ? changeViewMode
+                            : changeViewModeNegative
+                    }
                     className="m-auto"
                     width={24}
                     height={24}
