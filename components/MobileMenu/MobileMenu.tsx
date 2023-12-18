@@ -23,7 +23,7 @@ export function MobileMenu() {
         return (
             <div className="fixed bottom-0 w-full">
                 <div className="flex w-full gap-2 p-2">
-                    <p className="basis-10/12 py-3 text-center border border-black rounded-md shadow-inner bg-zinc-900">
+                    <p className="basis-10/12 py-3 text-center border border-black rounded-md shadow-inner bg-primary-darker">
                         {username}
                     </p>
                     <Button

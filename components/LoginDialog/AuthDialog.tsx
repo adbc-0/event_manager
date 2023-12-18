@@ -87,7 +87,7 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                                 <button
                                     key={user.id}
                                     type="button"
-                                    className="grow border border-zinc-900 border-b-0 last:border-b block py-2 bg-neutral-800 hover:bg-cyan-200 hover:text-black hover:transition-colors ease-out duration-300"
+                                    className="grow border border-zinc-900 border-b-0 last:border-b block py-2 bg-neutral-800 hover:bg-secondary hover:text-black hover:transition-colors ease-out duration-300"
                                     onClick={() => selectUser(user)}
                                 >
                                     {user.username}

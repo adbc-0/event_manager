@@ -12,9 +12,9 @@ type ButtonProps = React.DetailedHTMLProps<
     };
 
 const themeColors: Record<ButtonTheme, string> = {
-    BASIC: "bg-neutral-700 text-white border border-zinc-900 outline-cyan-200",
+    BASIC: "bg-primary-lighter text-white border border-zinc-900 outline-secondary",
     DISCARD: "bg-red-300 text-black border border-zinc-900 outline-red-300",
-    SAVE: "bg-emerald-300 text-black border border-zinc-900 outline-emerald-300",
+    SAVE: "bg-secondary text-black border border-zinc-900 outline-secondary",
 } as const;
 
 const baseButtonStyle =

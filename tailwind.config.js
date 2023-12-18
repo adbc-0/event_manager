@@ -6,6 +6,14 @@ module.exports = {
     ],
     theme: {
         extend: {
+            colors: {
+                primary: "rgb(var(--color-primary) / <alpha-value>)",
+                "primary-darker":
+                    "rgb(var(--color-primary-darker) / <alpha-value>)",
+                "primary-lighter":
+                    "rgb(var(--color-primary-lighter) / <alpha-value>)",
+                secondary: "rgb(var(--color-secondary) / <alpha-value>)",
+            },
             width: {
                 128: "32rem",
             },

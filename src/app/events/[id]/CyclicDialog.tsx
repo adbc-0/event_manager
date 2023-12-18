@@ -44,7 +44,7 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
         return (
             <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
                 <GlassmorphicPane
-                    outerClassName="w-[90vw]"
+                    outerClassName="w-[90vw] md:max-w-xl"
                     innerClassName="pt-4 pb-6 px-4"
                 >
                     <div className="flex flex-col h-full">
@@ -67,7 +67,7 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                                     className={twMerge(
                                         "grow basis-0 py-1 px-2",
                                         tab === Tabs.LIST
-                                            ? "border-b-2 border-teal-300 text-teal-300"
+                                            ? "border-b-2 border-secondary text-secondary"
                                             : "",
                                     )}
                                     onClick={() => setTab(Tabs.LIST)}
@@ -81,7 +81,7 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                                     className={twMerge(
                                         "grow basis-0 py-1 px-2",
                                         tab === Tabs.NEW
-                                            ? "border-b-2 border-teal-300 text-teal-300"
+                                            ? "border-b-2 border-secondary text-secondary"
                                             : "",
                                     )}
                                     onClick={() => setTab(Tabs.NEW)}

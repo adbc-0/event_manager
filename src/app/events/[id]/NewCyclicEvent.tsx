@@ -125,7 +125,7 @@ export function NewCyclicEvent() {
                         required
                         name="name"
                         minLength={1}
-                        className="min-w-[80%] mx-auto p-1 mt-2 text-teal-200 text-center"
+                        className="min-w-[80%] mx-auto p-1 mt-2 text-secondary text-center"
                         value={rule.name}
                         onChange={changeName}
                     />
@@ -170,7 +170,7 @@ export function NewCyclicEvent() {
                             type="button"
                             className={`py-3 px-4 max-w-[4rem] ${
                                 isDaySelected(rule.byDay, day)
-                                    ? "bg-teal-300 text-black"
+                                    ? "bg-secondary text-black"
                                     : ""
                             }`}
                             onClick={() => toggleDay(day)}
@@ -179,11 +179,12 @@ export function NewCyclicEvent() {
                         </Button>
                     ))}
                 </div>
+                <div className="w-full border-b border-zinc-800" />
                 <Button
                     aria-label="submit new rule"
                     type="submit"
                     theme="SAVE"
-                    className="p-2 min-w-[50%] mx-auto"
+                    className="p-2 m-2 min-w-[50%] mx-auto"
                 >
                     <Image
                         src={acceptIcon}

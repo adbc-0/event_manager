@@ -78,7 +78,7 @@ const dayColor: Record<DayColorType, string> = {
         "bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800",
     DIFFERENT_MONTH: "opacity-50",
     MAYBE_AVAILABLE: "bg-orange-300 hover:bg-orange-300/80 text-neutral-800",
-    MY_AVAILABLE: "bg-emerald-300 hover:bg-emerald-300/80 text-neutral-800",
+    MY_AVAILABLE: "bg-secondary hover:bg-secondary/80 text-neutral-800",
     UNAVAILABLE: "bg-rose-300 hover:bg-rose-300/80 text-neutral-800",
     TODAY: "bg-white/10",
     UNSELECTED: "hover:bg-white/10",
@@ -234,7 +234,7 @@ export function EventCalendar() {
     };
 
     return (
-        <div className="bg-neutral-700 rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
+        <div className="bg-primary-lighter rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
             <div className="flex justify-between items-center">
                 <button
                     className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"

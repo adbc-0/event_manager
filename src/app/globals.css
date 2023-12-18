@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --color-primary: 38 38 38;
+        --color-primary-darker: 24 24 27;
+        --color-primary-lighter: 64 64 64;
+        --color-secondary: 94 234 212;
+    }
+
     html {
         @apply text-neutral-300;
         @apply bg-neutral-800;
@@ -25,9 +32,7 @@
     }
 }
 
-/* Design system colors */
-/* top bar -> #262626 -> neutral-800 */
-/* buttons -> #343434 -> neutral-700 */
-/* pressed button -> #1e1e1e -> stone-900 */
-/* ligter background -> #353535 -> neutral-700 */
-/* darker background -> #353535 -> neutral-800 or zinc-800 */
+/* NEUTRAL 800 */
+/* ZINC-900 */
+/* NEUTRAL 700 */
+/* TEAL-400 */
