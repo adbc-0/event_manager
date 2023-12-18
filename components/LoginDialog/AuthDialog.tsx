@@ -3,12 +3,14 @@ import { useParams } from "next/navigation";
 
 import { ServerError } from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-
+import {
+    EventUser,
+    RequestResponse,
+} from "~/app/api/events/[eventId]/users/route";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
 
 import { ErrorMessage, ReactProps } from "~/typescript";
-import { EventUser, RequestResponse } from "~/app/api/events/[eventId]/users/route";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
