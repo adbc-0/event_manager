@@ -8,7 +8,7 @@ import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane
 import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
 
 import { ErrorMessage, ReactProps } from "~/typescript";
-import { RequestResponse } from "~/app/api/events/[eventId]/users/route";
+import { EventUser, RequestResponse } from "~/app/api/events/[eventId]/users/route";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -36,12 +36,12 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
             ref.current.close();
         };
 
-        const selectUser = (userId: number) => {
+        const selectUser = (user: EventUser) => {
             if (!ref?.current) {
                 throw new Error("Ref not found");
             }
 
-            setUsername(userId);
+            setUsername(user);
             ref.current.close();
         };
 
@@ -81,14 +81,14 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                             Select user
                         </h2>
                         <div className="flex flex-col">
-                            {eventUsers.map(({ username, id }) => (
+                            {eventUsers.map((user) => (
                                 <button
-                                    key={id}
+                                    key={user.id}
                                     type="button"
                                     className="grow border border-zinc-900 border-b-0 last:border-b block py-2 bg-neutral-800 hover:bg-cyan-200 hover:text-black hover:transition-colors ease-out duration-300"
-                                    onClick={() => selectUser(id)}
+                                    onClick={() => selectUser(user)}
                                 >
-                                    {username}
+                                    {user.username}
                                 </button>
                             ))}
                         </div>

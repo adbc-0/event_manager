@@ -3,6 +3,7 @@ import { Nullable, Values } from "./index";
 
 type EventUserStore = {
     id: number;
+    username: string;
 };
 
 export type StorageKey = Values<typeof LocalStorageKeys>;

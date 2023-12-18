@@ -12,12 +12,12 @@ type RequestParams = {
     params: RouteParams;
 };
 
-type EventUsers = {
+export type EventUser = {
     id: number;
     username: string;
 };
 
-export type RequestResponse = EventUsers[];
+export type RequestResponse = EventUser[];
 
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
@@ -39,7 +39,7 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
-    const users = await postgres<EventUsers[]>`
+    const users = await postgres<EventUser[]>`
         SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
     `;
 
