@@ -5,7 +5,7 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Forced dark mode
+// Forced dark mode
 export const viewport: Viewport = {
     colorScheme: "dark",
 };
