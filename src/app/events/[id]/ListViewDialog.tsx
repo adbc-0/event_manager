@@ -43,7 +43,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                 className="p-0 rounded-md w-full open:animate-fade-in"
                 open={false}
             >
-                <GlassmorphicPane innerClassName="pt-4 pb-6 px-4 h-[calc(100vh-8rem)]">
+                <GlassmorphicPane innerClassName="pt-4 pb-6 px-4 h-[calc(100dvh-8rem)]">
                     <div className="flex flex-col h-full gap-2">
                         <ClosePaneButton closeModal={closeModal} />
                         <div className="grow">

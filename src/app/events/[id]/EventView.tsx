@@ -40,7 +40,7 @@ export default function EventView() {
                 </h1>
             </div>
             {/* ToDo: Here is an issue with grid */}
-            <div>
+            <div className="mx-2">
                 <CalendarTopIcons
                     openCyclickDialog={openCyclicSelectionDialog}
                     openViewListDialog={openViewListDialog}

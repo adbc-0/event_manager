@@ -322,12 +322,12 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
 
     useEffect(() => {
         if (isServer) {
-            // So request won't run and be aborted
-            return;
+            return; // So request won't run and be aborted
         }
 
         const abortController = new AbortController();
 
+        // ToDo: Export this as a function to refetch calendar
         async function initEventCalendar() {
             const { month, year } = getCurrentDate();
             const searchParams = new URLSearchParams({

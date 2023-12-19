@@ -91,7 +91,11 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
                             </div>
                             <div role="tabpanel" className={elementOnGlassBg}>
                                 {match(tab)
-                                    .with(Tabs.NEW, () => <NewCyclicEvent />)
+                                    .with(Tabs.NEW, () => (
+                                        <NewCyclicEvent
+                                            closeDialog={closeModal}
+                                        />
+                                    ))
                                     .with(Tabs.LIST, () => <CyclicEventsList />)
                                     .exhaustive()}
                             </div>

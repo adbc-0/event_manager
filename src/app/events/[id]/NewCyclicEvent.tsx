@@ -4,21 +4,31 @@ import Image from "next/image";
 
 import acceptIcon from "~/public/acceptButton.svg";
 
-import { Button } from "~/components/Button/Button";
-import { Input } from "~/components/Input/Input";
-import { useAnonAuth } from "~/hooks/use-anon-auth";
 import {
     AvailabilityEnum,
     AvailabilityEnumValues,
     FreqEnum,
 } from "~/constants";
 import { ServerError } from "~/utils/index";
-import { ErrorMessage, RRule } from "~/typescript";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
+import { Button } from "~/components/Button/Button";
+import { Input } from "~/components/Input/Input";
+import { ErrorMessage, RRule, ReactProps } from "~/typescript";
+
+// ToDo: Modal name should be on the same line as close button
+// ToDo: Fix dialog
+// ToDo: Add validation on backend for rule
+// ToDo: Calendar event should have all users listed
+// ToDo: Restyle dialogs. Cut the transparency effect?
 
 type Rule = RRule & {
     name: string;
     availability: AvailabilityEnumValues;
     startDate: Date;
+};
+
+type NewCyclicEventProps = ReactProps & {
+    closeDialog: () => void;
 };
 
 const defaultRule: Rule = {
@@ -37,12 +47,13 @@ function addToRule(ruleString: string) {
         if (!value) {
             return ruleString;
         }
-        return ruleString.concat(`;`).concat(key).concat(value);
+
+        return ruleString.concat(key).concat("=").concat(value);
     };
 }
 
 function createRule(rule: Rule) {
-    const s1 = addToRule("")("FREQ", rule.freq);
+    const s1 = addToRule(";")("FREQ", rule.freq);
     const s2 = addToRule(s1)("INTERVAL", rule.interval.toString());
     const s3 = addToRule(s2)("BYDAY", rule.byDay.join(","));
     return s3;
@@ -53,7 +64,7 @@ function isDaySelected(days: string[], searchedDay: string) {
 }
 
 // https://www.kanzaki.com/docs/ical/rrule.html
-export function NewCyclicEvent() {
+export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
     const { id: eventId } = useParams();
     const { userId } = useAnonAuth();
 
@@ -111,6 +122,7 @@ export function NewCyclicEvent() {
             }
             throw new ServerError(error.message, response.status);
         }
+        closeDialog();
     };
 
     return (

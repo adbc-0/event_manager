@@ -59,9 +59,7 @@ export function CyclicEventsList() {
     if (!rules.length) {
         return (
             <div className="border border-zinc-800">
-                <p className="text-center py-2">
-                    No created rules for this user were found
-                </p>
+                <p className="text-center py-2">No cyclic events</p>
             </div>
         );
     }
