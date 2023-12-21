@@ -24,7 +24,6 @@ function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// ToDo: Map tabs?
 export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
     function CyclicDialog(_, ref) {
         const [tab, setTab] = useState<Tab>(Tabs.LIST);

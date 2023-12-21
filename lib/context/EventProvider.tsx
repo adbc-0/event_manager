@@ -67,6 +67,7 @@ type EventState = {
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
     getCurrentMonthInChunks: () => MonthChunk[];
+    fetchEventCalendar: (abortController?: AbortController) => Promise<void>;
 };
 type UsernameChangeRecalculateAction = {
     type: (typeof EventActionEnum)["USER_CHANGE"];
@@ -125,6 +126,9 @@ const EventContext = createContext<EventProviderReturn>({
         throw new Error("function was called before proper initialization");
     },
     getCurrentMonthInChunks() {
+        throw new Error("function was called before proper initialization");
+    },
+    fetchEventCalendar() {
         throw new Error("function was called before proper initialization");
     },
 });
@@ -320,26 +324,22 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
     );
     const { calendarDate } = eventControl;
 
-    useEffect(() => {
-        if (isServer) {
-            return; // So request won't run and be aborted
-        }
-
-        const abortController = new AbortController();
-
-        // ToDo: Export this as a function to refetch calendar
-        async function initEventCalendar() {
+    const fetchEventCalendar = useCallback(
+        async (abortController?: AbortController) => {
             const { month, year } = getCurrentDate();
             const searchParams = new URLSearchParams({
                 date: encodeEventParamDate(month, year),
             });
 
             try {
+                const fetchInit = abortController
+                    ? {
+                          signal: abortController.signal,
+                      }
+                    : {};
                 const response = await fetch(
                     `/api/events/${eventId}?${searchParams.toString()}`,
-                    {
-                        signal: abortController.signal,
-                    },
+                    fetchInit,
                 );
                 if (!response.ok) {
                     const error = (await response.json()) as ErrorMessage;
@@ -375,13 +375,22 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 }
                 throw exception;
             }
+        },
+        [eventId, replace, userId],
+    );
+
+    useEffect(() => {
+        if (isServer) {
+            return; // So request won't run and be aborted
         }
 
-        initEventCalendar();
+        const abortController = new AbortController();
+        fetchEventCalendar(abortController);
+
         return () => {
             abortController.abort();
         };
-    }, [eventId, userId, replace, isServer]);
+    }, [fetchEventCalendar, isServer]);
 
     const getCurrentMonthInChunks = useCallback(() => {
         const monthDaysData = createMonthDays(calendarDate);
@@ -393,8 +402,9 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
             ...eventControl,
             eventDispatch,
             getCurrentMonthInChunks,
+            fetchEventCalendar,
         }),
-        [eventControl, getCurrentMonthInChunks],
+        [eventControl, getCurrentMonthInChunks, fetchEventCalendar],
     );
 
     return (

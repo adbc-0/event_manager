@@ -6,7 +6,7 @@ import { Input } from "../Input/Input";
 type InputProps = React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
-> & { label: string; inputClass: string };
+> & { label: string; inputClass?: string };
 type Ref = HTMLInputElement;
 
 // ToDo: @unused

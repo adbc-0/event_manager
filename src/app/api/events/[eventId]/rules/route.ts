@@ -4,6 +4,7 @@ import { z } from "zod";
 import { AvailabilityEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
+import { parseRule } from "~/utils/eventUtils";
 
 type RouteParams = {
     eventId: string;
@@ -47,6 +48,12 @@ const RuleSchema = z.object({
     userId: z.number().min(1),
 });
 
+const parsedRuleSchema = z.object({
+    FREQ: z.string().optional(),
+    INTERVAL: z.string().optional(),
+    BYDAY: z.string().optional(),
+});
+
 export async function POST(req: Request, { params }: RequestParams) {
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
@@ -55,11 +62,12 @@ export async function POST(req: Request, { params }: RequestParams) {
             { status: 404 },
         );
     }
-    // ToDo: Can a parameter be missing in route or have wrong format??
-    // ToDo: Validate rule
 
     const body = await req.json();
     const rule = RuleSchema.parse(body);
+
+    const ruleObject = parseRule(rule.rule);
+    parsedRuleSchema.parse(ruleObject);
 
     const addedRule = await postgres`
         INSERT INTO event.availability_rules(name, choice, rule, start_date, user_id, event_id)

@@ -39,7 +39,6 @@ export default function EventView() {
                     {event.name ?? "..."}
                 </h1>
             </div>
-            {/* ToDo: Here is an issue with grid */}
             <div className="mx-2">
                 <CalendarTopIcons
                     openCyclickDialog={openCyclicSelectionDialog}

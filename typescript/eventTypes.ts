@@ -26,3 +26,9 @@ export type RRule = {
     interval: number;
     byDay: string[];
 };
+export type ParsedRule = {
+    FREQ: string;
+    BYDAY: string;
+    INTERVAL: string;
+    COUNT: string;
+};

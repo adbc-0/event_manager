@@ -4,15 +4,15 @@ import Image from "next/image";
 
 import trashIcon from "~/public/trash.svg";
 
+import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
 import { ServerError } from "~/utils/index";
 import { RequestResponse } from "~/app/api/events/[eventId]/rules/route";
 import { ErrorMessage } from "~/typescript";
 
-// ToDo: TanStack Query?
-// ToDo: Should coming data be requested for given user?
 export function CyclicEventsList() {
     const { id: eventId } = useParams();
+    const { fetchEventCalendar } = useEvent();
 
     const [rules, setRules] = useState<RequestResponse>([]);
 
@@ -54,6 +54,7 @@ export function CyclicEventsList() {
 
         const rules = (await response.json()) as RequestResponse;
         setRules(rules);
+        await fetchEventCalendar();
     };
 
     if (!rules.length) {

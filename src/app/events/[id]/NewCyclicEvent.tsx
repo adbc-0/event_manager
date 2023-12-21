@@ -10,15 +10,15 @@ import {
     FreqEnum,
 } from "~/constants";
 import { ServerError } from "~/utils/index";
+import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { ErrorMessage, RRule, ReactProps } from "~/typescript";
 
 // ToDo: Modal name should be on the same line as close button
-// ToDo: Fix dialog
+// ToDo: Fix dialog width on mobile
 // ToDo: Add validation on backend for rule
-// ToDo: Calendar event should have all users listed
 // ToDo: Restyle dialogs. Cut the transparency effect?
 
 type Rule = RRule & {
@@ -47,16 +47,19 @@ function addToRule(ruleString: string) {
         if (!value) {
             return ruleString;
         }
-
-        return ruleString.concat(key).concat("=").concat(value);
+        const newRule = key.concat("=").concat(value);
+        if (!ruleString) {
+            return ruleString.concat(newRule);
+        }
+        return ruleString.concat(";").concat(newRule);
     };
 }
 
 function createRule(rule: Rule) {
-    const s1 = addToRule(";")("FREQ", rule.freq);
+    const s0 = "";
+    const s1 = addToRule(s0)("FREQ", rule.freq);
     const s2 = addToRule(s1)("INTERVAL", rule.interval.toString());
-    const s3 = addToRule(s2)("BYDAY", rule.byDay.join(","));
-    return s3;
+    return addToRule(s2)("BYDAY", rule.byDay.join(","));
 }
 
 function isDaySelected(days: string[], searchedDay: string) {
@@ -67,6 +70,7 @@ function isDaySelected(days: string[], searchedDay: string) {
 export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
     const { id: eventId } = useParams();
     const { userId } = useAnonAuth();
+    const { fetchEventCalendar } = useEvent();
 
     const [rule, setRule] = useState<Rule>(defaultRule);
 
@@ -122,6 +126,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
             }
             throw new ServerError(error.message, response.status);
         }
+        await fetchEventCalendar();
         closeDialog();
     };
 

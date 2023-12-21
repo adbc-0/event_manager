@@ -11,9 +11,10 @@ import {
 } from "~/services/dayJsFacade";
 import {
     decodeEventParamDate,
+    parseRule,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { AvailabilityChoices, EventResponse } from "~/typescript";
+import { AvailabilityChoices, EventResponse, ParsedRule } from "~/typescript";
 
 type Event = {
     event_id: string;
@@ -39,13 +40,6 @@ type Rule = {
     user_id: number;
 };
 
-type ParsedRule = {
-    FREQ: string;
-    BYDAY: string;
-    INTERVAL: string;
-    COUNT: string;
-};
-
 type RouteParams = {
     eventId: string;
 };
@@ -66,13 +60,6 @@ const DayToNoMap = {
 
 type DayToMapyKeys = Array<keyof typeof DayToNoMap>;
 
-// FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH
-function parseRule(rule: string): ParsedRule {
-    const ruleEntries = rule.split(";").map((rulePair) => rulePair.split("="));
-    return Object.fromEntries(ruleEntries) as ParsedRule;
-}
-
-// ToDo: Take only results for searched month. Filter out rest.
 function getNextDayInstance(fromDate: DayJs) {
     return function (searchedWeekDay: number) {
         const startingDateDay = fromDate.day();

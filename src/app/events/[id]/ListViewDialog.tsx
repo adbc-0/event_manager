@@ -1,12 +1,14 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 
+import { ServerError } from "~/utils/index";
+import { getUsersFromChoices } from "~/utils/eventUtils";
 import { useEvent } from "~/context/EventProvider";
+import { ChoiceRow } from "./ChoiceRow";
 import { ClosePaneButton } from "~/components/GlassmorphicPane/ClosePane";
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
-import { ReactProps } from "~/typescript";
-import { getUsersFromChoices } from "~/utils/eventUtils";
-import { ChoiceRow } from "./ChoiceRow";
+import { RequestResponse } from "~/app/api/events/[eventId]/users/route";
+import { ErrorMessage, ReactProps } from "~/typescript";
 
 type ListViewDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
@@ -24,6 +26,29 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
 
         const { allChoices } = useEvent();
 
+        const [eventUsers, setEventUsers] = useState<RequestResponse>([]);
+
+        useEffect(() => {
+            async function fetchEventUsers() {
+                const response = await fetch(`/api/events/${eventId}/users`);
+                if (!response.ok) {
+                    const error = (await response.json()) as ErrorMessage;
+                    if (!error.message) {
+                        throw new ServerError(
+                            "error unhandled by server",
+                            response.status,
+                        );
+                    }
+                    throw new ServerError(error.message, response.status);
+                }
+
+                const users = (await response.json()) as RequestResponse;
+                setEventUsers(users);
+            }
+
+            fetchEventUsers();
+        }, [eventId]);
+
         const closeModal = () => {
             if (!ref?.current) {
                 throw new Error("Ref not found");
@@ -32,10 +57,18 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
             ref.current.close();
         };
 
-        const users = useMemo(
+        // ToDo: Maybe instead of passing userIds pass usernames? Translation won't be needed then
+        const usersIds = useMemo(
             () => getUsersFromChoices(allChoices),
             [allChoices],
         );
+
+        const changeUserIdToUserName = (userId: string) => {
+            const foundUser = eventUsers.find(
+                ({ id }) => id === Number.parseInt(userId),
+            );
+            return foundUser?.username ?? userId;
+        };
 
         return (
             <dialog
@@ -58,13 +91,15 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                                 >
                                                     &nbsp;
                                                 </th>
-                                                {users.map((user) => (
+                                                {usersIds.map((userId) => (
                                                     <th
                                                         scope="col"
-                                                        key={user}
+                                                        key={userId}
                                                         className="px-2 py-2"
                                                     >
-                                                        {user}
+                                                        {changeUserIdToUserName(
+                                                            userId,
+                                                        )}
                                                     </th>
                                                 ))}
                                             </tr>
@@ -76,7 +111,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                                         key={day}
                                                         day={day}
                                                         dayChoices={dayChoices}
-                                                        users={users}
+                                                        users={usersIds}
                                                     />
                                                 ),
                                             )}

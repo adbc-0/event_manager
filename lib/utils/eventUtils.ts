@@ -1,4 +1,4 @@
-import { AllAvailability } from "../../typescript";
+import { AllAvailability, ParsedRule } from "../../typescript";
 
 /** @description month index from 0 */
 export function encodeEventParamDate(month: number, year: number) {
@@ -25,4 +25,10 @@ export function getUsersFromChoices(choices: AllAvailability) {
     return [
         ...new Set(Object.values(choices).flatMap((obj) => Object.keys(obj))),
     ];
+}
+
+// Example rule: FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH
+export function parseRule(rule: string): ParsedRule {
+    const ruleEntries = rule.split(";").map((rulePair) => rulePair.split("="));
+    return Object.fromEntries(ruleEntries) as ParsedRule;
 }
