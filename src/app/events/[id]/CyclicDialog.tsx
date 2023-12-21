@@ -41,16 +41,17 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
         };
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in">
+            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in w-[90%]">
                 <GlassmorphicPane
-                    outerClassName="w-[90vw] md:max-w-xl"
                     innerClassName="pt-4 pb-6 px-4"
                 >
                     <div className="flex flex-col h-full">
-                        <ClosePaneButton closeModal={closeModal} />
-                        <h2 className="mb-5 text-xl text text-center">
-                            Cyclic Events
-                        </h2>
+                        <div className="flex justify-between">
+                            <h2 className="mb-5 text-xl text text-center">
+                                Cyclic Events
+                            </h2>
+                            <ClosePaneButton closeModal={closeModal} />
+                        </div>
                         <section className="p-1 rounded-md">
                             <div
                                 role="tablist"

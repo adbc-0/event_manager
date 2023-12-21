@@ -78,10 +78,12 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                     innerClassName="pt-4 pb-6 px-4"
                 >
                     <div className="flex flex-col h-full">
-                        <ClosePaneButton closeModal={closeIdentityModal} />
-                        <h2 className="text-xl mb-2 text-center">
-                            Select user
-                        </h2>
+                    <div className="flex justify-between">
+                            <h2 className="mb-5 text-xl text text-center">
+                                Select User
+                            </h2>
+                            <ClosePaneButton closeModal={closeIdentityModal} />
+                        </div>
                         <div className="flex flex-col">
                             {eventUsers.map((user) => (
                                 <button

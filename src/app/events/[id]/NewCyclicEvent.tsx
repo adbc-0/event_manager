@@ -16,8 +16,6 @@ import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { ErrorMessage, RRule, ReactProps } from "~/typescript";
 
-// ToDo: Modal name should be on the same line as close button
-// ToDo: Fix dialog width on mobile
 // ToDo: Add validation on backend for rule
 // ToDo: Restyle dialogs. Cut the transparency effect?
 
@@ -31,7 +29,7 @@ type NewCyclicEventProps = ReactProps & {
     closeDialog: () => void;
 };
 
-const defaultRule: Rule = {
+const nilRule: Rule = {
     name: "",
     byDay: [],
     freq: FreqEnum.WEEKLY,
@@ -72,7 +70,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
     const { userId } = useAnonAuth();
     const { fetchEventCalendar } = useEvent();
 
-    const [rule, setRule] = useState<Rule>(defaultRule);
+    const [rule, setRule] = useState<Rule>(nilRule);
 
     const changeName = (e: ChangeEvent<HTMLInputElement>) => {
         setRule((prev) => ({ ...prev, name: e.target.value }));
