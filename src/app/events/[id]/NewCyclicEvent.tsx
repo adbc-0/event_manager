@@ -16,9 +16,6 @@ import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { ErrorMessage, RRule, ReactProps } from "~/typescript";
 
-// ToDo: Add validation on backend for rule
-// ToDo: Restyle dialogs. Cut the transparency effect?
-
 type Rule = RRule & {
     name: string;
     availability: AvailabilityEnumValues;
@@ -194,7 +191,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
                         </Button>
                     ))}
                 </div>
-                <div className="w-full border-b border-zinc-800" />
+                <div className="w-full border-b-2 border-neutral-700" />
                 <Button
                     aria-label="submit new rule"
                     type="submit"

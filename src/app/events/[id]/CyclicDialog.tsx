@@ -17,8 +17,7 @@ const Tabs = {
     NEW: "new",
 } as const;
 
-const elementOnGlassBg =
-    "bg-zinc-950 backdrop-filter backdrop-blur-3xl bg-opacity-30";
+const elementOnGlassBg = "bg-zinc-950 bg-opacity-30";
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -41,15 +40,14 @@ export const CyclicDialog = forwardRef<Ref, RemovalDialogProps>(
         };
 
         return (
-            <dialog ref={ref} className="p-0 rounded-md open:animate-fade-in w-[90%]">
-                <GlassmorphicPane
-                    innerClassName="pt-4 pb-6 px-4"
-                >
-                    <div className="flex flex-col h-full">
-                        <div className="flex justify-between">
-                            <h2 className="mb-5 text-xl text text-center">
-                                Cyclic Events
-                            </h2>
+            <dialog
+                ref={ref}
+                className="p-0 rounded-md open:animate-fade-in w-[90%]"
+            >
+                <GlassmorphicPane innerClassName="pt-4 pb-6 px-4">
+                    <div className="flex flex-col h-full gap-4">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl">Cyclic Events</h2>
                             <ClosePaneButton closeModal={closeModal} />
                         </div>
                         <section className="p-1 rounded-md">
