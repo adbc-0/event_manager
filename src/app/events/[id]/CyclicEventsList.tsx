@@ -8,7 +8,7 @@ import { useEvent } from "~/context/EventProvider";
 import { Button } from "~/components/Button/Button";
 import { ServerError } from "~/utils/index";
 import { RequestResponse } from "~/app/api/events/[eventId]/rules/route";
-import { ErrorMessage } from "~/typescript";
+import { ErrorMessage, ID } from "~/typescript";
 
 export function CyclicEventsList() {
     const { id: eventId } = useParams();
@@ -37,7 +37,7 @@ export function CyclicEventsList() {
         fetchEventRules();
     }, [eventId]);
 
-    const deleteRule = async (ruleId: number) => {
+    const deleteRule = async (ruleId: ID) => {
         const response = await fetch(`/api/events/${eventId}/rules/${ruleId}`, {
             method: "DELETE",
         });

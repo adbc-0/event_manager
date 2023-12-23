@@ -118,6 +118,7 @@ function getColorType(
     allChoicesForDay: OwnAvailability,
     ownChoiceForDay: AvailabilityEnumValues,
 ): DayColorType {
+    console.log(usersCount);
     if (selectedMonth !== day.month) {
         return DayColorTypeEnum.DIFFERENT_MONTH;
     }
@@ -164,6 +165,7 @@ export function EventCalendar() {
         eventDispatch,
     } = useEvent();
 
+    // ToDo: There will be bug if user has no choices yet
     const usersCount = useMemo(
         () => getUsersFromChoices(allChoices).length,
         [allChoices],

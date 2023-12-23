@@ -14,7 +14,12 @@ import {
     parseRule,
     validateEventParamDate,
 } from "~/utils/eventUtils";
-import { AvailabilityChoices, EventResponse, ParsedRule } from "~/typescript";
+import {
+    AvailabilityChoices,
+    EventResponse,
+    ID,
+    ParsedRule,
+} from "~/typescript";
 
 type Event = {
     event_id: string;
@@ -26,18 +31,18 @@ type GroupedChoices = Record<string, AvailabilityChoices>;
 type MonthsChoices = {
     choice: AvailabilityEnumValues;
     day: number;
-    month_id: number;
+    month_id: ID;
     month: number;
     year: number;
-    user_id: number;
+    user_id: ID;
 };
 
 type Rule = {
-    id: number;
+    id: ID;
     choice: AvailabilityEnumValues;
     rule: string;
     start_date: Date;
-    user_id: number;
+    user_id: ID;
 };
 
 type RouteParams = {

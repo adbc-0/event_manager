@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
+import { ID } from "~/typescript";
 
 type RouteParams = {
     eventId: string;
@@ -13,10 +14,10 @@ type RequestParams = {
 };
 
 type EventRules = {
-    id: number;
+    id: ID;
     name: string;
     rule: string;
-    user_id: number;
+    user_id: ID;
 };
 
 export async function DELETE(_: Request, { params }: RequestParams) {

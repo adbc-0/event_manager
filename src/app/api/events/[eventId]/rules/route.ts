@@ -5,6 +5,7 @@ import { AvailabilityEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { parseRule } from "~/utils/eventUtils";
+import { ID } from "~/typescript";
 
 type RouteParams = {
     eventId: string;
@@ -15,10 +16,10 @@ type RequestParams = {
 };
 
 type EventRules = {
-    id: number;
+    id: ID;
     name: string;
     rule: string;
-    user_id: number;
+    user_id: ID;
 };
 
 export type RequestResponse = EventRules[];
@@ -69,7 +70,7 @@ export async function POST(req: Request, { params }: RequestParams) {
     const ruleObject = parseRule(rule.rule);
     parsedRuleSchema.parse(ruleObject);
 
-    const addedRule = await postgres`
+    const addedRule = await postgres<Array<{ id: ID }>>`
         INSERT INTO event.availability_rules(name, choice, rule, start_date, user_id, event_id)
         VALUES(${rule.name}, ${rule.availabilityChoice}, ${rule.rule}, ${rule.startDate}, ${rule.userId}, ${eventId})
         RETURNING id;

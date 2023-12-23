@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { validateEventParamDate } from "~/utils/eventUtils";
+import { ID } from "~/typescript";
 
 type RouteParams = {
     eventId: string;
@@ -13,7 +14,7 @@ type RequestParams = {
 };
 
 export type EventUser = {
-    id: number;
+    id: ID;
     username: string;
 };
 

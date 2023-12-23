@@ -34,6 +34,7 @@ import {
     CurrentDate,
     ErrorMessage,
     EventResponse,
+    ID,
     OwnAvailability,
     ReactProps,
 } from "~/typescript";
@@ -72,14 +73,14 @@ type EventProviderReturn = EventState & {
 type UsernameChangeRecalculateAction = {
     type: (typeof EventActionEnum)["USER_CHANGE"];
     payload: {
-        userId: number;
+        userId: ID;
     };
 };
 type DaySelectAction = {
     type: (typeof EventActionEnum)["DAY_SELECT"];
     payload: {
         selectedDay: number;
-        userId: number | undefined;
+        userId: ID | undefined;
     };
 };
 type ResetChoicesAction = {
@@ -89,7 +90,7 @@ type SetChoicesAction = {
     type: (typeof EventActionEnum)["LOAD_CHOICES"];
     payload: {
         event: EventResponse;
-        userId: number | undefined;
+        userId: ID | undefined;
     };
 };
 type SubmitCleanupAction = {

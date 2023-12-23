@@ -6,6 +6,7 @@ import { z } from "zod";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { createMonth } from "../../queries";
+import { ID } from "~/typescript";
 
 const changeAvailabilitySchema = z.object({
     choices: z.record(z.string(), z.string()),
@@ -36,7 +37,7 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         throw new Error(decodingError);
     }
 
-    const [maybeMonth] = await postgres<{ id: number }[]>`
+    const [maybeMonth] = await postgres<{ id: ID }[]>`
         SELECT id
         FROM event.events_months
         WHERE
