@@ -26,7 +26,7 @@ type Event = {
     name: string;
 };
 
-type GroupedChoices = Record<ID, AvailabilityChoices>;
+type GroupedChoices = Record<string, AvailabilityChoices>;
 
 type MonthsChoices = {
     choice: AvailabilityEnumValues;
@@ -34,7 +34,7 @@ type MonthsChoices = {
     month_id: ID;
     month: number;
     year: number;
-    user_id: ID;
+    username: string;
 };
 
 type Rule = {
@@ -42,7 +42,7 @@ type Rule = {
     choice: AvailabilityEnumValues;
     rule: string;
     start_date: Date;
-    user_id: ID;
+    username: string;
 };
 
 type TransformedRule = Rule & {
@@ -154,7 +154,7 @@ function createNilChoices() {
 
 function createEmptyUserChoices(users: EventUser[]) {
     return users.reduce((o, currUser) => {
-        o[currUser.id] = createNilChoices();
+        o[currUser.username] = createNilChoices();
         return o;
     }, {} as GroupedChoices);
 }
@@ -164,11 +164,11 @@ function fillUsersAvailability(
     eventMonthChoices: MonthsChoices[],
 ) {
     return eventMonthChoices.reduce((o, curr) => {
-        const { user_id, choice, day } = curr;
-        if (!o[user_id]) {
+        const { username, choice, day } = curr;
+        if (!o[username]) {
             throw new Error("Unexpected value: unexpected user id");
         }
-        o[user_id][choice].push(day);
+        o[username][choice].push(day);
         return o;
     }, structuredClone(emptyChoices));
 }
@@ -178,16 +178,16 @@ function fillUserAvailabilityWithRules(
     rulesWithSearchedDays: TransformedRule[],
 ) {
     return rulesWithSearchedDays.reduce((o, curr) => {
-        const { user_id, choice, selectedDays } = curr;
-        if (!o[user_id]) {
+        const { username, choice, selectedDays } = curr;
+        if (!o[username]) {
             throw new Error("Unexpected value: unexpected user id");
         }
         const filteredChoices = preferManualChoiceOverRule(
-            o[user_id],
+            o[username],
             selectedDays,
         );
-        o[user_id][choice] = dedupe([
-            ...o[user_id][choice],
+        o[username][choice] = dedupe([
+            ...o[username][choice],
             ...filteredChoices,
         ]);
         return o;
@@ -261,9 +261,10 @@ export async function GET(request: Request, { params }: RequestParams) {
             m.year,
             c.day,
             c.choice,
-            c.user_id
+            u.username
         FROM event.events_months AS m
         JOIN event.availability_choices AS c ON c.event_month_id=m.id
+        JOIN event.events_users AS u ON u.id=c.user_id
         WHERE
             m.event_id=${event.event_id}
             ${filterByDate(inspectedDate)}
@@ -271,13 +272,14 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     const rules = await postgres<Rule[]>`
         SELECT
-            id,
-            choice,
-            rule,
-            start_date,
-            user_id
-        FROM event.availability_rules
-        WHERE event.availability_rules.event_id=${event.event_id}
+            r.id,
+            r.choice,
+            r.rule,
+            r.start_date,
+            u.username
+        FROM event.availability_rules AS r
+        JOIN event.events_users AS u ON u.id=r.user_id
+        WHERE r.event_id=${event.event_id}
     `;
 
     const users = await postgres<EventUser[]>`

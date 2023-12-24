@@ -1,4 +1,4 @@
-import { AllAvailability, ParsedRule } from "../../typescript";
+import { ParsedRule } from "../../typescript";
 
 /** @description month index from 0 */
 export function encodeEventParamDate(month: number, year: number) {
@@ -19,12 +19,6 @@ export function validateEventParamDate(date: string) {
 export function decodeEventParamDate(date: string) {
     const [month, year] = date.split("-");
     return [month, year] as const;
-}
-
-export function getUsersFromChoices(choices: AllAvailability) {
-    return [
-        ...new Set(Object.values(choices).flatMap((obj) => Object.keys(obj))),
-    ];
 }
 
 // Example rule: FREQ=WEEKLY;INTERVAL=2;COUNT=8;WKST=SU;BYDAY=TU,TH

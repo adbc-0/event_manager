@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { match } from "ts-pattern";
 
@@ -16,12 +15,7 @@ import {
     getNextMonthDate,
     getPrevMonthDate,
 } from "~/services/dayJsFacade";
-import {
-    capitalize,
-    truncateString,
-    pipe,
-    getUsersFromChoices,
-} from "~/utils/index";
+import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useAbort } from "~/hooks/use-abort";
@@ -118,7 +112,6 @@ function getColorType(
     allChoicesForDay: OwnAvailability,
     ownChoiceForDay: AvailabilityEnumValues,
 ): DayColorType {
-    console.log(usersCount);
     if (selectedMonth !== day.month) {
         return DayColorTypeEnum.DIFFERENT_MONTH;
     }
@@ -154,21 +147,17 @@ export function EventCalendar() {
         throw new Error("Missing event url param");
     }
 
-    const { userId } = useAnonAuth();
+    const { username } = useAnonAuth();
     const abortSignal = useAbort();
     const {
         allChoices,
         ownChoices,
         calendarDate,
+        users,
         viewMode,
         getCurrentMonthInChunks,
         eventDispatch,
     } = useEvent();
-
-    const usersCount = useMemo(
-        () => getUsersFromChoices(allChoices).length,
-        [allChoices],
-    );
 
     const onPrevMonthClick = async () => {
         const newDate = getPrevMonthDate(calendarDate);
@@ -187,7 +176,7 @@ export function EventCalendar() {
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
-                    userId,
+                    username,
                 },
             });
         }
@@ -212,7 +201,7 @@ export function EventCalendar() {
                 type: EventActionEnum.LOAD_CHOICES,
                 payload: {
                     event,
-                    userId,
+                    username,
                 },
             });
         }
@@ -221,7 +210,7 @@ export function EventCalendar() {
     };
 
     const onDayClick = ({ day, month }: MonthDay) => {
-        if (!userId) {
+        if (!username) {
             return null;
         }
         if (month !== calendarDate.month) {
@@ -230,7 +219,7 @@ export function EventCalendar() {
 
         eventDispatch({
             type: EventActionEnum.DAY_SELECT,
-            payload: { selectedDay: day, userId },
+            payload: { selectedDay: day, username },
         });
     };
 
@@ -289,7 +278,7 @@ export function EventCalendar() {
                                                                 getColorType(
                                                                     dayData,
                                                                     calendarDate.month,
-                                                                    usersCount,
+                                                                    users.length,
                                                                     allChoices[
                                                                         dayData
                                                                             .day
@@ -314,7 +303,7 @@ export function EventCalendar() {
                                             disabled={
                                                 dayData.month !==
                                                     calendarDate.month ||
-                                                !userId
+                                                !username
                                             }
                                         >
                                             {match(viewMode)

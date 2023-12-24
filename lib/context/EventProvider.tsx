@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 
 import {
     AvailabilityEnum,
+    AvailabilityEnumValues,
     EventActionEnum,
     ViewModes,
     ViewModesEnumValues,
@@ -28,13 +29,11 @@ import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useSsc } from "~/hooks/use-ssc";
 import { decodeEventParamDate, encodeEventParamDate } from "~/utils/eventUtils";
 import {
-    AllAvailability,
     AllUsersAvailabilityChoices,
     AvailabilityChoices,
     CurrentDate,
     ErrorMessage,
     EventResponse,
-    ID,
     OwnAvailability,
     ReactProps,
 } from "~/typescript";
@@ -63,6 +62,7 @@ type EventState = {
     isDirty: boolean;
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
+    users: string[];
     viewMode: ViewModesEnumValues;
 };
 type EventProviderReturn = EventState & {
@@ -70,17 +70,11 @@ type EventProviderReturn = EventState & {
     getCurrentMonthInChunks: () => MonthChunk[];
     fetchEventCalendar: (abortController?: AbortController) => Promise<void>;
 };
-type UsernameChangeRecalculateAction = {
-    type: (typeof EventActionEnum)["USER_CHANGE"];
-    payload: {
-        userId: ID;
-    };
-};
 type DaySelectAction = {
     type: (typeof EventActionEnum)["DAY_SELECT"];
     payload: {
         selectedDay: number;
-        userId: ID | undefined;
+        username?: string;
     };
 };
 type ResetChoicesAction = {
@@ -90,7 +84,7 @@ type SetChoicesAction = {
     type: (typeof EventActionEnum)["LOAD_CHOICES"];
     payload: {
         event: EventResponse;
-        userId: ID | undefined;
+        username?: string;
     };
 };
 type SubmitCleanupAction = {
@@ -102,13 +96,13 @@ type CycleViewMode = {
 type EventActions =
     | DaySelectAction
     | CycleViewMode
-    | UsernameChangeRecalculateAction
     | ResetChoicesAction
     | SetChoicesAction
     | SubmitCleanupAction;
 type EventProviderProps = ReactProps & {
     eventId: string;
 };
+type AllAvailability = Record<string, Record<string, AvailabilityEnumValues>>;
 
 const nilCalendarReducer: EventState = {
     allChoices: parseAllChoices({}, getLastDayOfMonth(getCurrentDate())),
@@ -118,6 +112,7 @@ const nilCalendarReducer: EventState = {
     isDirty: false,
     ownChoices: {},
     ownChoicesBackup: {},
+    users: [],
     viewMode: ViewModes.DAY,
 } as const;
 
@@ -231,18 +226,9 @@ function getNextViewMode(viewMode: ViewModesEnumValues) {
 
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
-        case EventActionEnum.USER_CHANGE: {
-            const clone = structuredClone(state);
-
-            clone.allChoices = state.allChoicesBackup;
-            clone.ownChoices = state.ownChoicesBackup;
-            clone.isDirty = false;
-
-            return state;
-        }
         case EventActionEnum.LOAD_CHOICES: {
             const clone = structuredClone(state);
-            const { event, userId: username } = action.payload;
+            const { event, username } = action.payload;
             if (!event) {
                 throw new Error("expected choices data for given month");
             }
@@ -266,13 +252,14 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.ownChoices = parsedOwnChoices;
             clone.ownChoicesBackup = structuredClone(parsedOwnChoices);
             clone.isDirty = false;
+            clone.users = Object.keys(event.groupedChoices);
 
             return clone;
         }
         case EventActionEnum.DAY_SELECT: {
             const clone = structuredClone(state);
-            const { selectedDay, userId } = action.payload;
-            if (!userId) {
+            const { selectedDay, username } = action.payload;
+            if (!username) {
                 throw new Error("cannot select the day without username");
             }
 
@@ -280,7 +267,7 @@ function eventReducer(state: EventState, action: EventActions) {
             const nextChoice = getNextChoice(currentChoice);
 
             clone.ownChoices[selectedDay] = nextChoice;
-            clone.allChoices[selectedDay][userId] = nextChoice;
+            clone.allChoices[selectedDay][username] = nextChoice;
             clone.isDirty = true;
 
             return clone;
@@ -317,7 +304,7 @@ function eventReducer(state: EventState, action: EventActions) {
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
     const { isServer } = useSsc();
-    const { userId } = useAnonAuth();
+    const { username } = useAnonAuth();
     const { replace } = useRouter();
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
@@ -358,7 +345,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                     type: EventActionEnum.LOAD_CHOICES,
                     payload: {
                         event,
-                        userId,
+                        username,
                     },
                 });
             } catch (exception) {
@@ -377,7 +364,7 @@ export function EventProvider({ children, eventId }: EventProviderProps) {
                 throw exception;
             }
         },
-        [eventId, replace, userId],
+        [eventId, replace, username],
     );
 
     useEffect(() => {
