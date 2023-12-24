@@ -26,7 +26,7 @@ type Event = {
     name: string;
 };
 
-type GroupedChoices = Record<string, AvailabilityChoices>;
+type GroupedChoices = Record<ID, AvailabilityChoices>;
 
 type MonthsChoices = {
     choice: AvailabilityEnumValues;
@@ -43,6 +43,16 @@ type Rule = {
     rule: string;
     start_date: Date;
     user_id: ID;
+};
+
+type TransformedRule = Rule & {
+    selectedDays: number[];
+    parsedRule: ParsedRule;
+};
+
+type EventUser = {
+    id: ID;
+    username: string;
 };
 
 type RouteParams = {
@@ -142,17 +152,46 @@ function createNilChoices() {
     };
 }
 
-function groupChoicesByUserThenAvailability(
+function createEmptyUserChoices(users: EventUser[]) {
+    return users.reduce((o, currUser) => {
+        o[currUser.id] = createNilChoices();
+        return o;
+    }, {} as GroupedChoices);
+}
+
+function fillUsersAvailability(
+    emptyChoices: GroupedChoices,
     eventMonthChoices: MonthsChoices[],
 ) {
     return eventMonthChoices.reduce((o, curr) => {
         const { user_id, choice, day } = curr;
         if (!o[user_id]) {
-            o[user_id] = createNilChoices();
+            throw new Error("Unexpected value: unexpected user id");
         }
         o[user_id][choice].push(day);
         return o;
-    }, {} as GroupedChoices);
+    }, structuredClone(emptyChoices));
+}
+
+function fillUserAvailabilityWithRules(
+    groupedChoices: GroupedChoices,
+    rulesWithSearchedDays: TransformedRule[],
+) {
+    return rulesWithSearchedDays.reduce((o, curr) => {
+        const { user_id, choice, selectedDays } = curr;
+        if (!o[user_id]) {
+            throw new Error("Unexpected value: unexpected user id");
+        }
+        const filteredChoices = preferManualChoiceOverRule(
+            o[user_id],
+            selectedDays,
+        );
+        o[user_id][choice] = dedupe([
+            ...o[user_id][choice],
+            ...filteredChoices,
+        ]);
+        return o;
+    }, structuredClone(groupedChoices));
 }
 
 function dedupe(choices: number[]) {
@@ -241,32 +280,28 @@ export async function GET(request: Request, { params }: RequestParams) {
         WHERE event.availability_rules.event_id=${event.event_id}
     `;
 
+    const users = await postgres<EventUser[]>`
+        SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
+    `;
+
     const inspectedFullDate = convertDateParamToFullDate(inspectedDate);
     const getDaysFromRule = getDaysFromRuleForMonth(inspectedFullDate);
 
-    const groupedChoices =
-        groupChoicesByUserThenAvailability(eventMonthChoices);
+    const groupedUsers = createEmptyUserChoices(users);
+    const groupedChoices = fillUsersAvailability(
+        groupedUsers,
+        eventMonthChoices,
+    );
     const rulesWithSearchedDays = rules
         .map((rule) => ({ ...rule, parsedRule: parseRule(rule.rule) }))
         .map((rule) => ({
             ...rule,
             selectedDays: getDaysFromRule(rule.parsedRule, rule.start_date),
         }));
-    const choicesWithRules = rulesWithSearchedDays.reduce((o, curr) => {
-        const { user_id, choice, selectedDays } = curr;
-        if (!o[user_id]) {
-            o[user_id] = createNilChoices();
-        }
-        const filteredChoices = preferManualChoiceOverRule(
-            o[user_id],
-            selectedDays,
-        );
-        o[user_id][choice] = dedupe([
-            ...o[user_id][choice],
-            ...filteredChoices,
-        ]);
-        return o;
-    }, structuredClone(groupedChoices));
+    const choicesWithRules = fillUserAvailabilityWithRules(
+        groupedChoices,
+        rulesWithSearchedDays,
+    );
 
     const response: EventResponse = {
         name: event.name,
