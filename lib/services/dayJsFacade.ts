@@ -45,7 +45,7 @@ function newMonth({ beginning, end }: NewMonth) {
 function daysToPrevMonday(date: dayjs.Dayjs) {
     const weekday = date.startOf("month").day();
     if (weekday === 0) {
-        return 0;
+        return 6;
     }
 
     return weekday - 1;
