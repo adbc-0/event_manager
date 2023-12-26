@@ -45,7 +45,7 @@ const RuleSchema = z.object({
     name: z.string().trim().min(1),
     availabilityChoice: z.nativeEnum(AvailabilityEnum),
     rule: z.string().trim(),
-    startDate: z.string().pipe(z.coerce.date()),
+    startDate: z.string().datetime().pipe(z.coerce.date()),
     userId: z.number().min(1),
 });
 
