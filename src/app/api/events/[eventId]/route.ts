@@ -168,7 +168,7 @@ function getDaysFromRuleForMonth(beginningOfMonth: DayJs) {
                     rule,
                     ruleCreationDate,
                 );
-            })
+                            })
             .otherwise(() => {
                 throw new Error("Rrule Error: unhandled FREQ of this rrule");
             });
@@ -249,7 +249,7 @@ function filterByDate(date: DayJs) {
 }
 
 function createInspectedMonthFallback() {
-    const currentDate = getCurrentDate();
+    const currentDate = getCurrentDate({ utc: true });
     return `${currentDate.month}-${currentDate.year}`;
 }
 

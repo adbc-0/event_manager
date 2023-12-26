@@ -18,6 +18,10 @@ export type MonthDay = {
 
 export type DayJs = dayjs.Dayjs;
 
+type DateOptions = {
+    utc?: boolean;
+};
+
 type NewMonth =
     | {
           beginning: null;
@@ -60,8 +64,8 @@ function daysToNextSunday(date: dayjs.Dayjs) {
     return 7 - weekday;
 }
 
-export function getCurrentDate(): CurrentDate {
-    return transformDayJsToCurrentDate(dayjs());
+export function getCurrentDate(o: DateOptions = {}) {
+    return transformDayJsToCurrentDate(dayjs().utc(o.utc));
 }
 
 export function transformCurrentDateToDaysJs({
@@ -128,7 +132,7 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
 }
 
 export function convertStringToDate(dateString: string) {
-    const convertedDate = dayjs(dateString, "DD-MM-YYYY");
+    const convertedDate = dayjs(dateString, "DD-MM-YYYY").utc(true);
     if (!convertedDate.isValid()) {
         throw new Error("Date Error: could not convert string to date");
     }
@@ -141,7 +145,7 @@ export function getInitialWeek(
     startMonthDate: dayjs.Dayjs,
 ) {
     const intervalInt = Number.parseInt(interval);
-    const parsedCreationDate = dayjs(ruleCreationDate);
+    const parsedCreationDate = dayjs(ruleCreationDate).utc(true);
     const weeksSinceRuleCreationToStartDate = Math.trunc(
         startMonthDate.diff(parsedCreationDate) / MILLISECONDS_IN_WEEK + 1,
     );
@@ -153,6 +157,6 @@ export function getInitialWeek(
     return startMonthDate.add(nextOccurence - 1, "weeks");
 }
 
-export function newDateFromNativeDate(date: Date) {
-    return dayjs(date);
+export function newDateFromNativeDate(date: Date, o: DateOptions = {}) {
+    return dayjs(date).utc(o.utc);
 }
