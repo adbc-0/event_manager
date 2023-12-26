@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { match } from "ts-pattern";
 
 import { AvailabilityEnumValues, DAYS_IN_WEEK, FreqEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
@@ -7,13 +8,10 @@ import {
     DayJs,
     convertStringToDate,
     getCurrentDate,
-    getNextOccurenceBeginning,
+    getInitialWeek,
+    newDateFromNativeDate,
 } from "~/services/dayJsFacade";
-import {
-    decodeEventParamDate,
-    parseRule,
-    validateEventParamDate,
-} from "~/utils/eventUtils";
+import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
 import {
     AvailabilityChoices,
     EventResponse,
@@ -83,12 +81,12 @@ function getNextDayInstance(fromDate: DayJs) {
         }
         if (searchedWeekDay > startingDateDay) {
             const daysDiff = searchedWeekDay - startingDateDay;
-            return fromDate.add(daysDiff, "days").utc(true);
+            return fromDate.add(daysDiff, "days");
         }
         if (searchedWeekDay < startingDateDay) {
             const remainingWeekDays = DAYS_IN_WEEK - startingDateDay;
             const daysDiff = remainingWeekDays + searchedWeekDay;
-            return fromDate.add(daysDiff, "days").utc(true);
+            return fromDate.add(daysDiff, "days");
         }
         throw new Error("MissingCondition Error");
     };
@@ -100,7 +98,7 @@ function generateDaysForInterval(interval: number) {
         arr: number[] = [],
     ) {
         const appendedDays = [...arr, currentDate.date()];
-        const nextDate = currentDate.add(interval, "days").utc(true);
+        const nextDate = currentDate.add(interval, "days");
         if (nextDate.month() !== currentDate.month()) {
             return appendedDays;
         }
@@ -113,34 +111,67 @@ function splitDayToNo(rule: ParsedRule) {
     return rule.BYDAY.split(",") as DayToMapyKeys;
 }
 
-function convertDateParamToFullDate(date: string) {
+function padInspectedDate(date: string) {
     const [month, year] = decodeEventParamDate(date);
-    return `01-${Number.parseInt(month) + 1}-${year}`;
+    const paddedMonth = String(Number.parseInt(month) + 1).padStart(2, "0");
+    return `01-${paddedMonth}-${year}`;
 }
 
-function getDaysFromRuleForMonth(date: string) {
-    const startMonthDate = convertStringToDate(date).utc(true);
+function calculateOccurrencesForRule(
+    initialDate: DayJs,
+    rule: ParsedRule,
+    ruleCreationDate: Date,
+) {
+    const initialWeek = getInitialWeek(
+        rule.INTERVAL,
+        ruleCreationDate,
+        initialDate,
+    );
+    if (initialWeek.month() !== initialDate.month()) {
+        return [];
+    }
+
+    const getNextOccurences = generateDaysForInterval(
+        Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
+    );
+
+    return splitDayToNo(rule)
+        .map((dayLabel) => DayToNoMap[dayLabel])
+        .map(getNextDayInstance(initialWeek))
+        .filter((next) => next.month() === initialDate.month())
+        .flatMap((day) => getNextOccurences(day));
+}
+
+function getDaysFromRuleForMonth(beginningOfMonth: DayJs) {
     return function (rule: ParsedRule, ruleCreationDate: Date) {
-        const nextOccurenceBeginning = getNextOccurenceBeginning(
-            rule.INTERVAL,
-            ruleCreationDate,
-            startMonthDate,
-        );
-        if (nextOccurenceBeginning.month() !== startMonthDate.month()) {
-            return [];
-        }
+        return match(rule.FREQ)
+            .with(FreqEnum.WEEKLY, () => {
+                const earlierMonthThanRuleCreation =
+                    beginningOfMonth.isBefore(ruleCreationDate) &&
+                    beginningOfMonth.month() !== ruleCreationDate.getMonth();
+                if (earlierMonthThanRuleCreation) {
+                    return [];
+                }
 
-        const getNextOccurences = generateDaysForInterval(
-            Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
-        );
+                const sameMonthAsRuleCreation =
+                    beginningOfMonth.isBefore(ruleCreationDate);
+                if (sameMonthAsRuleCreation) {
+                    return calculateOccurrencesForRule(
+                        newDateFromNativeDate(ruleCreationDate),
+                        rule,
+                        ruleCreationDate,
+                    );
+                }
 
-        if (rule.FREQ === FreqEnum.WEEKLY) {
-            return splitDayToNo(rule)
-                .map((dayLabel) => DayToNoMap[dayLabel])
-                .map(getNextDayInstance(nextOccurenceBeginning))
-                .flatMap((day) => getNextOccurences(day));
-        }
-        throw new Error("Rrule Error: unhandled FREQ of this rrule");
+                return calculateOccurrencesForRule(
+                    beginningOfMonth,
+                    rule,
+                    ruleCreationDate,
+                );
+            })
+            .otherwise(() => {
+                throw new Error("Rrule Error: unhandled FREQ of this rrule");
+            });
     };
 }
 
@@ -210,6 +241,18 @@ function preferManualChoiceOverRule(
     );
 }
 
+function filterByDate(date: DayJs) {
+    return postgres`
+        AND m.year = ${date.year()}
+        AND m.month = ${date.month()};
+    `;
+}
+
+function createInspectedMonthFallback() {
+    const currentDate = getCurrentDate();
+    return `${currentDate.month}-${currentDate.year}`;
+}
+
 export async function GET(request: Request, { params }: RequestParams) {
     const { searchParams } = new URL(request.url);
 
@@ -221,13 +264,13 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
-    const inspectedDate =
-        searchParams.get("date") ?? // format: MM-YYYY, MM starts from 0
-        `${getCurrentDate().month}-${getCurrentDate().year}`;
-    const isValid = validateEventParamDate(inspectedDate);
-    if (isValid === false) {
+    const rawInspectionMonth = // expected format: MM-YYYY, MM starts from z
+        searchParams.get("date") ?? createInspectedMonthFallback();
+    const inspectionMonth = padInspectedDate(rawInspectionMonth);
+    const inspectionMonthDate = convertStringToDate(inspectionMonth);
+    if (!inspectionMonthDate.isValid()) {
         return NextResponse.json(
-            { message: "Wrong event date param format" },
+            { message: "Date Error: could not convert date" },
             { status: 400 },
         );
     }
@@ -246,14 +289,6 @@ export async function GET(request: Request, { params }: RequestParams) {
         );
     }
 
-    const filterByDate = (rawDateParam: string) => {
-        const [month, year] = decodeEventParamDate(rawDateParam);
-        return postgres`
-            AND m.year = ${year}
-            AND m.month = ${month};
-        `;
-    };
-
     const eventMonthChoices = await postgres<MonthsChoices[]>`
         SELECT
             m.id AS month_id,
@@ -267,7 +302,7 @@ export async function GET(request: Request, { params }: RequestParams) {
         JOIN event.events_users AS u ON u.id=c.user_id
         WHERE
             m.event_id=${event.event_id}
-            ${filterByDate(inspectedDate)}
+            ${filterByDate(inspectionMonthDate)}
     `;
 
     const rules = await postgres<Rule[]>`
@@ -286,20 +321,20 @@ export async function GET(request: Request, { params }: RequestParams) {
         SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
     `;
 
-    const inspectedFullDate = convertDateParamToFullDate(inspectedDate);
-    const getDaysFromRule = getDaysFromRuleForMonth(inspectedFullDate);
-
     const groupedUsers = createEmptyUserChoices(users);
     const groupedChoices = fillUsersAvailability(
         groupedUsers,
         eventMonthChoices,
     );
+
+    const getDaysFromRule = getDaysFromRuleForMonth(inspectionMonthDate);
     const rulesWithSearchedDays = rules
         .map((rule) => ({ ...rule, parsedRule: parseRule(rule.rule) }))
         .map((rule) => ({
             ...rule,
             selectedDays: getDaysFromRule(rule.parsedRule, rule.start_date),
         }));
+
     const choicesWithRules = fillUserAvailabilityWithRules(
         groupedChoices,
         rulesWithSearchedDays,
@@ -307,7 +342,7 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     const response: EventResponse = {
         name: event.name,
-        time: inspectedDate,
+        time: rawInspectionMonth,
         groupedChoices: choicesWithRules,
     };
     return NextResponse.json(response);

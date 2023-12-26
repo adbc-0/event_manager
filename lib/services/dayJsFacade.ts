@@ -61,7 +61,7 @@ function daysToNextSunday(date: dayjs.Dayjs) {
 }
 
 export function getCurrentDate(): CurrentDate {
-    return transformDayJsToCurrentDate(dayjs().utc());
+    return transformDayJsToCurrentDate(dayjs());
 }
 
 export function transformCurrentDateToDaysJs({
@@ -100,13 +100,12 @@ export function getPrevMonthDate(currentDate: CurrentDate): CurrentDate {
     return transformDayJsToCurrentDate(nextMonthDate);
 }
 
-// ToDo: Adding utc causes problems (Check where I should use UTC)
 export function getLastDayOfMonth(currentDate: CurrentDate): number {
     return transformCurrentDateToDaysJs(currentDate).endOf("month").date();
 }
 
 export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
-    const curr = dayjs().utc().set("month", month).set("year", year);
+    const curr = dayjs().set("month", month).set("year", year);
     const prev = curr.startOf("month").subtract(daysToPrevMonday(curr), "days");
     const next = curr.endOf("month").add(daysToNextSunday(curr), "days");
 
@@ -129,10 +128,14 @@ export function createMonthDays({ month, year }: CurrentDate): MonthDay[] {
 }
 
 export function convertStringToDate(dateString: string) {
-    return dayjs(dateString, "DD-MM-YYYY");
+    const convertedDate = dayjs(dateString, "DD-MM-YYYY");
+    if (!convertedDate.isValid()) {
+        throw new Error("Date Error: could not convert string to date");
+    }
+    return convertedDate;
 }
 
-export function getNextOccurenceBeginning(
+export function getInitialWeek(
     interval: string,
     ruleCreationDate: Date,
     startMonthDate: dayjs.Dayjs,
@@ -142,7 +145,14 @@ export function getNextOccurenceBeginning(
     const weeksSinceRuleCreationToStartDate = Math.trunc(
         startMonthDate.diff(parsedCreationDate) / MILLISECONDS_IN_WEEK + 1,
     );
+    if (weeksSinceRuleCreationToStartDate < 0) {
+        return startMonthDate;
+    }
     const nextOccurence =
         intervalInt - (weeksSinceRuleCreationToStartDate % intervalInt);
     return startMonthDate.add(nextOccurence - 1, "weeks");
+}
+
+export function newDateFromNativeDate(date: Date) {
+    return dayjs(date);
 }

@@ -35,7 +35,7 @@ const nilRule: Rule = {
     startDate: new Date(),
 } as const;
 
-const daysInWeek = ["MO", "TU", "WE", "TH", "FR", "SU", "SA"];
+const daysInWeek = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
 function addToRule(ruleString: string) {
     return function (key: string, value: string) {
@@ -127,7 +127,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
 
     return (
         <div className="border border-zinc-800 flex justify-center p-2 text-center">
-            <form onSubmit={submitRule}>
+            <form onSubmit={submitRule} className="grow">
                 <div className="py-2">
                     <label htmlFor="event-name">
                         I want to make a cyclic event called:
@@ -145,7 +145,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
                 <div className="py-2">
                     <span>Every</span>
                     <select
-                        className="m-2 p-1"
+                        className="m-2 p-1 border border-neutral-900 rounded-md"
                         defaultValue={rule.interval}
                         onChange={changeInterval}
                     >
@@ -158,7 +158,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
                     </select>
                     <span>week{rule.interval > 1 ? "s" : ""} I will be</span>
                     <select
-                        className="m-2 p-1"
+                        className="m-2 p-1 border border-neutral-900 rounded-md"
                         defaultValue={rule.availability}
                         onChange={changeAvailability}
                     >
