@@ -168,7 +168,7 @@ function getDaysFromRuleForMonth(beginningOfMonth: DayJs) {
                     rule,
                     ruleCreationDate,
                 );
-                            })
+            })
             .otherwise(() => {
                 throw new Error("Rrule Error: unhandled FREQ of this rrule");
             });

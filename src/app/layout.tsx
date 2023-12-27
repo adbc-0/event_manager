@@ -8,6 +8,8 @@ const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 // ToDo: Add TanStack Query for request caching
 // ToDo: Forced dark mode
 // ToDo: Add labels to know the origin of selection
+// ToDo: Block buttons when submitting
+// ToDo: Add toast
 export const viewport: Viewport = {
     colorScheme: "dark",
 };
