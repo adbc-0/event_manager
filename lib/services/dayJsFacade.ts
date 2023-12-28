@@ -3,7 +3,7 @@ import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { range } from "../utils";
-import { MILLISECONDS_IN_WEEK } from "~/constants";
+import { DAYS_IN_WEEK, MILLISECONDS_IN_WEEK } from "~/constants";
 import { CurrentDate } from "~/typescript";
 
 extend(utc);
@@ -139,22 +139,43 @@ export function convertStringToDate(dateString: string) {
     return convertedDate;
 }
 
-export function getInitialWeek(
-    interval: string,
-    ruleCreationDate: Date,
-    startMonthDate: dayjs.Dayjs,
-) {
-    const intervalInt = Number.parseInt(interval);
-    const parsedCreationDate = dayjs(ruleCreationDate).utc(true);
-    const weeksSinceRuleCreationToStartDate = Math.trunc(
-        startMonthDate.diff(parsedCreationDate) / MILLISECONDS_IN_WEEK + 1,
-    );
-    if (weeksSinceRuleCreationToStartDate < 0) {
-        return startMonthDate;
+// What is difference between this and getNextOccurences?
+function findDayInWeek(fromDate: DayJs, searchedWeekDay: number) {
+    const startingDateDay = fromDate.day();
+    if (searchedWeekDay === startingDateDay) {
+        return fromDate;
     }
-    const nextOccurence =
-        intervalInt - (weeksSinceRuleCreationToStartDate % intervalInt);
-    return startMonthDate.add(nextOccurence - 1, "weeks");
+    if (searchedWeekDay > startingDateDay) {
+        const daysDiff = searchedWeekDay - startingDateDay;
+        return fromDate.add(daysDiff, "days");
+    }
+    if (searchedWeekDay < startingDateDay) {
+        const remainingWeekDays = DAYS_IN_WEEK - startingDateDay;
+        const daysDiff = remainingWeekDays + searchedWeekDay;
+        return fromDate.add(daysDiff, "days");
+    }
+    throw new Error("MissingCondition Error");
+}
+
+export function findInitialOccurence(
+    searchBeginning: DayJs,
+    rCreationDate: Date,
+    interval: number,
+    searchedInitialDay: number,
+) {
+    const ruleCreationDate = dayjs(rCreationDate);
+    const shiftedSearchedDate = findDayInWeek(
+        searchBeginning,
+        searchedInitialDay,
+    );
+    const weeksSinceRuleCreationToStartDate = Math.floor(
+        shiftedSearchedDate.diff(ruleCreationDate) / MILLISECONDS_IN_WEEK,
+    );
+
+    const weekOrder = weeksSinceRuleCreationToStartDate % interval;
+    const weeksToFirstOccurence = weekOrder ? interval - weekOrder : weekOrder;
+
+    return shiftedSearchedDate.add(weeksToFirstOccurence, "weeks");
 }
 
 export function newDateFromNativeDate(date: Date, o: DateOptions = {}) {

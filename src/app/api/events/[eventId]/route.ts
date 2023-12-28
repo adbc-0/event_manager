@@ -8,7 +8,7 @@ import {
     DayJs,
     convertStringToDate,
     getCurrentDate,
-    getInitialWeek,
+    findInitialOccurence,
     newDateFromNativeDate,
 } from "~/services/dayJsFacade";
 import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
@@ -73,25 +73,6 @@ const DayToNoMap = {
 
 type DayToMapyKeys = Array<keyof typeof DayToNoMap>;
 
-function getNextDayInstance(fromDate: DayJs) {
-    return function (searchedWeekDay: number) {
-        const startingDateDay = fromDate.day();
-        if (searchedWeekDay === startingDateDay) {
-            return fromDate;
-        }
-        if (searchedWeekDay > startingDateDay) {
-            const daysDiff = searchedWeekDay - startingDateDay;
-            return fromDate.add(daysDiff, "days");
-        }
-        if (searchedWeekDay < startingDateDay) {
-            const remainingWeekDays = DAYS_IN_WEEK - startingDateDay;
-            const daysDiff = remainingWeekDays + searchedWeekDay;
-            return fromDate.add(daysDiff, "days");
-        }
-        throw new Error("MissingCondition Error");
-    };
-}
-
 function generateDaysForInterval(interval: number) {
     return function generateDaysFromInitialDays(
         currentDate: DayJs,
@@ -122,14 +103,16 @@ function calculateOccurrencesForRule(
     rule: ParsedRule,
     ruleCreationDate: Date,
 ) {
-    const initialWeek = getInitialWeek(
-        rule.INTERVAL,
-        ruleCreationDate,
-        initialDate,
-    );
-    if (initialWeek.month() !== initialDate.month()) {
-        return [];
-    }
+    // compare creation date and analsed date
+    // const initialWeek = getInitialWeekBeginning(
+    //     rule.INTERVAL,
+    //     ruleCreationDate,
+    //     initialDate,
+    // );
+    // console.log("initial week", initialWeek.toString());
+    // if (initialWeek.month() !== initialDate.month()) {
+    //     return [];
+    // }
 
     const getNextOccurences = generateDaysForInterval(
         Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
@@ -137,7 +120,14 @@ function calculateOccurrencesForRule(
 
     return splitDayToNo(rule)
         .map((dayLabel) => DayToNoMap[dayLabel])
-        .map(getNextDayInstance(initialWeek))
+        .map((weekDay) =>
+            findInitialOccurence(
+                initialDate,
+                ruleCreationDate,
+                Number.parseInt(rule.INTERVAL),
+                weekDay,
+            ),
+        )
         .filter((next) => next.month() === initialDate.month())
         .flatMap((day) => getNextOccurences(day));
 }
