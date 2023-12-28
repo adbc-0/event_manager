@@ -5,12 +5,14 @@ import Image from "next/image";
 import trashIcon from "~/public/trash.svg";
 
 import { useEvent } from "~/context/EventProvider";
+import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { ServerError } from "~/utils/index";
 import { RequestResponse } from "~/app/api/events/[eventId]/rules/route";
 import { ErrorMessage, ID } from "~/typescript";
 
 export function CyclicEventsList() {
+    const { userId } = useAnonAuth();
     const { id: eventId } = useParams();
     const { fetchEventCalendar } = useEvent();
 
@@ -18,7 +20,16 @@ export function CyclicEventsList() {
 
     useEffect(() => {
         async function fetchEventRules() {
-            const response = await fetch(`/api/events/${eventId}/rules`);
+            if (!userId) {
+                return;
+            }
+
+            const searchParams = new URLSearchParams({
+                userId: userId.toString(),
+            });
+            const response = await fetch(
+                `/api/events/${eventId}/rules?${searchParams.toString()}`,
+            );
             if (!response.ok) {
                 const error = (await response.json()) as ErrorMessage;
                 if (!error.message) {
@@ -35,7 +46,7 @@ export function CyclicEventsList() {
         }
 
         fetchEventRules();
-    }, [eventId]);
+    }, [eventId, userId]);
 
     const deleteRule = async (ruleId: ID) => {
         const response = await fetch(`/api/events/${eventId}/rules/${ruleId}`, {

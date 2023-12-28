@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
-import { validateEventParamDate } from "~/utils/eventUtils";
 import { ID } from "~/typescript";
 
 type RouteParams = {
@@ -21,22 +20,11 @@ export type EventUser = {
 export type RequestResponse = EventUser[];
 
 export async function GET(request: Request, { params }: RequestParams) {
-    const { searchParams } = new URL(request.url);
-    const date = searchParams.get("date");
-
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
             { message: "Invalid event id format" },
             { status: 404 },
-        );
-    }
-
-    const isValid = date ? validateEventParamDate(date) : null;
-    if (isValid === false) {
-        return NextResponse.json(
-            { message: "Wrong event date param format" },
-            { status: 400 },
         );
     }
 

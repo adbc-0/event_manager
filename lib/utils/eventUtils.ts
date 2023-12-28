@@ -5,17 +5,6 @@ export function encodeEventParamDate(month: number, year: number) {
     return `${month}-${year}`;
 }
 
-export function validateEventParamDate(date: string) {
-    const [month, year] = date.split("-");
-    if (!month || Number.isNaN(month)) {
-        return false;
-    }
-    if (!year || Number.isNaN(year)) {
-        return false;
-    }
-    return true;
-}
-
 export function decodeEventParamDate(date: string) {
     const [month, year] = date.split("-");
     return [month, year] as const;

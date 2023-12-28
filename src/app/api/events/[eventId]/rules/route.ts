@@ -24,7 +24,13 @@ type EventRules = {
 
 export type RequestResponse = EventRules[];
 
-export async function GET(_: Request, { params }: RequestParams) {
+function ofUser(userId: string) {
+    return postgres`AND user_id=${userId}`;
+}
+
+export async function GET(request: Request, { params }: RequestParams) {
+    const { searchParams } = new URL(request.url);
+
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
@@ -33,10 +39,13 @@ export async function GET(_: Request, { params }: RequestParams) {
         );
     }
 
+    const userId = searchParams.get("userId");
+
     const rules = await postgres<EventRules[]>`
         SELECT id, name, rule, user_id
         FROM event.availability_rules
-        WHERE event_id = ${eventId};
+        WHERE event_id = ${eventId}
+            ${userId ? ofUser(userId) : postgres``};
     `;
     return NextResponse.json(rules);
 }
