@@ -11,6 +11,7 @@ const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 // ToDo: Block buttons when submitting
 // ToDo: Add toast
 // ToDo: Reuse animations from shad
+// ToDo: Go throught all files and make cleanup
 export const viewport: Viewport = {
     colorScheme: "dark",
 };
