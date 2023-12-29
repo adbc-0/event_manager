@@ -1,16 +1,17 @@
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
+import { useParams } from "next/navigation";
 
 import eventRepeatIcon from "~/public/event_repeat.svg";
 import listIcon from "~/public/list.svg";
 import changeViewMode from "~/public/changeViewMode.svg";
 import changeViewModeNegative from "~/public/changeViewModeNegative.svg";
 
+import { EventActionEnum, ViewModes, ViewModesEnumValues } from "~/constants";
+import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
-import { ReactProps } from "~/typescript";
-import { useEvent } from "~/context/EventProvider";
-import { EventActionEnum, ViewModes, ViewModesEnumValues } from "~/constants";
+import { EventRouteParams, ReactProps } from "~/typescript";
 
 type CalendarTopIconsProps = ReactProps & {
     openViewListDialog(): void;
@@ -25,7 +26,8 @@ export function CalendarTopIcons({
     openCyclickDialog,
     openViewListDialog,
 }: CalendarTopIconsProps) {
-    const { userId } = useAnonAuth();
+    const { id: eventId } = useParams<EventRouteParams>();
+    const { userId } = useAnonAuth(eventId);
     const { viewMode, eventDispatch } = useEvent();
 
     const toggleViewMode = () => {

@@ -8,7 +8,7 @@ import {
     DayJs,
     convertStringToDate,
     getCurrentDate,
-    findInitialOccurence,
+    findInitialOccurenceForDate,
     newDateFromNativeDate,
 } from "~/services/dayJsFacade";
 import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
@@ -106,17 +106,15 @@ function calculateOccurrencesForRule(
     const getNextOccurences = generateDaysForInterval(
         Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
     );
+    const findInitialOccurence = findInitialOccurenceForDate(
+        initialDate,
+        ruleCreationDate,
+        Number.parseInt(rule.INTERVAL),
+    );
 
     return splitDayToNo(rule)
         .map((dayLabel) => DayToNoMap[dayLabel])
-        .map((weekDay) =>
-            findInitialOccurence(
-                initialDate,
-                ruleCreationDate,
-                Number.parseInt(rule.INTERVAL),
-                weekDay,
-            ),
-        )
+        .map((weekDay) => findInitialOccurence(weekDay))
         .filter((next) => next.month() === initialDate.month())
         .flatMap((day) => getNextOccurences(day));
 }

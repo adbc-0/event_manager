@@ -304,8 +304,8 @@ function eventReducer(state: EventState, action: EventActions) {
 
 export function EventProvider({ children, eventId }: EventProviderProps) {
     const { isServer } = useSsc();
-    const { username } = useAnonAuth();
     const { replace } = useRouter();
+    const { username } = useAnonAuth(eventId);
     const [eventControl, eventDispatch] = useReducer(
         eventReducer,
         nilCalendarReducer,

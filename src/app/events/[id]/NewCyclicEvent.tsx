@@ -14,7 +14,12 @@ import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
-import { ErrorMessage, RRule, ReactProps } from "~/typescript";
+import {
+    ErrorMessage,
+    EventRouteParams,
+    RRule,
+    ReactProps,
+} from "~/typescript";
 
 type Rule = RRule & {
     name: string;
@@ -63,8 +68,8 @@ function isDaySelected(days: string[], searchedDay: string) {
 
 // https://www.kanzaki.com/docs/ical/rrule.html
 export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
-    const { id: eventId } = useParams();
-    const { userId } = useAnonAuth();
+    const { id: eventId } = useParams<EventRouteParams>();
+    const { userId } = useAnonAuth(eventId);
     const { fetchEventCalendar } = useEvent();
 
     const [rule, setRule] = useState<Rule>(nilRule);

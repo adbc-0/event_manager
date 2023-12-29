@@ -4,27 +4,29 @@ import { useLocalStorage } from "./use-local-storage";
 import { LocalStorageKeys } from "~/constants";
 import { EventUser } from "~/app/api/events/[eventId]/users/route";
 
-export function useAnonAuth() {
-    const {
-        storageValue: user,
-        setStorage,
-        storageCleanup,
-    } = useLocalStorage(LocalStorageKeys.EVENT_NAME);
+export function useAnonAuth(eventId: string) {
+    const { storageValue: loggedEvents, setStorage } = useLocalStorage(
+        LocalStorageKeys.EVENT_NAME,
+    );
 
     const setUserId = useCallback(
         (newUser: EventUser) => {
-            setStorage(newUser);
+            const storageCopy = structuredClone(loggedEvents ?? {});
+            storageCopy[eventId] = newUser;
+            setStorage(storageCopy);
         },
-        [setStorage],
+        [eventId, loggedEvents, setStorage],
     );
 
     const logout = useCallback(() => {
-        storageCleanup();
-    }, [storageCleanup]);
+        const storageCopy = structuredClone(loggedEvents ?? {});
+        delete storageCopy[eventId];
+        setStorage(storageCopy);
+    }, [eventId, loggedEvents, setStorage]);
 
     return {
-        userId: user?.id,
-        username: user?.username,
+        userId: loggedEvents?.[eventId]?.id,
+        username: loggedEvents?.[eventId]?.username,
         setUsername: setUserId,
         logout,
     } as const;

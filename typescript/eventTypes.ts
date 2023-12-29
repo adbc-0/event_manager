@@ -28,3 +28,6 @@ export type ParsedRule = {
     INTERVAL: string;
     COUNT: string;
 };
+export type EventRouteParams = {
+    id: string;
+};

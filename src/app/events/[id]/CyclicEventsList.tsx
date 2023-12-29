@@ -9,11 +9,11 @@ import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { ServerError } from "~/utils/index";
 import { RequestResponse } from "~/app/api/events/[eventId]/rules/route";
-import { ErrorMessage, ID } from "~/typescript";
+import { ErrorMessage, EventRouteParams, ID } from "~/typescript";
 
 export function CyclicEventsList() {
-    const { userId } = useAnonAuth();
-    const { id: eventId } = useParams();
+    const { id: eventId } = useParams<EventRouteParams>();
+    const { userId } = useAnonAuth(eventId);
     const { fetchEventCalendar } = useEvent();
 
     const [rules, setRules] = useState<RequestResponse>([]);

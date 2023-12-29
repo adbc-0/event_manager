@@ -19,7 +19,7 @@ import { capitalize, truncateString, pipe } from "~/utils/index";
 import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useAbort } from "~/hooks/use-abort";
-import { EventResponse } from "~/typescript";
+import { EventResponse, EventRouteParams } from "~/typescript";
 
 type OwnAvailability = Record<string, AvailabilityEnumValues>;
 
@@ -142,13 +142,13 @@ function showAmountOfVotes(choices?: Record<string, AvailabilityEnumValues>) {
 const trimWeekday = pipe(truncateString(3), capitalize);
 
 export function EventCalendar() {
-    const { id: eventId } = useParams();
+    const { id: eventId } = useParams<EventRouteParams>();
     if (!eventId) {
         throw new Error("Missing event url param");
     }
 
-    const { username } = useAnonAuth();
     const abortSignal = useAbort();
+    const { username } = useAnonAuth(eventId);
     const {
         allChoices,
         ownChoices,

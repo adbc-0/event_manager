@@ -10,19 +10,19 @@ import {
 import { GlassmorphicPane } from "~/components/GlassmorphicPane/GlassmorphicPane";
 import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
 
-import { ErrorMessage, ReactProps } from "~/typescript";
+import { ErrorMessage, EventRouteParams, ReactProps } from "~/typescript";
 
 type UsernameDialogProps = ReactProps;
 type Ref = HTMLDialogElement;
 
 export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
     function AuthDialog(_, ref) {
-        const { id: eventId } = useParams();
+        const { id: eventId } = useParams<EventRouteParams>();
         if (!eventId) {
             throw new Error("Missing event url param");
         }
 
-        const { setUsername } = useAnonAuth();
+        const { setUsername } = useAnonAuth(eventId);
 
         const [eventUsers, setEventUsers] = useState<RequestResponse>([]);
 

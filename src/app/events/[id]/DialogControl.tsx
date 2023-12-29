@@ -10,10 +10,11 @@ import { ChangeAvailability } from "~/app/api/events/[eventId]/actions";
 import { useEvent } from "~/context/EventProvider";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
+import { EventRouteParams } from "../../../../typescript/eventTypes";
 
 export function CalendarControl() {
-    const { id: eventId } = useParams();
-    const { userId } = useAnonAuth();
+    const { id: eventId } = useParams<EventRouteParams>();
+    const { userId } = useAnonAuth(eventId);
     if (!eventId) {
         throw new Error("Missing event url param");
     }

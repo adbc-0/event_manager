@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 import loginIcon from "~/public/login.svg";
 import logoutIcon from "~/public/logout.svg";
@@ -9,9 +10,11 @@ import logoutIcon from "~/public/logout.svg";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "../Button/Button";
 import { AuthDialog } from "../LoginDialog/AuthDialog";
+import { EventRouteParams } from "../../typescript/eventTypes";
 
 export function MobileMenu() {
-    const { userId, username, logout } = useAnonAuth();
+    const { id: eventId } = useParams<EventRouteParams>();
+    const { userId, username, logout } = useAnonAuth(eventId);
 
     const usernameDialogRef = useRef<HTMLDialogElement>(null);
 
