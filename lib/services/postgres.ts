@@ -20,6 +20,13 @@ const postgressProdConfig = {
     postgressBaseConfig,
 } as const;
 
+console.log(
+    "connecting to postgres:",
+    process.env.NODE_ENV === "development"
+        ? postgressDevConfig
+        : postgressProdConfig,
+);
+
 export const postgres = postgresConnect(
     process.env.NODE_ENV === "development"
         ? postgressDevConfig

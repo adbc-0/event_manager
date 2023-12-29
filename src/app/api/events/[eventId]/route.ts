@@ -103,17 +103,6 @@ function calculateOccurrencesForRule(
     rule: ParsedRule,
     ruleCreationDate: Date,
 ) {
-    // compare creation date and analsed date
-    // const initialWeek = getInitialWeekBeginning(
-    //     rule.INTERVAL,
-    //     ruleCreationDate,
-    //     initialDate,
-    // );
-    // console.log("initial week", initialWeek.toString());
-    // if (initialWeek.month() !== initialDate.month()) {
-    //     return [];
-    // }
-
     const getNextOccurences = generateDaysForInterval(
         Number.parseInt(rule.INTERVAL) * DAYS_IN_WEEK,
     );

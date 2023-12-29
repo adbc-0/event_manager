@@ -5,6 +5,8 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
+// ToDo: Allow to store info about multiple users
+// ToDo: Validate is such user exists as is saved in local storage
 // ToDo: Add TanStack Query for request caching
 // ToDo: Forced dark mode
 // ToDo: Add labels to know the origin of selection
