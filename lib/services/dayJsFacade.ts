@@ -157,25 +157,28 @@ function findDayInWeek(fromDate: DayJs, searchedWeekDay: number) {
     throw new Error("MissingCondition Error");
 }
 
-export function findInitialOccurence(
+export function findInitialOccurenceForDate(
     searchBeginning: DayJs,
-    rCreationDate: Date,
+    ruleCreationNativeDate: Date,
     interval: number,
-    searchedInitialDay: number,
 ) {
-    const ruleCreationDate = dayjs(rCreationDate);
-    const shiftedSearchedDate = findDayInWeek(
-        searchBeginning,
-        searchedInitialDay,
-    );
-    const weeksSinceRuleCreationToStartDate = Math.floor(
-        shiftedSearchedDate.diff(ruleCreationDate) / MILLISECONDS_IN_WEEK,
-    );
+    return function (searchedInitialDay: number) {
+        const ruleCreationDate = dayjs(ruleCreationNativeDate);
+        const shiftedSearchedDate = findDayInWeek(
+            searchBeginning,
+            searchedInitialDay,
+        );
+        const weeksSinceRuleCreationToStartDate = Math.floor(
+            shiftedSearchedDate.diff(ruleCreationDate) / MILLISECONDS_IN_WEEK,
+        );
 
-    const weekOrder = weeksSinceRuleCreationToStartDate % interval;
-    const weeksToFirstOccurence = weekOrder ? interval - weekOrder : weekOrder;
+        const weekOrder = weeksSinceRuleCreationToStartDate % interval;
+        const weeksToFirstOccurence = weekOrder
+            ? interval - weekOrder
+            : weekOrder;
 
-    return shiftedSearchedDate.add(weeksToFirstOccurence, "weeks");
+        return shiftedSearchedDate.add(weeksToFirstOccurence, "weeks");
+    };
 }
 
 export function newDateFromNativeDate(date: Date, o: DateOptions = {}) {
