@@ -17,7 +17,7 @@ const postgressDevConfig = {
 
 const postgressProdConfig = {
     ssl: true,
-    postgressBaseConfig,
+    ...postgressBaseConfig,
 } as const;
 
 export const postgres = postgresConnect(
