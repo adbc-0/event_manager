@@ -12,6 +12,9 @@ import { Button } from "../Button/Button";
 import { AuthDialog } from "../LoginDialog/AuthDialog";
 import { EventRouteParams } from "../../typescript/eventTypes";
 
+const mobileMenuLayoutStyle =
+    "fixed bottom-0 w-full md:max-w-xl md:left-1/2 md:transform md:translate-x-[-50%]";
+
 export function MobileMenu() {
     const { id: eventId } = useParams<EventRouteParams>();
     const { userId, username, logout } = useAnonAuth(eventId);
@@ -24,7 +27,7 @@ export function MobileMenu() {
 
     if (userId) {
         return (
-            <div className="fixed bottom-0 w-full">
+            <div className={mobileMenuLayoutStyle}>
                 <div className="flex w-full gap-2 p-2">
                     <p className="basis-10/12 py-3 text-center border border-black rounded-md shadow-inner bg-primary-darker">
                         {username}
@@ -49,7 +52,7 @@ export function MobileMenu() {
 
     return (
         <>
-            <div className="fixed bottom-0 w-full">
+            <div className={mobileMenuLayoutStyle}>
                 <div className="flex w-full">
                     <Button
                         theme="BASIC"

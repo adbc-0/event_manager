@@ -74,12 +74,12 @@ export const AuthDialog = forwardRef<Ref, UsernameDialogProps>(
                 className="p-0 w-full rounded-md open:animate-fade-in"
             >
                 <GlassmorphicPane
-                    outerClassName="max-w-sm m-auto"
+                    outerClassName="md:max-w-sm md:m-auto"
                     innerClassName="pt-4 pb-6 px-4"
                 >
-                    <div className="flex flex-col h-full gap-4">
+                    <div className="flex flex-col gap-4">
                         <div className="flex justify-between content-center items-center">
-                            <h2 className="text-xl">Select User</h2>
+                            <h2 className="text-xl">Select days as:</h2>
                             <ClosePaneButton closeModal={closeIdentityModal} />
                         </div>
                         <div className="flex flex-col">
