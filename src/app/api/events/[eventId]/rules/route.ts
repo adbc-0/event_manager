@@ -51,7 +51,7 @@ export async function GET(request: Request, { params }: RequestParams) {
 }
 
 const RuleSchema = z.object({
-    name: z.string().trim().min(1),
+    name: z.string().trim().min(1).max(19),
     availabilityChoice: z.nativeEnum(AvailabilityEnum),
     rule: z.string().trim(),
     startDate: z.string().datetime().pipe(z.coerce.date()),
