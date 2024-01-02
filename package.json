@@ -11,6 +11,7 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@sentry/nextjs": "7.91.0",
         "dayjs": "1.11.10",
         "hashids": "2.3.0",
         "next": "14.0.4",

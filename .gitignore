@@ -45,3 +45,5 @@ _mocks
 
 # migrations
 _migrations
+# Sentry Config File
+.sentryclirc
