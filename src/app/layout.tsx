@@ -5,14 +5,14 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Allow to store info about multiple users
 // ToDo: Validate is such user exists as is saved in local storage
+// ToDo: Show source of decision (rule)
 // ToDo: Add TanStack Query for request caching
-// ToDo: Forced dark mode
-// ToDo: Add labels to know the origin of selection
 // ToDo: Block buttons when submitting
 // ToDo: Add toast
 // ToDo: Reuse animations from shad
+// ToDo: Add labels to know the origin of selection
+// ToDo: Forced dark mode
 // ToDo: Go throught all files and make cleanup
 export const viewport: Viewport = {
     colorScheme: "dark",
