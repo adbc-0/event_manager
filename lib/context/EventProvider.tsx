@@ -13,8 +13,6 @@ import {
     AvailabilityEnum,
     AvailabilityEnumValues,
     EventActionEnum,
-    ViewModes,
-    ViewModesEnumValues,
 } from "~/constants";
 import {
     MonthDay,
@@ -63,7 +61,6 @@ type EventState = {
     ownChoices: OwnAvailability;
     ownChoicesBackup: OwnAvailability;
     users: string[];
-    viewMode: ViewModesEnumValues;
 };
 type EventProviderReturn = EventState & {
     eventDispatch: Dispatch<EventActions>;
@@ -90,12 +87,8 @@ type SetChoicesAction = {
 type SubmitCleanupAction = {
     type: (typeof EventActionEnum)["SUBMIT_CLEANUP"];
 };
-type CycleViewMode = {
-    type: (typeof EventActionEnum)["CYCLE_VIEW_MODE"];
-};
 type EventActions =
     | DaySelectAction
-    | CycleViewMode
     | ResetChoicesAction
     | SetChoicesAction
     | SubmitCleanupAction;
@@ -113,7 +106,6 @@ const nilCalendarReducer: EventState = {
     ownChoices: {},
     ownChoicesBackup: {},
     users: [],
-    viewMode: ViewModes.DAY,
 } as const;
 
 const EventContext = createContext<EventProviderReturn>({
@@ -211,19 +203,6 @@ function parseAllChoices(
     return choices;
 }
 
-function getNextViewMode(viewMode: ViewModesEnumValues) {
-    const viewModesList = Object.values(ViewModes);
-    const modesAmount = viewModesList.length;
-    const nextModeIdx =
-        viewModesList.findIndex((mode) => mode === viewMode) + 1;
-    if (nextModeIdx === 0) {
-        throw new Error("unexpected mode");
-    }
-    return viewModesList[
-        ((nextModeIdx % modesAmount) + modesAmount) % modesAmount
-    ];
-}
-
 function eventReducer(state: EventState, action: EventActions) {
     switch (action.type) {
         case EventActionEnum.LOAD_CHOICES: {
@@ -287,13 +266,6 @@ function eventReducer(state: EventState, action: EventActions) {
             clone.allChoicesBackup = state.allChoices;
             clone.ownChoicesBackup = state.ownChoices;
             clone.isDirty = false;
-
-            return clone;
-        }
-        case EventActionEnum.CYCLE_VIEW_MODE: {
-            const clone = structuredClone(state);
-
-            clone.viewMode = getNextViewMode(state.viewMode);
 
             return clone;
         }

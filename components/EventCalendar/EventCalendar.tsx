@@ -1,13 +1,11 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { match } from "ts-pattern";
 
 import {
     AvailabilityEnum,
     AvailabilityEnumValues,
     EventActionEnum,
-    ViewModes,
 } from "~/constants";
 import {
     MonthDay,
@@ -133,15 +131,6 @@ function getColorType(
     return DayColorTypeEnum.UNSELECTED;
 }
 
-function showAmountOfVotes(choices?: Record<string, AvailabilityEnumValues>) {
-    return function () {
-        if (!choices) {
-            return 0;
-        }
-        return Object.values(choices).length;
-    };
-}
-
 const trimWeekday = pipe(truncateString(3), capitalize);
 
 export function EventCalendar() {
@@ -157,7 +146,6 @@ export function EventCalendar() {
         ownChoices,
         calendarDate,
         users,
-        viewMode,
         getCurrentMonthInChunks,
         eventDispatch,
     } = useEvent();
@@ -309,18 +297,7 @@ export function EventCalendar() {
                                                 !username
                                             }
                                         >
-                                            {match(viewMode)
-                                                .with(
-                                                    ViewModes.DAY,
-                                                    () => dayData.day,
-                                                )
-                                                .with(
-                                                    ViewModes.CHOICES,
-                                                    showAmountOfVotes(
-                                                        allChoices[dayData.day],
-                                                    ),
-                                                )
-                                                .exhaustive()}
+                                            {dayData.day}
                                         </button>
                                     </div>
                                 </td>
