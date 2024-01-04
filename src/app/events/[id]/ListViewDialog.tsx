@@ -59,7 +59,7 @@ export const ListViewDialog = forwardRef<Ref, ListViewDialogProps>(
                                                     <th
                                                         scope="col"
                                                         key={username}
-                                                        className="px-2 py-2"
+                                                        className="px-2 py-2 truncate"
                                                     >
                                                         {username}
                                                     </th>
