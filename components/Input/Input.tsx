@@ -8,7 +8,7 @@ type InputProps = React.DetailedHTMLProps<
 type Ref = HTMLInputElement;
 
 const baseInputStyle =
-    "block rounded-md bg-primary border-2 border-primary-darker focus:border-secondary focus:outline-none focus:ring-0";
+    "block rounded-md bg-primary border border-primary-darker focus:outline-none focus:ring focus:ring-secondary";
 
 export const Input = forwardRef<Ref, InputProps>(function Input(
     { className, ...props },

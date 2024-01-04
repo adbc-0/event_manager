@@ -150,7 +150,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
                 <div className="py-2">
                     <span>Every</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-neutral-900 rounded-md"
+                        className="bg-primary m-2 p-1 border border-primary-darker rounded-md text-secondary text-center focus:outline-none focus:ring focus:ring-secondary"
                         defaultValue={rule.interval}
                         onChange={changeInterval}
                     >
@@ -163,7 +163,7 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
                     </select>
                     <span>week{rule.interval > 1 ? "s" : ""} I will be</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-neutral-900 rounded-md"
+                        className="bg-primary m-2 p-1 border border-primary-darker rounded-md text-secondary text-center focus:outline-none focus:ring focus:ring-secondary"
                         defaultValue={rule.availability}
                         onChange={changeAvailability}
                     >
