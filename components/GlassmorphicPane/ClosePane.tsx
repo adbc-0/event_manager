@@ -11,22 +11,20 @@ type ClosePaneProps = ReactProps & {
 
 export function ClosePaneButton({ closeModal }: ClosePaneProps) {
     return (
-        <div className="flex justify-end">
-            <Button
-                aria-label="close list view button"
-                type="button"
-                theme="BASIC"
-                className="w-9 h-9 rounded-full border-red-500 bg-red-400"
-                onClick={closeModal}
-            >
-                <Image
-                    src={closeIcon}
-                    className="m-auto"
-                    width={24}
-                    height={24}
-                    alt="close modal icon"
-                />
-            </Button>
-        </div>
+        <Button
+            aria-label="close list view button"
+            type="button"
+            theme="BASIC"
+            className="w-9 h-9 rounded-full border-red-500 bg-red-400"
+            onClick={closeModal}
+        >
+            <Image
+                src={closeIcon}
+                className="m-auto"
+                width={24}
+                height={24}
+                alt="close modal icon"
+            />
+        </Button>
     );
 }

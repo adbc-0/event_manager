@@ -1,29 +1,51 @@
 import { startTransition } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useAtom } from "jotai";
 
 import okIcon from "~/public/acceptButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
-import { EventActionEnum } from "~/constants";
-import { ChangeAvailability } from "~/app/api/events/[eventId]/actions";
-import { useEvent } from "~/context/EventProvider";
+import { calendarDateAtoms } from "~/atoms";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
+import { useEventQuery } from "~/queries/useEventQuery";
+import { ChangeAvailability } from "~/app/api/events/[eventId]/actions";
 import { Button } from "~/components/Button/Button";
-import { EventRouteParams } from "../../../../typescript/eventTypes";
+import { ReactProps, EventRouteParams, OwnAvailability } from "~/typescript";
 
-export function CalendarControl() {
+type CalendarControlProps = ReactProps & {
+    ownChoices: OwnAvailability | null;
+    resetCalendar: () => void;
+    markChangesAsCurrent: () => void;
+};
+
+export function CalendarSubmitMenu({
+    ownChoices,
+    resetCalendar,
+    markChangesAsCurrent,
+}: CalendarControlProps) {
     const { id: eventId } = useParams<EventRouteParams>();
-    const { userId } = useAnonAuth(eventId);
+    const { userId, username } = useAnonAuth(eventId);
     if (!eventId) {
         throw new Error("Missing event url param");
     }
 
-    const { isDirty, ownChoices, calendarDate, eventDispatch } = useEvent();
+    const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
+    const { data: event } = useEventQuery(eventId);
+
+    if (!event) {
+        return null;
+    }
 
     const onSubmitClick = () => {
         if (Array.isArray(eventId)) {
             throw new Error("Unexpected catch all segments");
+        }
+        if (!username) {
+            throw new Error("Missing username");
+        }
+        if (!ownChoices) {
+            throw new Error("no choices to sumit");
         }
 
         const payload = {
@@ -33,18 +55,11 @@ export function CalendarControl() {
         };
 
         startTransition(() => {
+            // ToDo: Implement cashe invalidation??
             ChangeAvailability({ ...payload, userId });
-            eventDispatch({ type: EventActionEnum.SUBMIT_CLEANUP });
+            markChangesAsCurrent();
         });
     };
-
-    const onResetClick = () => {
-        eventDispatch({ type: EventActionEnum.RESET_CHOICES });
-    };
-
-    if (!isDirty) {
-        return null;
-    }
 
     return (
         <div className="flex self-start md:w-128 md:justify-self-center gap-4 mx-1 mt-3">
@@ -53,7 +68,7 @@ export function CalendarControl() {
                 className="flex-auto py-2"
                 theme="BASIC"
                 type="reset"
-                onClick={onResetClick}
+                onClick={resetCalendar}
             >
                 <Image
                     src={cancelIcon}

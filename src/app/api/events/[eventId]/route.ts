@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { match } from "ts-pattern";
 
-import { AvailabilityEnumValues, DAYS_IN_WEEK, FreqEnum } from "~/constants";
+import { DAYS_IN_WEEK, FreqEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import {
@@ -14,6 +14,7 @@ import {
 import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
 import {
     AvailabilityChoices,
+    AvailabilityEnumValues,
     EventResponse,
     ID,
     ParsedRule,
@@ -231,96 +232,103 @@ function createInspectedMonthFallback() {
 }
 
 export async function GET(request: Request, { params }: RequestParams) {
-    const { searchParams } = new URL(request.url);
+    try {
+        const { searchParams } = new URL(request.url);
 
-    const [eventId, decodingError] = hashId.decode(params.eventId);
-    if (decodingError) {
+        const [eventId, decodingError] = hashId.decode(params.eventId);
+        if (decodingError) {
+            return NextResponse.json(
+                { message: "Event not found" },
+                { status: 404 },
+            );
+        }
+
+        const rawInspectionMonth = // expected format: MM-YYYY, MM starts from 0
+            searchParams.get("date") ?? createInspectedMonthFallback();
+        const inspectionMonth = padInspectedDate(rawInspectionMonth);
+        const inspectionMonthDate = convertStringToDate(inspectionMonth);
+        if (!inspectionMonthDate.isValid()) {
+            return NextResponse.json(
+                { message: "Date Error: could not convert date" },
+                { status: 400 },
+            );
+        }
+
+        const [event] = await postgres<Event[]>`
+            SELECT
+                e.id AS event_id,
+                e.name
+            FROM event.events AS e
+            WHERE e.id = ${eventId};
+        `;
+        if (!event) {
+            return NextResponse.json(
+                { message: "Event not found" },
+                { status: 404 },
+            );
+        }
+
+        const eventMonthChoices = await postgres<MonthsChoices[]>`
+            SELECT
+                m.id AS month_id,
+                m.month,
+                m.year,
+                c.day,
+                c.choice,
+                u.username
+            FROM event.events_months AS m
+            JOIN event.availability_choices AS c ON c.event_month_id=m.id
+            JOIN event.events_users AS u ON u.id=c.user_id
+            WHERE
+                m.event_id=${event.event_id}
+                ${filterByDate(inspectionMonthDate)}
+        `;
+
+        const rules = await postgres<Rule[]>`
+            SELECT
+                r.id,
+                r.choice,
+                r.rule,
+                r.start_date,
+                u.username
+            FROM event.availability_rules AS r
+            JOIN event.events_users AS u ON u.id=r.user_id
+            WHERE r.event_id=${event.event_id}
+        `;
+
+        const users = await postgres<EventUser[]>`
+            SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
+        `;
+
+        const groupedUsers = createEmptyUserChoices(users);
+        const groupedChoices = fillUsersAvailability(
+            groupedUsers,
+            eventMonthChoices,
+        );
+
+        const getDaysFromRule = getDaysFromRuleForMonth(inspectionMonthDate);
+        const rulesWithSearchedDays = rules
+            .map((rule) => ({ ...rule, parsedRule: parseRule(rule.rule) }))
+            .map((rule) => ({
+                ...rule,
+                selectedDays: getDaysFromRule(rule.parsedRule, rule.start_date),
+            }));
+
+        const choicesWithRules = fillUserAvailabilityWithRules(
+            groupedChoices,
+            rulesWithSearchedDays,
+        );
+        const response: EventResponse = {
+            name: event.name,
+            time: rawInspectionMonth,
+            groupedChoices: choicesWithRules,
+        };
+
+        return NextResponse.json(response);
+    } catch (error) {
         return NextResponse.json(
-            { message: "Event not found" },
-            { status: 404 },
+            { message: "Internal server error" },
+            { status: 500 },
         );
     }
-
-    const rawInspectionMonth = // expected format: MM-YYYY, MM starts from z
-        searchParams.get("date") ?? createInspectedMonthFallback();
-    const inspectionMonth = padInspectedDate(rawInspectionMonth);
-    const inspectionMonthDate = convertStringToDate(inspectionMonth);
-    if (!inspectionMonthDate.isValid()) {
-        return NextResponse.json(
-            { message: "Date Error: could not convert date" },
-            { status: 400 },
-        );
-    }
-
-    const [event] = await postgres<Event[]>`
-        SELECT
-            e.id AS event_id,
-            e.name
-        FROM event.events AS e
-        WHERE e.id = ${eventId};
-    `;
-    if (!event) {
-        return NextResponse.json(
-            { message: "Event not found" },
-            { status: 404 },
-        );
-    }
-
-    const eventMonthChoices = await postgres<MonthsChoices[]>`
-        SELECT
-            m.id AS month_id,
-            m.month,
-            m.year,
-            c.day,
-            c.choice,
-            u.username
-        FROM event.events_months AS m
-        JOIN event.availability_choices AS c ON c.event_month_id=m.id
-        JOIN event.events_users AS u ON u.id=c.user_id
-        WHERE
-            m.event_id=${event.event_id}
-            ${filterByDate(inspectionMonthDate)}
-    `;
-
-    const rules = await postgres<Rule[]>`
-        SELECT
-            r.id,
-            r.choice,
-            r.rule,
-            r.start_date,
-            u.username
-        FROM event.availability_rules AS r
-        JOIN event.events_users AS u ON u.id=r.user_id
-        WHERE r.event_id=${event.event_id}
-    `;
-
-    const users = await postgres<EventUser[]>`
-        SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
-    `;
-
-    const groupedUsers = createEmptyUserChoices(users);
-    const groupedChoices = fillUsersAvailability(
-        groupedUsers,
-        eventMonthChoices,
-    );
-
-    const getDaysFromRule = getDaysFromRuleForMonth(inspectionMonthDate);
-    const rulesWithSearchedDays = rules
-        .map((rule) => ({ ...rule, parsedRule: parseRule(rule.rule) }))
-        .map((rule) => ({
-            ...rule,
-            selectedDays: getDaysFromRule(rule.parsedRule, rule.start_date),
-        }));
-
-    const choicesWithRules = fillUserAvailabilityWithRules(
-        groupedChoices,
-        rulesWithSearchedDays,
-    );
-
-    const response: EventResponse = {
-        name: event.name,
-        time: rawInspectionMonth,
-        groupedChoices: choicesWithRules,
-    };
-    return NextResponse.json(response);
 }

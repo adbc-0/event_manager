@@ -1,34 +1,35 @@
 import { useParams } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAtom } from "jotai";
 
 import acceptIcon from "~/public/acceptButton.svg";
 
-import {
-    AvailabilityEnum,
-    AvailabilityEnumValues,
-    FreqEnum,
-} from "~/constants";
-import { ServerError } from "~/utils/index";
-import { useEvent } from "~/context/EventProvider";
+import { AvailabilityEnum, FreqEnum } from "~/constants";
+import { calendarDateAtoms } from "~/atoms";
+import { rulesKeys } from "~/queries/useRulesQuery";
+import { calendarKeys } from "~/queries/useEventQuery";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
-import {
-    ErrorMessage,
-    EventRouteParams,
-    RRule,
-    ReactProps,
-} from "~/typescript";
+import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
 
 type Rule = RRule & {
     name: string;
     availability: AvailabilityEnumValues;
     startDate: Date;
 };
-
-type NewCyclicEventProps = ReactProps & {
-    closeDialog: () => void;
+type RulePayload = {
+    name: string;
+    availabilityChoice: AvailabilityEnumValues;
+    rule: string;
+    startDate: Date;
+    userId: number | undefined;
+};
+type CreateRuleArgs = {
+    eventId: string;
+    rulePayload: RulePayload;
 };
 
 const nilRule: Rule = {
@@ -66,11 +67,35 @@ function isDaySelected(days: string[], searchedDay: string) {
     return days.some((day) => day === searchedDay);
 }
 
+function POST_RULE({ eventId, rulePayload }: CreateRuleArgs) {
+    return fetch(`/api/events/${eventId}/rules`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rulePayload),
+    });
+}
+
 // https://www.kanzaki.com/docs/ical/rrule.html
-export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
+export function NewCyclicEvent() {
     const { id: eventId } = useParams<EventRouteParams>();
     const { userId } = useAnonAuth(eventId);
-    const { fetchEventCalendar } = useEvent();
+    const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
+
+    const queryClient = useQueryClient();
+
+    const createRuleMut = useMutation<unknown, Error, CreateRuleArgs>({
+        mutationFn: POST_RULE,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
+            });
+            queryClient.invalidateQueries({
+                queryKey: rulesKeys.ofEventAndUser(eventId, String(userId)),
+            });
+        },
+    });
 
     const [rule, setRule] = useState<Rule>(nilRule);
 
@@ -96,7 +121,6 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
             setRule((prev) => ({ ...prev, byDay: filteredDays }));
             return;
         }
-
         setRule((prev) => ({ ...prev, byDay: [...prev.byDay, day] }));
     };
 
@@ -109,25 +133,8 @@ export function NewCyclicEvent({ closeDialog }: NewCyclicEventProps) {
             startDate: rule.startDate,
             userId,
         };
-        const response = await fetch(`/api/events/${eventId}/rules`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(rulePayload),
-        });
-        if (!response.ok) {
-            const error = (await response.json()) as ErrorMessage;
-            if (!error.message) {
-                throw new ServerError(
-                    "error unhandled by server",
-                    response.status,
-                );
-            }
-            throw new ServerError(error.message, response.status);
-        }
-        await fetchEventCalendar();
-        closeDialog();
+        createRuleMut.mutate({ eventId, rulePayload });
+        // ToDo: Close dialog
     };
 
     return (

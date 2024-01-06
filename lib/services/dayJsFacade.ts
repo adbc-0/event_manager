@@ -2,7 +2,7 @@ import dayjs, { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-import { range } from "../utils";
+import { range } from "~/utils/index";
 import { DAYS_IN_WEEK, MILLISECONDS_IN_WEEK } from "~/constants";
 import { CurrentDate } from "~/typescript";
 
@@ -25,15 +25,19 @@ type DateOptions = {
 type NewMonth =
     | {
           beginning: null;
-          end: dayjs.Dayjs;
+          end: DayJs;
       }
     | {
-          beginning: dayjs.Dayjs;
+          beginning: DayJs;
           end: null;
       };
 
 function newDate(day: number, month: number, year: number): MonthDay {
     return { day, month, year, key: `${day}-${month}-${year}` };
+}
+
+export function MonthDayToDate({ day, month, year }: MonthDay) {
+    return dayjs(`${year}-${month + 1}-${day}`);
 }
 
 function newMonth({ beginning, end }: NewMonth) {
@@ -46,7 +50,7 @@ function newMonth({ beginning, end }: NewMonth) {
     );
 }
 
-function daysToPrevMonday(date: dayjs.Dayjs) {
+function daysToPrevMonday(date: DayJs) {
     const weekday = date.startOf("month").day();
     if (weekday === 0) {
         return 6;
@@ -55,7 +59,7 @@ function daysToPrevMonday(date: dayjs.Dayjs) {
     return weekday - 1;
 }
 
-function daysToNextSunday(date: dayjs.Dayjs) {
+function daysToNextSunday(date: DayJs) {
     const weekday = date.endOf("month").day();
     if (weekday === 0) {
         return 0;
@@ -64,21 +68,15 @@ function daysToNextSunday(date: dayjs.Dayjs) {
     return 7 - weekday;
 }
 
-export function getCurrentDate(o: DateOptions = {}) {
-    return transformDayJsToCurrentDate(dayjs().utc(o.utc));
-}
-
-export function transformCurrentDateToDaysJs({
+function transformCurrentDateToDaysJs({
     day,
     month,
     year,
-}: CurrentDate): dayjs.Dayjs {
+}: CurrentDate): DayJs {
     return dayjs(`${year}-${month + 1}-${day}`);
 }
 
-export function transformDayJsToCurrentDate(
-    dayjsObject: dayjs.Dayjs,
-): CurrentDate {
+function transformDayJsToCurrentDate(dayjsObject: DayJs): CurrentDate {
     return {
         day: dayjsObject.date(),
         month: dayjsObject.month(),
@@ -86,8 +84,8 @@ export function transformDayJsToCurrentDate(
     };
 }
 
-export function eventDateToDate([month, year]: readonly [string, string]) {
-    return dayjs(`${year}-${parseInt(month) + 1}-${1}`);
+export function getCurrentDate(o: DateOptions = {}) {
+    return transformDayJsToCurrentDate(dayjs().utc(o.utc));
 }
 
 export function getNextMonthDate(currentDate: CurrentDate): CurrentDate {
@@ -181,6 +179,6 @@ export function findInitialOccurenceForDate(
     };
 }
 
-export function newDateFromNativeDate(date: Date, o: DateOptions = {}) {
+export function newDateFromNativeDate(date?: Date, o: DateOptions = {}) {
     return dayjs(date).utc(o.utc);
 }

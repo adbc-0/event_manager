@@ -1,34 +1,41 @@
-"use client";
-
+import { useMemo } from "react";
+import { useAtom } from "jotai";
 import { useParams } from "next/navigation";
 
-import {
-    AvailabilityEnum,
-    AvailabilityEnumValues,
-    EventActionEnum,
-} from "~/constants";
+import { AvailabilityEnum } from "~/constants";
+import { calendarDateAtoms } from "~/atoms";
+import { useEventQuery } from "~/queries/useEventQuery";
+import { useEventUsersQuery } from "~/queries/useEventUsersQuery";
 import {
     MonthDay,
-    getCurrentDate,
-    getNextMonthDate,
-    getPrevMonthDate,
+    MonthDayToDate,
+    createMonthDays,
+    newDateFromNativeDate,
 } from "~/services/dayJsFacade";
-import { capitalize, truncateString, pipe } from "~/utils/index";
-import { useEvent } from "~/context/EventProvider";
+import {
+    capitalize,
+    truncateString,
+    pipe,
+    chunks,
+    parseEventToOwnChoices,
+    parseEventToCalendarChoices,
+} from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-import { useAbort } from "~/hooks/use-abort";
-import { EventResponse, EventRouteParams } from "~/typescript";
-
-type OwnAvailability = Record<string, AvailabilityEnumValues>;
+import {
+    AllAvailability,
+    AvailabilityEnumValues,
+    EventRouteParams,
+    OwnAvailability,
+    ReactProps,
+} from "~/typescript";
 
 const DayColorTypeEnum = {
     MY_AVAILABLE: "MY_AVAILABLE",
     MAYBE_AVAILABLE: "MAYBE_AVAILABLE",
     UNAVAILABLE: "UNAVAILABLE",
     ALL_SELECTED: "ALL_SELECTED",
-    DIFFERENT_MONTH: "DIFFERENT_MONTH",
-    TODAY: "TODAY",
     UNSELECTED: "UNSELECTED",
+    DISABLED: "DISABLED",
 } as const;
 
 type DayColorType =
@@ -36,9 +43,8 @@ type DayColorType =
     | "MAYBE_AVAILABLE"
     | "UNAVAILABLE"
     | "ALL_SELECTED"
-    | "DIFFERENT_MONTH"
-    | "TODAY"
-    | "UNSELECTED";
+    | "UNSELECTED"
+    | "DISABLED";
 
 const WEEKDAYS = [
     "monday",
@@ -68,15 +74,14 @@ const MONTHS = [
 const dayColor: Record<DayColorType, string> = {
     ALL_SELECTED:
         "bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800",
-    DIFFERENT_MONTH: "opacity-50",
     MAYBE_AVAILABLE:
         "bg-orange-300 [@media(hover:hover)]:hover:bg-orange-300/80 text-neutral-800",
     MY_AVAILABLE:
         "bg-secondary [@media(hover:hover)]:hover:bg-secondary/80 text-neutral-800",
     UNAVAILABLE:
         "bg-rose-300 [@media(hover:hover)]:hover:bg-rose-300/80 text-neutral-800",
-    TODAY: "bg-white/10",
     UNSELECTED: "hover:bg-white/10",
+    DISABLED: "opacity-50",
 } as const;
 
 const ownAvailabilityChoice: Record<AvailabilityEnumValues, DayColorType> = {
@@ -86,12 +91,15 @@ const ownAvailabilityChoice: Record<AvailabilityEnumValues, DayColorType> = {
 } as const;
 
 function isToday(monthDay: MonthDay) {
-    const currentDate = getCurrentDate();
-    return (
-        monthDay.day === currentDate.day &&
-        monthDay.month === currentDate.month &&
-        monthDay.year === currentDate.year
-    );
+    const date = MonthDayToDate(monthDay);
+    const currentDate = newDateFromNativeDate();
+    return date.isSame(currentDate, "day");
+}
+
+function isFromPast(monthDay: MonthDay) {
+    const date = MonthDayToDate(monthDay);
+    const currentDate = newDateFromNativeDate();
+    return date.isBefore(currentDate, "day");
 }
 
 function areAllAvailable(choices: OwnAvailability, usersCount: number) {
@@ -102,116 +110,125 @@ function areAllAvailable(choices: OwnAvailability, usersCount: number) {
     if (choicesList.length !== usersCount) {
         return false;
     }
-
     return choicesList.every((choice) => choice === AvailabilityEnum.AVAILABLE);
 }
 
 function getColorType(
     day: MonthDay,
     selectedMonth: number,
-    usersCount: number,
-    allChoicesForDay: OwnAvailability,
-    ownChoiceForDay: AvailabilityEnumValues,
+    usersCount: number | undefined,
+    allChoices: AllAvailability | null,
+    ownChoice: OwnAvailability | null,
 ): DayColorType {
+    if (!allChoices) {
+        return DayColorTypeEnum.UNSELECTED;
+    }
+    if (!ownChoice) {
+        return DayColorTypeEnum.UNSELECTED;
+    }
     if (selectedMonth !== day.month) {
-        return DayColorTypeEnum.DIFFERENT_MONTH;
+        return DayColorTypeEnum.DISABLED;
     }
+    if (isFromPast(day)) {
+        return DayColorTypeEnum.DISABLED;
+    }
+    const allChoicesForDay: OwnAvailability = allChoices[day.day];
     if (!allChoicesForDay) {
-        throw new Error("GetColorDay Error: undefined choice");
+        throw new Error("get_color_type error: undefined choice");
     }
-    if (areAllAvailable(allChoicesForDay, usersCount)) {
+    if (usersCount && areAllAvailable(allChoicesForDay, usersCount)) {
         return DayColorTypeEnum.ALL_SELECTED;
     }
+    const ownChoiceForDay: AvailabilityEnumValues = ownChoice[day.day];
     if (ownAvailabilityChoice[ownChoiceForDay]) {
         return ownAvailabilityChoice[ownChoiceForDay];
-    }
-    if (isToday(day)) {
-        return DayColorTypeEnum.TODAY;
     }
     return DayColorTypeEnum.UNSELECTED;
 }
 
 const trimWeekday = pipe(truncateString(3), capitalize);
 
-export function EventCalendar() {
+type EventCalendarProps = ReactProps & {
+    clientAllChoices: AllAvailability | null;
+    clientOwnChoices: OwnAvailability | null;
+    selectDay: (day: number) => void;
+    resetChoices: () => void;
+};
+
+export function EventCalendar({
+    clientAllChoices,
+    clientOwnChoices,
+    selectDay,
+    resetChoices,
+}: EventCalendarProps) {
     const { id: eventId } = useParams<EventRouteParams>();
     if (!eventId) {
         throw new Error("Missing event url param");
     }
 
-    const abortSignal = useAbort();
+    const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
+    const [, incrementMonth] = useAtom(calendarDateAtoms.incrementMonthAtom);
+    const [, decrementMonth] = useAtom(calendarDateAtoms.decrementMonthAtom);
+
     const { username } = useAnonAuth(eventId);
-    const {
-        allChoices,
-        ownChoices,
-        calendarDate,
-        users,
-        getCurrentMonthInChunks,
-        eventDispatch,
-    } = useEvent();
+    const { data: event } = useEventQuery(eventId);
+    const { data: users } = useEventUsersQuery(eventId);
 
-    const onPrevMonthClick = async () => {
-        const newDate = getPrevMonthDate(calendarDate);
+    const chunkifiedMonth = useMemo(() => {
+        const monthDaysData = createMonthDays(calendarDate);
+        return [...chunks(monthDaysData, 7)];
+    }, [calendarDate]);
 
-        async function initEventCalendar() {
-            const { month, year } = newDate;
-            const searchParams = new URLSearchParams({
-                date: `${month}-${year}`,
-            });
-            const response = await fetch(
-                `/api/events/${eventId}?${searchParams.toString()}`,
-                { signal: abortSignal },
-            );
-            const event = (await response.json()) as EventResponse;
-            eventDispatch({
-                type: EventActionEnum.LOAD_CHOICES,
-                payload: {
-                    event,
-                    username,
-                },
-            });
-        }
-
-        await initEventCalendar();
-    };
-
-    const onNextMonthClick = async () => {
-        const newDate = getNextMonthDate(calendarDate);
-
-        async function initEventCalendar() {
-            const { month, year } = newDate;
-            const searchParams = new URLSearchParams({
-                date: `${month}-${year}`,
-            });
-            const response = await fetch(
-                `/api/events/${eventId}?${searchParams.toString()}`,
-                { signal: abortSignal },
-            );
-            const event = (await response.json()) as EventResponse;
-            eventDispatch({
-                type: EventActionEnum.LOAD_CHOICES,
-                payload: {
-                    event,
-                    username,
-                },
-            });
-        }
-
-        await initEventCalendar();
-    };
-
-    const onDayClick = ({ day, month }: MonthDay) => {
+    const ownChoices = useMemo(() => {
         if (!username) {
             return null;
         }
-        if (month !== calendarDate.month) {
+        if (!event) {
             return null;
         }
+        return (
+            clientOwnChoices ??
+            parseEventToOwnChoices(event.groupedChoices[username], calendarDate)
+        );
+    }, [calendarDate, clientOwnChoices, event, username]);
 
-        eventDispatch({
-            type: EventActionEnum.DAY_SELECT,
-            payload: { selectedDay: day, username },
-        });
+    const allChoices = useMemo(() => {
+        if (!username) {
+            return null;
+        }
+        if (!event) {
+            return null;
+        }
+        return (
+            clientAllChoices ??
+            parseEventToCalendarChoices(event.groupedChoices, calendarDate)
+        );
+    }, [calendarDate, clientAllChoices, event, username]);
+
+    const _onDayClick = ({ day, month }: MonthDay) => {
+        if (!username) {
+            return;
+        }
+        if (month !== calendarDate.month) {
+            return;
+        }
+        selectDay(day);
+    };
+    const _handleMonthDecrement = () => {
+        decrementMonth();
+        resetChoices();
+    };
+    const _handleMonthIncrement = () => {
+        incrementMonth();
+        resetChoices();
+    };
+    const _isSelectionDisabled = (fullDateObject: MonthDay) => {
+        const isUser = username;
+        const dateBelongsToDifferentMonth =
+            fullDateObject.month !== calendarDate.month;
+        return (
+            !isUser || dateBelongsToDifferentMonth || isFromPast(fullDateObject)
+        );
     };
 
     return (
@@ -220,7 +237,7 @@ export function EventCalendar() {
                 <button
                     className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
-                    onClick={onPrevMonthClick}
+                    onClick={_handleMonthDecrement}
                 >
                     {"<"}
                 </button>
@@ -230,7 +247,7 @@ export function EventCalendar() {
                 <button
                     className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
-                    onClick={onNextMonthClick}
+                    onClick={_handleMonthIncrement}
                 >
                     {">"}
                 </button>
@@ -239,19 +256,20 @@ export function EventCalendar() {
                 <thead>
                     <tr>
                         {WEEKDAYS.map((weekday) => (
-                            <td key={weekday} className="py-3">
+                            <th key={weekday} className="py-3 font-normal">
                                 {trimWeekday(weekday)}
-                            </td>
+                            </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {getCurrentMonthInChunks().map((week) => (
+                    {chunkifiedMonth.map((week) => (
                         <tr key={week.key}>
                             {week.chunk.map((dayData) => (
                                 <td key={dayData.key}>
                                     <div className="aspect-square relative">
                                         <button
+                                            type="button"
                                             className={`w-full h-full disabled:cursor-not-allowed
                                                         ${
                                                             dayData.month ===
@@ -269,33 +287,24 @@ export function EventCalendar() {
                                                                 getColorType(
                                                                     dayData,
                                                                     calendarDate.month,
-                                                                    users.length,
-                                                                    allChoices[
-                                                                        dayData
-                                                                            .day
-                                                                    ],
-                                                                    ownChoices[
-                                                                        dayData
-                                                                            .day
-                                                                    ],
+                                                                    users?.length,
+                                                                    allChoices,
+                                                                    ownChoices,
                                                                 )
                                                             ]
                                                         }
                                                     `}
-                                            type="button"
                                             onMouseDown={(e) => {
                                                 const isLeftClick =
                                                     e.button.valueOf() === 0;
                                                 if (!isLeftClick) {
                                                     return;
                                                 }
-                                                onDayClick(dayData);
+                                                _onDayClick(dayData);
                                             }}
-                                            disabled={
-                                                dayData.month !==
-                                                    calendarDate.month ||
-                                                !username
-                                            }
+                                            disabled={_isSelectionDisabled(
+                                                dayData,
+                                            )}
                                         >
                                             {dayData.day}
                                         </button>

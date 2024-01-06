@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
@@ -8,22 +7,18 @@ import loginIcon from "~/public/login.svg";
 import logoutIcon from "~/public/logout.svg";
 
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-import { Button } from "../Button/Button";
-import { AuthDialog } from "../LoginDialog/AuthDialog";
-import { EventRouteParams } from "../../typescript/eventTypes";
+import { Button } from "~/components/Button/Button";
+import { AuthDialogContent } from "~/components/AuthDialogContent/AuthDialogContent";
+import { EventRouteParams } from "~/typescript";
+import Dialog from "../Dialog/Dialog";
 
 const mobileMenuLayoutStyle =
     "fixed bottom-0 w-full md:max-w-xl md:left-1/2 md:transform md:translate-x-[-50%]";
 
-export function MobileMenu() {
+export function AuthMobile() {
     const { id: eventId } = useParams<EventRouteParams>();
+
     const { userId, username, logout } = useAnonAuth(eventId);
-
-    const usernameDialogRef = useRef<HTMLDialogElement>(null);
-
-    const openIdentityModal = () => {
-        usernameDialogRef.current?.showModal();
-    };
 
     if (userId) {
         return (
@@ -54,23 +49,24 @@ export function MobileMenu() {
         <>
             <div className={mobileMenuLayoutStyle}>
                 <div className="flex w-full">
-                    <Button
-                        theme="BASIC"
-                        className="grow py-3 m-2"
-                        onClick={openIdentityModal}
-                    >
-                        <Image
-                            src={loginIcon}
-                            className="m-auto"
-                            width={24}
-                            height={24}
-                            alt="login icon"
-                        />
-                    </Button>
+                    <Dialog>
+                        <Dialog.DialogTrigger>
+                            <Button theme="BASIC" className="grow py-3 m-2">
+                                <Image
+                                    src={loginIcon}
+                                    className="m-auto"
+                                    width={24}
+                                    height={24}
+                                    alt="login icon"
+                                />
+                            </Button>
+                        </Dialog.DialogTrigger>
+                        <Dialog.DialogContent>
+                            <AuthDialogContent />
+                        </Dialog.DialogContent>
+                    </Dialog>
                 </div>
             </div>
-            {/* DIALOGS */}
-            <AuthDialog ref={usernameDialogRef} />
         </>
     );
 }

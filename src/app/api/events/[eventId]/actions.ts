@@ -9,7 +9,11 @@ import { createMonth } from "../../queries";
 import { ID } from "~/typescript";
 
 const changeAvailabilitySchema = z.object({
-    choices: z.record(z.string(), z.string()),
+    choices: z
+        .record(z.string(), z.string())
+        .refine((obj) => Object.keys(obj).length > 0, {
+            message: "Record must not be empty",
+        }),
     date: z.object({
         day: z.number(),
         month: z.number(),
@@ -21,6 +25,7 @@ const changeAvailabilitySchema = z.object({
 
 type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
 
+// ToDo: Revalidate users cache when making first selection as user
 export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     const {
         choices,
@@ -75,5 +80,5 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         `;
     });
 
-    revalidatePath(`/calendar/${eventId}`);
+    revalidatePath(`/events/${encodedEventId}`);
 }

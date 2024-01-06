@@ -59,6 +59,22 @@ export const groupBy = <T>(
         {} as { [key: string | number]: T[] },
     );
 
+export function handleQueryError(
+    error: Error,
+    handlers?: Record<number, (error: ServerError) => void>,
+) {
+    if (!(error instanceof ServerError)) {
+        throw new Error("unexpected fetch error format");
+    }
+    if (!handlers) {
+        throw error;
+    }
+    if (!handlers[error.status]) {
+        throw error;
+    }
+    handlers[error.status](error);
+}
+
 export class ServerError extends Error {
     status: number;
 
