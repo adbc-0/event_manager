@@ -74,7 +74,7 @@ const MONTHS = [
 
 const dayColor: Record<DayColorType, string> = {
     ALL_SELECTED:
-        "bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500 animate-wave bg-[length:600%] hover:opacity-80 text-neutral-800",
+        "bg-blue-300 [@media(hover:hover)]:hover:bg-blue-300/80 text-neutral-800",
     MAYBE_AVAILABLE:
         "bg-orange-300 [@media(hover:hover)]:hover:bg-orange-300/80 text-neutral-800",
     MY_AVAILABLE:

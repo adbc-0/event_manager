@@ -6,7 +6,6 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Show incoming days on list view details or allow to change months
 // ToDo: Validate is such user exists as is saved in local storage
 // ToDo: Show source of decision (rule)
 // ToDo: Add TanStack Query for request caching
@@ -18,6 +17,8 @@ const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 // ToDo: Forced dark mode
 // ToDo: Go throught all files and make cleanup
 // ToDo: Prevent going back and checking dates that differ more than half a year
+// ToDo: Swipe on calendar to change month
+// ToDo: Show incoming days on list view details or allow to change months
 export const viewport: Viewport = {
     colorScheme: "dark",
 };
