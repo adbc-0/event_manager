@@ -99,6 +99,7 @@ export function Calendar() {
     const cleanUpChoices = () => {
         setAllChoices(null);
         setOwnChoices(null);
+        setAreUnsubmitedChanges(false);
     };
 
     return (
