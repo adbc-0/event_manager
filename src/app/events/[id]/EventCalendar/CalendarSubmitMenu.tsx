@@ -55,7 +55,6 @@ export function CalendarSubmitMenu({
         };
 
         startTransition(() => {
-            // ToDo: Implement cashe invalidation??
             ChangeAvailability({ ...payload, userId });
             markChangesAsCurrent();
         });

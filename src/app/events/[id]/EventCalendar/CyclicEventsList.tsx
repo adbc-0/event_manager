@@ -60,6 +60,10 @@ export function CyclicEventsList() {
         );
     }
 
+    const _deleteRule = (ruleId: string) => {
+        deleteRuleMut.mutate({ eventId, ruleId });
+    };
+
     return (
         <div>
             {rulesQ.data.map((rule) => (
@@ -74,12 +78,7 @@ export function CyclicEventsList() {
                             type="button"
                             theme="BASIC"
                             className="p-2"
-                            onClick={() =>
-                                deleteRuleMut.mutate({
-                                    eventId,
-                                    ruleId: rule.id.toString(),
-                                })
-                            }
+                            onClick={() => _deleteRule(rule.id.toString())}
                         >
                             <Image
                                 src={trashIcon}
