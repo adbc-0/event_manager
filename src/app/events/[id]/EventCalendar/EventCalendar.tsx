@@ -119,7 +119,11 @@ function getColorType(
     usersCount: number | undefined,
     allChoices: AllAvailability | null,
     ownChoice: OwnAvailability | null,
+    noUser: boolean
 ): DayColorType {
+    if (noUser) {
+        return DayColorTypeEnum.DISABLED;
+    }
     if (!allChoices) {
         return DayColorTypeEnum.UNSELECTED;
     }
@@ -290,6 +294,7 @@ export function EventCalendar({
                                                                     users?.length,
                                                                     allChoices,
                                                                     ownChoices,
+                                                                    !Boolean(username)
                                                                 )
                                                             ]
                                                         }
