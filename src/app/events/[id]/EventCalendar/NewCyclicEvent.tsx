@@ -11,6 +11,7 @@ import { calendarDateAtoms } from "~/atoms";
 import { rulesKeys } from "~/queries/useRulesQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
+import { useDialogContext } from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
@@ -82,6 +83,7 @@ export function NewCyclicEvent() {
     const { id: eventId } = useParams<EventRouteParams>();
     const { userId } = useAnonAuth(eventId);
     const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
+    const { closeDialog } = useDialogContext();
 
     const queryClient = useQueryClient();
 
@@ -134,7 +136,7 @@ export function NewCyclicEvent() {
             userId,
         };
         createRuleMut.mutate({ eventId, rulePayload });
-        // ToDo: Close dialog
+        closeDialog();
     };
 
     return (

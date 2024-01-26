@@ -25,13 +25,21 @@ type DialogProps = ReactProps & {
 type DialogContextT = {
     dialogRef: Nullable<RefObject<HTMLDialogElement>>;
     isOpen: boolean;
-    openDialog: () => void;
+    startRenderingDialogChildren: () => void;
+    stopRenderingDialogChildren: () => void;
     closeDialog: () => void;
+    openDialog: () => void;
 };
 
 const DialogContext = createContext<DialogContextT>({
     dialogRef: null,
     isOpen: false,
+    startRenderingDialogChildren: () => {
+        throw new Error("unimplmeneted");
+    },
+    stopRenderingDialogChildren: () => {
+        throw new Error("unimplmeneted");
+    },
     openDialog: () => {
         throw new Error("unimplmeneted");
     },
@@ -40,7 +48,7 @@ const DialogContext = createContext<DialogContextT>({
     },
 });
 
-function useDialogContext() {
+export function useDialogContext() {
     const ctx = useContext(DialogContext);
     if (!ctx) {
         throw new Error("wrap component with provider to use dialog context");
@@ -51,20 +59,40 @@ function useDialogContext() {
 function Dialog({ children }: DialogProps) {
     const dialogRef = useRef<Nullable<ElementRef<"dialog">>>(null);
     const [isOpen, setIsOpen] = useState(false);
-    const openDialog = useCallback(() => {
+    const startRenderingDialogChildren = useCallback(() => {
         setIsOpen(true);
     }, []);
-    const closeDialog = useCallback(() => {
+    const stopRenderingDialogChildren = useCallback(() => {
         setIsOpen(false);
+    }, []);
+    const openDialog = useCallback(() => {
+        if (!dialogRef?.current) {
+            throw new Error("dialog ref was not set properly");
+        }
+        dialogRef.current.showModal();
+    }, []);
+    const closeDialog = useCallback(() => {
+        if (!dialogRef?.current) {
+            throw new Error("dialog ref was not set properly");
+        }
+        dialogRef.current.close();
     }, []);
     const provider = useMemo(
         () => ({
             dialogRef,
             isOpen,
+            startRenderingDialogChildren,
+            stopRenderingDialogChildren,
             openDialog,
             closeDialog,
         }),
-        [closeDialog, isOpen, openDialog],
+        [
+            isOpen,
+            startRenderingDialogChildren,
+            stopRenderingDialogChildren,
+            openDialog,
+            closeDialog,
+        ],
     );
 
     return (
@@ -76,65 +104,54 @@ function Dialog({ children }: DialogProps) {
 
 function DialogTrigger({ children }: DialogProps) {
     if (!children) {
-        throw new Error("Missing children component");
-    }
-    if (Children.count(children) > 1) {
-        throw new Error("Pass only single element");
+        throw new Error("missing children");
     }
 
-    const { dialogRef } = useDialogContext();
+    const { openDialog } = useDialogContext();
+    const triggerElement = Children.only(children);
+    if (!isValidElement(triggerElement)) {
+        throw new Error("invalid react element");
+    }
 
-    const _handleOpenDialog = () => {
-        if (!dialogRef) {
-            return;
-        }
-        dialogRef.current?.showModal();
-    };
-
-    return (
-        <>
-            {Children.map(children, (child) => {
-                if (!isValidElement(child)) {
-                    throw new Error("Invalid react element");
-                }
-
-                return cloneElement(child as ReactElement, {
-                    onClick: _handleOpenDialog,
-                });
-            })}
-        </>
-    );
+    return cloneElement(triggerElement as ReactElement, {
+        onClick: openDialog,
+    });
 }
 
 function DialogTopBar({ title }: { title: string | undefined }) {
-    const { dialogRef } = useDialogContext();
+    const { closeDialog } = useDialogContext();
     return (
         <div className="flex justify-between bg-neutral-800 rounded-t-md p-2 items-center">
             <h2 className="text-xl">{title}</h2>
-            <ClosePaneButton closeModal={() => dialogRef?.current?.close()} />
+            <ClosePaneButton closeModal={closeDialog} />
         </div>
     );
 }
 
 function DialogContent({ children, title, fullscreen = false }: DialogProps) {
-    const { dialogRef, isOpen, openDialog, closeDialog } = useDialogContext();
+    const {
+        dialogRef,
+        isOpen,
+        startRenderingDialogChildren,
+        stopRenderingDialogChildren,
+    } = useDialogContext();
 
     // stop rendering dialog when open attribute dissapears from native dialog
     useEffect(() => {
         if (dialogRef?.current) {
             const dialogObserver = new MutationObserver(() => {
                 if (dialogRef.current?.open) {
-                    openDialog();
+                    startRenderingDialogChildren();
                     return;
                 }
-                closeDialog();
+                stopRenderingDialogChildren();
             });
             dialogObserver.observe(dialogRef.current, { attributes: true });
             return () => {
                 dialogObserver.disconnect();
             };
         }
-    }, [closeDialog, dialogRef, openDialog]);
+    }, [dialogRef, startRenderingDialogChildren, stopRenderingDialogChildren]);
 
     return (
         <dialog
@@ -170,12 +187,43 @@ function DialogContent({ children, title, fullscreen = false }: DialogProps) {
     );
 }
 
-function DialogClose() {
-    return null;
+function composeEventHandlers<E>(
+    originalEventHandler?: (event: E) => void,
+    ourEventHandler?: (event: E) => void,
+    { checkForDefaultPrevented = true } = {},
+) {
+    return function handleEvent(event: E) {
+        originalEventHandler?.(event);
+
+        if (
+            checkForDefaultPrevented === false ||
+            !(event as unknown as Event).defaultPrevented
+        ) {
+            return ourEventHandler?.(event);
+        }
+    };
 }
 
+function DialogClose({ children }: DialogProps) {
+    if (!children) {
+        throw new Error("missing children");
+    }
+
+    const { closeDialog } = useDialogContext();
+    const triggerElement = Children.only(children);
+    if (!isValidElement(triggerElement)) {
+        throw new Error("invalid react element");
+    }
+
+    const originalOnClick = triggerElement.props.onClick;
+
+    return cloneElement(triggerElement as ReactElement, {
+        onClick: composeEventHandlers(originalOnClick, closeDialog),
+    });
+}
+
+Dialog.DialogClose = DialogClose;
 Dialog.DialogTrigger = DialogTrigger;
 Dialog.DialogContent = DialogContent;
-Dialog.DialogClose = DialogClose;
 
 export default Dialog;
