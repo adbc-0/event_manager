@@ -19,6 +19,7 @@ import {
     chunks,
     parseEventToOwnChoices,
     parseEventToCalendarChoices,
+    isNil,
 } from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import {
@@ -119,7 +120,7 @@ function getColorType(
     usersCount: number | undefined,
     allChoices: AllAvailability | null,
     ownChoice: OwnAvailability | null,
-    noUser: boolean
+    noUser: boolean,
 ): DayColorType {
     if (noUser) {
         return DayColorTypeEnum.DISABLED;
@@ -294,7 +295,9 @@ export function EventCalendar({
                                                                     users?.length,
                                                                     allChoices,
                                                                     ownChoices,
-                                                                    !Boolean(username)
+                                                                    isNil(
+                                                                        username,
+                                                                    ),
                                                                 )
                                                             ]
                                                         }

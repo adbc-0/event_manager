@@ -85,3 +85,7 @@ export class ServerError extends Error {
         Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
     }
 }
+
+export function isNil<T>(v: T) {
+    return v === null || typeof v === "undefined";
+}
