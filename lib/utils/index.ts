@@ -86,6 +86,6 @@ export class ServerError extends Error {
     }
 }
 
-export function isNil<T>(v: T) {
+export function isNil(v: unknown): v is null | undefined {
     return v === null || typeof v === "undefined";
 }
