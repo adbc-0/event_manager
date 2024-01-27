@@ -42,6 +42,15 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         throw new Error(decodingError);
     }
 
+    const [maybeUser] = await postgres`
+        SELECT id
+        FROM event.events_users
+        WHERE id = ${userId};
+    `;
+    if (!maybeUser) {
+        throw new Error("user does not exist");
+    }
+
     const [maybeMonth] = await postgres<{ id: ID }[]>`
         SELECT id
         FROM event.events_months
