@@ -5,9 +5,11 @@ import { LocalStorageKeys } from "~/constants";
 import { EventUser } from "~/app/api/events/[eventId]/users/route";
 
 export function useAnonAuth(eventId: string) {
-    const { storageValue: loggedEvents, setStorage } = useLocalStorage(
-        LocalStorageKeys.EVENT_NAME,
-    );
+    const {
+        storageValue: loggedEvents,
+        setStorage,
+        observer,
+    } = useLocalStorage(LocalStorageKeys.EVENT_NAME);
 
     const setUserId = useCallback(
         (newUser: EventUser) => {
@@ -27,6 +29,7 @@ export function useAnonAuth(eventId: string) {
     return {
         userId: loggedEvents?.[eventId]?.id,
         username: loggedEvents?.[eventId]?.username,
+        userObserver: observer,
         setUsername: setUserId,
         logout,
     } as const;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAtom } from "jotai";
 
@@ -31,7 +31,7 @@ function getNextAvailabilityChoice(currentChoice: string) {
 
 export function Calendar() {
     const { id: eventId } = useParams<EventRouteParams>();
-    const { username } = useAnonAuth(eventId);
+    const { username, userObserver } = useAnonAuth(eventId);
     if (!eventId) {
         throw new Error("Missing event url param");
     }
@@ -42,6 +42,16 @@ export function Calendar() {
 
     const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
     const { data: event } = useEventQuery(eventId);
+
+    useEffect(() => {
+        const resetChoicesOnUserChange = () => {
+            setAllChoices(null);
+            setOwnChoices(null);
+            setAreUnsubmitedChanges(false);
+        };
+        userObserver.subscribe(resetChoicesOnUserChange);
+        return () => userObserver.unsubscribe(resetChoicesOnUserChange);
+    }, [userObserver]);
 
     const resetUnsavedChoices = () => {
         if (!username) {
