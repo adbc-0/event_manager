@@ -240,7 +240,8 @@ export function EventCalendar({
         <div className="bg-primary-lighter rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
             <div className="flex justify-between items-center">
                 <button
-                    className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
+                    aria-label="go to previous month"
+                    className="h-10 w-10 rounded-md [@media(hover:hover)]:hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
                     onClick={_handleMonthDecrement}
                 >
@@ -250,7 +251,8 @@ export function EventCalendar({
                     {capitalize(MONTHS[calendarDate.month])} {calendarDate.year}
                 </p>
                 <button
-                    className="h-10 w-10 rounded-md hover:bg-white/10 active:scale-90 transition-transform"
+                    aria-label="go to next month"
+                    className="h-10 w-10 rounded-md [@media(hover:hover)]:hover:bg-white/10 active:scale-90 transition-transform"
                     type="button"
                     onClick={_handleMonthIncrement}
                 >
