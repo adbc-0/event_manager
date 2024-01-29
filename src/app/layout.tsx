@@ -6,8 +6,6 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Css variables, accent colors
-// ToDo: Add global error handling
 // ToDo: Add toast
 // ToDo: Show source of decision (rule)
 // ToDo: Show more information about added rule

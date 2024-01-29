@@ -4,7 +4,7 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 
-import { encodeEventParamDate } from "~/utils/eventUtils";
+import { ServerError, encodeEventParamDate } from "~/utils/index";
 import { usersKeys } from "~/queries/useEventUsersQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { getCurrentDate } from "~/services/dayJsFacade";
@@ -39,6 +39,10 @@ async function Page({ params }: PageProps) {
                 method: "GET",
                 signal,
             });
+            if (response.ok) {
+                const error = await response.json();
+                throw new ServerError(error.message, response.status);
+            }
             return response.json();
         },
     });
@@ -58,6 +62,10 @@ async function Page({ params }: PageProps) {
                 method: "GET",
                 signal,
             });
+            if (response.ok) {
+                const error = await response.json();
+                throw new ServerError(error.message, response.status);
+            }
             return response.json();
         },
     });

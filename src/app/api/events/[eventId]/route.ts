@@ -323,7 +323,6 @@ export async function GET(request: Request, { params }: RequestParams) {
             time: rawInspectionMonth,
             groupedChoices: choicesWithRules,
         };
-
         return NextResponse.json(response);
     } catch (error) {
         return NextResponse.json(

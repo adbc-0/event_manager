@@ -1,7 +1,6 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import Error from "next/error";
 import { useEffect } from "react";
 
 type GlobalError = {
@@ -16,7 +15,9 @@ export default function GlobalError({ error }: GlobalError) {
     return (
         <html lang="en">
             <body>
-                <Error statusCode={500} />
+                <h1 className="text-center">
+                    Unexpected error was in layout component
+                </h1>
             </body>
         </html>
     );

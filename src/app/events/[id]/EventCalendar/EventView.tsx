@@ -14,7 +14,7 @@ export function EventView() {
         throw new Error("Missing event url param");
     }
 
-    const prevEventName = useRef("...");
+    const prevEventName = useRef("");
     const { data: event } = useEventQuery(eventId);
 
     useEffect(() => {
