@@ -12,7 +12,7 @@ const Tabs = {
     NEW: "new",
 } as const;
 
-const elementOnGlassBg = "bg-zinc-950 bg-opacity-30";
+const elementOnGlassBg = "bg-primary-darker bg-opacity-50";
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -27,7 +27,7 @@ export function CyclicDialog() {
                 <div
                     role="tablist"
                     className={twMerge(
-                        "flex mb-1 border border-zinc-800",
+                        "flex mb-1 border border-primary-darker-border",
                         elementOnGlassBg,
                     )}
                 >
@@ -38,7 +38,7 @@ export function CyclicDialog() {
                         className={twMerge(
                             "grow basis-0 py-1 px-2",
                             tab === Tabs.LIST
-                                ? "border-b-2 border-secondary text-secondary"
+                                ? "border-b-2 border-accent text-accent"
                                 : "",
                         )}
                         onClick={() => setTab(Tabs.LIST)}
@@ -52,7 +52,7 @@ export function CyclicDialog() {
                         className={twMerge(
                             "grow basis-0 py-1 px-2",
                             tab === Tabs.NEW
-                                ? "border-b-2 border-secondary text-secondary"
+                                ? "border-b-2 border-accent text-accent"
                                 : "",
                         )}
                         onClick={() => setTab(Tabs.NEW)}

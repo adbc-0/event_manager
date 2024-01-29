@@ -36,7 +36,7 @@ export function AuthDialogContent() {
                     <button
                         key={user.id}
                         type="button"
-                        className="grow border border-zinc-900 border-b-0 last:border-b block py-2 bg-neutral-800 hover:bg-secondary hover:text-black hover:transition-colors ease-out duration-300"
+                        className="grow border border-primary-border border-b-0 last:border-b block py-2 bg-primary hover:bg-accent hover:text-accent-text hover:transition-colors ease-out duration-300"
                         onClick={() => selectUser(user)}
                     >
                         {user.username}

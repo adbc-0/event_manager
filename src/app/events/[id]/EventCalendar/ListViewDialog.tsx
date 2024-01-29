@@ -31,7 +31,7 @@ export function ListViewDialog() {
 
     return (
         <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
-            <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-zinc-800">
+            <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-primary">
                 <tr>
                     <th scope="col" className="px-2 py-2">
                         &nbsp;

@@ -121,7 +121,7 @@ function DialogTrigger({ children }: DialogProps) {
 function DialogTopBar({ title }: { title: string | undefined }) {
     const { closeDialog } = useDialogContext();
     return (
-        <div className="flex justify-between bg-neutral-800 rounded-t-md p-2 items-center">
+        <div className="flex justify-between bg-primary rounded-t-md p-2 items-center">
             <h2 className="text-xl">{title}</h2>
             <ClosePaneButton closeModal={closeDialog} />
         </div>

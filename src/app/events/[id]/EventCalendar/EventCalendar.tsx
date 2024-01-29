@@ -79,7 +79,7 @@ const dayColor: Record<DayColorType, string> = {
     MAYBE_AVAILABLE:
         "bg-orange-300 [@media(hover:hover)]:hover:bg-orange-300/80 text-neutral-800",
     MY_AVAILABLE:
-        "bg-secondary [@media(hover:hover)]:hover:bg-secondary/80 text-neutral-800",
+        "bg-accent [@media(hover:hover)]:hover:bg-accent/80 text-neutral-800",
     UNAVAILABLE:
         "bg-rose-300 [@media(hover:hover)]:hover:bg-rose-300/80 text-neutral-800",
     UNSELECTED: "hover:bg-white/10",
@@ -238,7 +238,7 @@ export function EventCalendar({
     };
 
     return (
-        <div className="bg-primary-lighter rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3 relative">
+        <div className="bg-primary-lighter rounded-md border border-primary-lighter-border max-w-sm m-auto my-1 p-3 relative">
             {isFetching && (
                 <div className="absolute bg-primary-lighter w-full top-0 left-0 rounded-md z-10 flex justify-center items-center h-full">
                     <LoadingSpinner />

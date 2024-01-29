@@ -5,12 +5,19 @@
 @layer base {
     :root {
         --color-primary: 38 38 38; /* Neutral 800 */
+        --color-primary-border: 24 24 27; /* Zinc 900 */
         --color-primary-darker: 24 24 27; /* Zinc 900 */
+        --color-primary-darker-border: 0 0 0; /* BLACK */
         --color-primary-lighter: 64 64 64; /* Neutral 700 */
-        --color-secondary: 94 234 212; /* Teal 300 */
+        --color-primary-lighter-border: 24 24 27; /* Zinc 900 */
+        --accent-color: 94 234 212; /* Teal 300 */
+        --accent-text: 0 0 0; /* BLACK */
+        --danger-color: 252, 165, 165; /* Red 300 */
+        --danger-text: 0 0 0; /* BLACK */
     }
 
     html {
+        @apply accent-teal-300;
         @apply text-neutral-300;
         @apply bg-neutral-800;
     }

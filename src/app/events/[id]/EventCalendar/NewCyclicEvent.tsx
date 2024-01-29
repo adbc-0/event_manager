@@ -142,7 +142,7 @@ export function NewCyclicEvent() {
     };
 
     return (
-        <div className="border border-zinc-800 flex justify-center p-2 text-center">
+        <div className="border border-primary-darker-border flex justify-center p-2 text-center">
             <form onSubmit={submitRule} className="grow">
                 <div className="py-2">
                     <label htmlFor="event-name">
@@ -153,7 +153,7 @@ export function NewCyclicEvent() {
                         required
                         name="name"
                         minLength={1}
-                        className="min-w-[80%] mx-auto p-1 mt-2 text-secondary text-center"
+                        className="min-w-[80%] mx-auto p-1 mt-2 text-accent text-center"
                         value={rule.name}
                         onChange={changeName}
                     />
@@ -161,7 +161,7 @@ export function NewCyclicEvent() {
                 <div className="py-2">
                     <span>Every</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-primary-darker rounded-md text-secondary text-center focus:outline-none focus:ring focus:ring-secondary"
+                        className="bg-primary m-2 p-1 border border-primary-border rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
                         defaultValue={rule.interval}
                         onChange={changeInterval}
                     >
@@ -174,7 +174,7 @@ export function NewCyclicEvent() {
                     </select>
                     <span>week{rule.interval > 1 ? "s" : ""} I will be</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-primary-darker rounded-md text-secondary text-center focus:outline-none focus:ring focus:ring-secondary"
+                        className="bg-primary m-2 p-1 border border-primary-border rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
                         defaultValue={rule.availability}
                         onChange={changeAvailability}
                     >
@@ -198,7 +198,7 @@ export function NewCyclicEvent() {
                             type="button"
                             className={`py-3 px-4 max-w-[4rem] ${
                                 isDaySelected(rule.byDay, day)
-                                    ? "bg-secondary text-black"
+                                    ? "bg-accent text-black"
                                     : ""
                             }`}
                             onClick={() => toggleDay(day)}

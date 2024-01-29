@@ -24,7 +24,7 @@ export function AuthMobile() {
         return (
             <div className={mobileMenuLayoutStyle}>
                 <div className="flex w-full gap-2 p-2">
-                    <p className="basis-10/12 py-3 text-center border border-black rounded-md shadow-inner bg-primary-darker">
+                    <p className="basis-10/12 py-3 text-center bg-primary-darker border border-primary-darker-border rounded-md shadow-inner">
                         {username}
                     </p>
                     <Button
