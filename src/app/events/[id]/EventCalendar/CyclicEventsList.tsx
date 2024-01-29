@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,9 +10,10 @@ import { calendarDateAtoms } from "~/atoms";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { rulesKeys, useRuleQuery } from "~/queries/useRulesQuery";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-import { Button } from "~/components/Button/Button";
 import { handleQueryError } from "~/utils/index";
-import { EventRouteParams } from "~/typescript";
+import { LoadingSpinner } from "~/components/LoadingSpinner/LoadingSpinner";
+import { LoadingButton } from "~/components/Button/LoadingButton";
+import { EventRouteParams, Nullable } from "~/typescript";
 
 type DeleteRuleArgs = {
     ruleId: string;
@@ -32,8 +34,14 @@ export function CyclicEventsList() {
     const queryClient = useQueryClient();
     const rulesQ = useRuleQuery(userId, eventId);
 
+    const [removedEventId, setRemovedEventId] =
+        useState<Nullable<string>>(null);
+
     const deleteRuleMut = useMutation<unknown, Error, DeleteRuleArgs>({
         mutationFn: DELETE_RULE,
+        onSettled: () => {
+            setRemovedEventId(null);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
@@ -44,8 +52,12 @@ export function CyclicEventsList() {
         },
     });
 
-    if (rulesQ.isLoading) {
-        return null;
+    if (rulesQ.isFetching) {
+        return (
+            <div className="flex justify-center min-h-12 items-center">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (rulesQ.isError) {
@@ -61,6 +73,7 @@ export function CyclicEventsList() {
     }
 
     const _deleteRule = (ruleId: string) => {
+        setRemovedEventId(ruleId);
         deleteRuleMut.mutate({ eventId, ruleId });
     };
 
@@ -73,11 +86,13 @@ export function CyclicEventsList() {
                 >
                     <div className="flex justify-between items-center p-2">
                         <p>{rule.name}</p>
-                        <Button
+                        <LoadingButton
                             aria-label="delete rule event"
                             type="button"
                             theme="BASIC"
                             className="p-2"
+                            disabled={Boolean(removedEventId)}
+                            isLoading={removedEventId === rule.id.toString()}
                             onClick={() => _deleteRule(rule.id.toString())}
                         >
                             <Image
@@ -87,7 +102,7 @@ export function CyclicEventsList() {
                                 height={24}
                                 alt="trash can icon"
                             />
-                        </Button>
+                        </LoadingButton>
                     </div>
                 </div>
             ))}

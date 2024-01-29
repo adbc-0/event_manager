@@ -14,6 +14,7 @@ import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useDialogContext } from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
+import { LoadingButton } from "~/components/Button/LoadingButton";
 import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
 
 type Rule = RRule & {
@@ -135,7 +136,8 @@ export function NewCyclicEvent() {
             startDate: rule.startDate,
             userId,
         };
-        createRuleMut.mutate({ eventId, rulePayload });
+        // ToDo: Add error handling
+        await createRuleMut.mutateAsync({ eventId, rulePayload });
         closeDialog();
     };
 
@@ -206,11 +208,12 @@ export function NewCyclicEvent() {
                     ))}
                 </div>
                 <div className="w-full border-b-2 border-neutral-700" />
-                <Button
+                <LoadingButton
                     aria-label="submit new rule"
                     type="submit"
                     theme="SAVE"
                     className="p-2 m-2 min-w-[50%] mx-auto"
+                    isLoading={createRuleMut.isPending}
                 >
                     <Image
                         src={acceptIcon}
@@ -219,7 +222,7 @@ export function NewCyclicEvent() {
                         height={24}
                         alt="submit icon"
                     />
-                </Button>
+                </LoadingButton>
             </form>
         </div>
     );

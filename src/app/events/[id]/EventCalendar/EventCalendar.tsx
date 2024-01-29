@@ -22,6 +22,7 @@ import {
     isNil,
 } from "~/utils/index";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
+import { LoadingSpinner } from "~/components/LoadingSpinner/LoadingSpinner";
 import {
     AllAvailability,
     AvailabilityEnumValues,
@@ -176,7 +177,7 @@ export function EventCalendar({
     const [, decrementMonth] = useAtom(calendarDateAtoms.decrementMonthAtom);
 
     const { username } = useAnonAuth(eventId);
-    const { data: event } = useEventQuery(eventId);
+    const { data: event, isFetching } = useEventQuery(eventId);
     const { data: users } = useEventUsersQuery(eventId);
 
     const chunkifiedMonth = useMemo(() => {
@@ -237,7 +238,12 @@ export function EventCalendar({
     };
 
     return (
-        <div className="bg-primary-lighter rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3">
+        <div className="bg-primary-lighter rounded-md border border-zinc-900 max-w-sm m-auto my-1 p-3 relative">
+            {isFetching && (
+                <div className="absolute bg-primary-lighter w-full top-0 left-0 rounded-md z-10 flex justify-center items-center h-full">
+                    <LoadingSpinner />
+                </div>
+            )}
             <div className="flex justify-between items-center">
                 <button
                     aria-label="go to previous month"
