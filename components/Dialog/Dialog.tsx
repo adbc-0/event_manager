@@ -18,7 +18,7 @@ import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
 import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { ReactProps, Nullable } from "~/typescript";
 
-type DialogProps = ReactProps & {
+type DialogContentProps = ReactProps & {
     title?: string;
     fullscreen?: boolean;
 };
@@ -56,7 +56,7 @@ export function useDialogContext() {
     return ctx;
 }
 
-function Dialog({ children }: DialogProps) {
+function Dialog({ children }: ReactProps) {
     const dialogRef = useRef<Nullable<ElementRef<"dialog">>>(null);
     const [isOpen, setIsOpen] = useState(false);
     const startRenderingDialogChildren = useCallback(() => {
@@ -102,7 +102,7 @@ function Dialog({ children }: DialogProps) {
     );
 }
 
-function DialogTrigger({ children }: DialogProps) {
+function DialogTrigger({ children }: ReactProps) {
     if (!children) {
         throw new Error("missing children");
     }
@@ -128,7 +128,11 @@ function DialogTopBar({ title }: { title: string | undefined }) {
     );
 }
 
-function DialogContent({ children, title, fullscreen = false }: DialogProps) {
+function DialogContent({
+    children,
+    title,
+    fullscreen = false,
+}: DialogContentProps) {
     const {
         dialogRef,
         isOpen,
@@ -204,7 +208,7 @@ function composeEventHandlers<E>(
     };
 }
 
-function DialogClose({ children }: DialogProps) {
+function DialogClose({ children }: ReactProps) {
     if (!children) {
         throw new Error("missing children");
     }

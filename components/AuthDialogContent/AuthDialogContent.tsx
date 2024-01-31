@@ -27,22 +27,17 @@ export function AuthDialogContent() {
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex justify-between content-center items-center">
-                <h2 className="text-xl">Select days as:</h2>
-            </div>
-            <div className="flex flex-col">
-                {usersQuery.data.map((user) => (
-                    <button
-                        key={user.id}
-                        type="button"
-                        className="grow border border-primary-border border-b-0 last:border-b block py-2 bg-primary hover:bg-accent hover:text-accent-text hover:transition-colors ease-out duration-300"
-                        onClick={() => selectUser(user)}
-                    >
-                        {user.username}
-                    </button>
-                ))}
-            </div>
+        <div className="flex flex-col">
+            {usersQuery.data.map((user) => (
+                <button
+                    key={user.id}
+                    type="button"
+                    className="grow border border-primary-border border-b-0 last:border-b block py-2 bg-primary hover:bg-accent hover:text-accent-text hover:transition-colors ease-out duration-300"
+                    onClick={() => selectUser(user)}
+                >
+                    {user.username}
+                </button>
+            ))}
         </div>
     );
 }

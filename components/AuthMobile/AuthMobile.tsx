@@ -61,7 +61,7 @@ export function AuthMobile() {
                                 />
                             </Button>
                         </Dialog.DialogTrigger>
-                        <Dialog.DialogContent>
+                        <Dialog.DialogContent title="User selection">
                             <AuthDialogContent />
                         </Dialog.DialogContent>
                     </Dialog>
