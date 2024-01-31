@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 
-import { QUERY_STALE_TIME } from "~/constants";
+import { CALENDAR_REFETCH_INTERVAL } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
 import { ServerError, encodeEventParamDate } from "~/utils/index";
 import { CurrentDate, EventResponse } from "~/typescript";
@@ -36,6 +36,6 @@ export function useEventQuery(eventId: string) {
     return useQuery<EventResponse>({
         queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
         queryFn: fetchEvent,
-        refetchInterval: QUERY_STALE_TIME,
+        refetchInterval: CALENDAR_REFETCH_INTERVAL,
     });
 }
