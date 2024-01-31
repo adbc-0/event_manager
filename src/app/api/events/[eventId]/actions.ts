@@ -25,7 +25,6 @@ const changeAvailabilitySchema = z.object({
 
 type ChangeAvailabilitySchema = z.infer<typeof changeAvailabilitySchema>;
 
-// ToDo: Revalidate users cache when making first selection as user
 export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
     const {
         choices,
@@ -33,6 +32,9 @@ export async function ChangeAvailability(payload: ChangeAvailabilitySchema) {
         eventId: encodedEventId,
         userId,
     } = changeAvailabilitySchema.parse(payload);
+    if (!Object.values(choices).length) {
+        throw new Error("no choices selected");
+    }
     if (!userId) {
         throw new Error("unauthorized");
     }

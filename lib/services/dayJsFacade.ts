@@ -3,7 +3,7 @@ import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { range } from "~/utils/index";
-import { DAYS_IN_WEEK, MILLISECONDS_IN_WEEK } from "~/constants";
+import { DAYS_IN_WEEK, MILLISECONDS_IN_WEEK, WeekdaysList } from "~/constants";
 import { CurrentDate } from "~/typescript";
 
 extend(utc);
@@ -181,4 +181,9 @@ export function findInitialOccurenceForDate(
 
 export function newDateFromNativeDate(date?: Date, o: DateOptions = {}) {
     return dayjs(date).utc(o.utc);
+}
+
+export function getCurrentDayOfWeek() {
+    const currentDate = dayjs();
+    return WeekdaysList[currentDate.day()];
 }

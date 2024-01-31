@@ -13,3 +13,12 @@ export const MILLISECONDS_IN_WEEK = 604_800_000;
 export const DAYS_IN_WEEK = 7;
 export const QUERY_STALE_TIME = 60_000;
 export const CALENDAR_REFETCH_INTERVAL = 120_000;
+export const WeekdaysList = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+] as const;

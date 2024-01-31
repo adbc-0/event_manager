@@ -58,6 +58,11 @@ export function CalendarSubmitMenu({
             ChangeAvailability({ ...payload, userId });
             markChangesAsCurrent();
         });
+
+        // Error: Here is source of bug. This invalidation won't work since ChangeAvailabilty runs after query invalidation
+        // queryClient.invalidateQueries({
+        //     queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
+        // });
     };
 
     return (

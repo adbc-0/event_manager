@@ -6,15 +6,12 @@ import "./globals.css";
 
 const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Add toast
-// ToDo: Show source of decision (rule)
-// ToDo: Show more information about added rule
-// ToDo: Reuse animations from shad
+// ToDo: Show source of decision (rule). Rewrite backend response.
+// ToDo: Edit create rules
 // ToDo: Forced dark mode
-// ToDo: Go throught all files and make cleanup
 // ToDo: Prevent going back and checking dates that differ more than half a year, Remove old records
 // ToDo: Swipe on calendar to change month
-// ToDo: Show incoming days on list view details or allow to change months
+// ToDo: Revalidate users cache, Create endpoint to add new user
 export const viewport: Viewport = {
     colorScheme: "dark",
 };

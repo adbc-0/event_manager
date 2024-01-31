@@ -15,8 +15,7 @@ export function ClosePaneButton({ closeModal }: ClosePaneProps) {
             aria-label="close list view button"
             type="button"
             theme="BASIC"
-            // ToDo: Change style
-            className="w-9 h-9 rounded-full border-red-500 bg-red-400"
+            className="w-9 h-9 rounded-full"
             onClick={closeModal}
         >
             <Image

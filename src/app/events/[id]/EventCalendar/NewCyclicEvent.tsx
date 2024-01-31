@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 
 import acceptIcon from "~/public/acceptButton.svg";
 
-import { AvailabilityEnum, FreqEnum } from "~/constants";
+import { AvailabilityEnum, FreqEnum, WeekdaysList } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
 import { rulesKeys } from "~/queries/useRulesQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
@@ -16,6 +16,7 @@ import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { LoadingButton } from "~/components/Button/LoadingButton";
 import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
+import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
 
 type Rule = RRule & {
     name: string;
@@ -34,9 +35,15 @@ type CreateRuleArgs = {
     rulePayload: RulePayload;
 };
 
+function weekdayToRuleDay(weekday: (typeof WeekdaysList)[number]) {
+    return weekday.substring(0, 2).toUpperCase();
+}
+
+const todayWeekday = getCurrentDayOfWeek();
+
 const nilRule: Rule = {
     name: "",
-    byDay: [],
+    byDay: [weekdayToRuleDay(todayWeekday)],
     freq: FreqEnum.WEEKLY,
     interval: 1,
     availability: AvailabilityEnum.AVAILABLE,
@@ -117,6 +124,9 @@ export function NewCyclicEvent() {
         const isSelected = rule.byDay.some(
             (selectedDay) => selectedDay === day,
         );
+        if (isSelected && rule.byDay.length === 1) {
+            return;
+        }
         if (isSelected) {
             const filteredDays = rule.byDay.filter(
                 (selectedDays) => selectedDays !== day,
@@ -136,7 +146,6 @@ export function NewCyclicEvent() {
             startDate: rule.startDate,
             userId,
         };
-        // ToDo: Add error handling
         await createRuleMut.mutateAsync({ eventId, rulePayload });
         closeDialog();
     };
@@ -190,7 +199,7 @@ export function NewCyclicEvent() {
                     </select>
                     <span>for following days in a week:</span>
                 </div>
-                <div className="flex justify-center gap-2 flex-wrap p-2 py-4">
+                <div className="flex justify-center gap-2 flex-wrap p-2">
                     {daysInWeek.map((day) => (
                         <Button
                             theme="BASIC"
@@ -207,7 +216,7 @@ export function NewCyclicEvent() {
                         </Button>
                     ))}
                 </div>
-                <div className="w-full border-b-2 border-neutral-700" />
+                <div className="w-full border-b-2 border-neutral-700 my-4" />
                 <LoadingButton
                     aria-label="submit new rule"
                     type="submit"

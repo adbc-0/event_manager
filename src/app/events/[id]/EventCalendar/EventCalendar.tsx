@@ -92,12 +92,6 @@ const ownAvailabilityChoice: Record<AvailabilityEnumValues, DayColorType> = {
     [AvailabilityEnum.UNAVAILABLE]: DayColorTypeEnum.UNAVAILABLE,
 } as const;
 
-function isToday(monthDay: MonthDay) {
-    const date = MonthDayToDate(monthDay);
-    const currentDate = newDateFromNativeDate();
-    return date.isSame(currentDate, "day");
-}
-
 function isFromPast(monthDay: MonthDay) {
     const date = MonthDayToDate(monthDay);
     const currentDate = newDateFromNativeDate();
@@ -283,17 +277,12 @@ export function EventCalendar({
                                     <div className="aspect-square relative">
                                         <button
                                             type="button"
-                                            className={`w-full h-full disabled:cursor-not-allowed
+                                            className={`w-full h-full disabled:cursor-not-allowed rounded-md
                                                         ${
                                                             dayData.month ===
                                                             calendarDate.month
                                                                 ? "active:scale-75 transition-transform"
                                                                 : ""
-                                                        }
-                                                        ${
-                                                            isToday(dayData)
-                                                                ? "rounded-full"
-                                                                : "rounded-md"
                                                         }
                                                         ${
                                                             dayColor[
