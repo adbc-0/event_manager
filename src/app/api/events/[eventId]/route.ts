@@ -13,7 +13,7 @@ import {
 } from "~/services/dayJsFacade";
 import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
 import {
-    AvailabilityChoices,
+    AvailabilityChoice,
     AvailabilityEnumValues,
     EventResponse,
     ID,
@@ -152,70 +152,72 @@ function getDaysFromRuleForMonth(beginningOfMonth: DayJs) {
     };
 }
 
-function createNilChoices() {
-    return {
-        available: [],
-        unavailable: [],
-        maybe_available: [],
-    };
-}
-
 function createEmptyUserChoices(users: EventUser[]) {
     return users.reduce((o, currUser) => {
-        o[currUser.username] = createNilChoices();
+        o[currUser.username] = [];
         return o;
     }, {} as UsersAvailabilityChoices);
 }
 
-function fillUsersAvailability(
-    emptyChoices: UsersAvailabilityChoices,
+type CreateChoiceArgs = {
+    day: number;
+    availability: AvailabilityEnumValues;
+};
+function createChoice({
+    availability,
+    day,
+}: CreateChoiceArgs): AvailabilityChoice {
+    return {
+        day,
+        availability,
+        type: "MANUAL",
+    };
+}
+
+function createChoicesMap(
+    users: EventUser[],
     eventMonthChoices: MonthsChoices[],
 ) {
-    return eventMonthChoices.reduce((o, curr) => {
-        const { username, choice, day } = curr;
-        if (!o[username]) {
-            throw new Error("Unexpected value: unexpected user id");
-        }
-        o[username][choice].push(day);
-        return o;
-    }, structuredClone(emptyChoices));
-}
-
-function fillUserAvailabilityWithRules(
-    groupedChoices: UsersAvailabilityChoices,
-    rulesWithSearchedDays: TransformedRule[],
-) {
-    return rulesWithSearchedDays.reduce((o, curr) => {
-        const { username, choice, selectedDays } = curr;
-        if (!o[username]) {
-            throw new Error("Unexpected value: unexpected user id");
-        }
-        const filteredChoices = preferManualChoiceOverRule(
-            o[username],
-            selectedDays,
-        );
-        o[username][choice] = dedupe([
-            ...o[username][choice],
-            ...filteredChoices,
-        ]);
-        return o;
-    }, structuredClone(groupedChoices));
-}
-
-function dedupe(choices: number[]) {
-    return [...new Set(choices)];
-}
-
-function preferManualChoiceOverRule(
-    manualChoices: AvailabilityChoices,
-    ruleDays: number[],
-) {
-    const mergedChoices = manualChoices.available
-        .concat(manualChoices.maybe_available)
-        .concat(manualChoices.unavailable);
-    return ruleDays.filter(
-        (day) => !mergedChoices.some((choice) => choice === day),
+    const usersChache = users.reduce(
+        (cache, { username }) => {
+            cache[username] = new Set();
+            return cache;
+        },
+        {} as Record<string, Set<number>>,
     );
+    const choicesCache = eventMonthChoices.reduce(
+        (cache, { username, day }) => {
+            cache[username].add(day);
+            return cache;
+        },
+        usersChache,
+    );
+    return choicesCache;
+}
+
+function combineChoices(
+    users: EventUser[],
+    parsedRules: TransformedRule[],
+    eventMonthChoices: MonthsChoices[],
+) {
+    const groupedUsers = createEmptyUserChoices(users);
+    const manualChoicesMap = createChoicesMap(users, eventMonthChoices);
+
+    parsedRules.forEach(({ choice, username, selectedDays }) => {
+        selectedDays.forEach((day) => {
+            if (manualChoicesMap[username].has(day)) {
+                const newChoice = createChoice({ availability: choice, day });
+                groupedUsers[username].push(newChoice);
+            }
+        });
+    });
+
+    eventMonthChoices.forEach(({ choice, day, username }) => {
+        const newChoice = createChoice({ availability: choice, day });
+        groupedUsers[username].push(newChoice);
+    });
+
+    return groupedUsers;
 }
 
 function filterByDate(date: DayJs) {
@@ -299,29 +301,26 @@ export async function GET(request: Request, { params }: RequestParams) {
             SELECT id, username FROM event.events_users WHERE event_id = ${eventId};
         `;
 
-        const groupedUsers = createEmptyUserChoices(users);
-        const groupedChoices = fillUsersAvailability(
-            groupedUsers,
-            eventMonthChoices,
-        );
-
         const getDaysFromRule = getDaysFromRuleForMonth(inspectionMonthDate);
-        const rulesWithSearchedDays = rules
+        const parsedRules = rules
             .map((rule) => ({ ...rule, parsedRule: parseRule(rule.rule) }))
             .map((rule) => ({
                 ...rule,
                 selectedDays: getDaysFromRule(rule.parsedRule, rule.start_date),
             }));
 
-        const choicesWithRules = fillUserAvailabilityWithRules(
-            groupedChoices,
-            rulesWithSearchedDays,
+        const usersChoices = combineChoices(
+            users,
+            parsedRules,
+            eventMonthChoices,
         );
+
         const response: EventResponse = {
             name: event.name,
             time: rawInspectionMonth,
-            groupedChoices: choicesWithRules,
+            usersChoices,
         };
+
         return NextResponse.json(response);
     } catch (error) {
         return NextResponse.json(

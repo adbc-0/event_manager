@@ -1,4 +1,3 @@
-import { AvailabilityEnum } from "~/constants";
 import { getLastDayOfMonth } from "~/services/dayJsFacade";
 import {
     UsersAvailabilityChoices,
@@ -38,21 +37,15 @@ function createEmptyDays(daysInMonth = 0): EmptyDays {
     );
 }
 
-// unavailable takes precedence over maybe_available and available
 function searchChoicesForMatch(
     choices: AvailabilityChoices,
-    condition: number,
+    searchedDay: number,
 ) {
-    if (choices.unavailable.some((day) => condition === day)) {
-        return AvailabilityEnum.UNAVAILABLE;
+    const choice = choices.find(({ day }) => day === searchedDay);
+    if (!choice) {
+        return null;
     }
-    if (choices.maybe_available.some((day) => condition === day)) {
-        return AvailabilityEnum.MAYBE_AVAILABLE;
-    }
-    if (choices.available.some((day) => condition === day)) {
-        return AvailabilityEnum.AVAILABLE;
-    }
-    return null;
+    return choice.availability;
 }
 
 // ToDo: Mutation, use parseEventResponseToOwnChoices function within

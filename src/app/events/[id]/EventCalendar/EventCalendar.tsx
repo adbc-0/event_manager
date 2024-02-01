@@ -188,7 +188,7 @@ export function EventCalendar({
         }
         return (
             clientOwnChoices ??
-            parseEventToOwnChoices(event.groupedChoices[username], calendarDate)
+            parseEventToOwnChoices(event.usersChoices[username], calendarDate)
         );
     }, [calendarDate, clientOwnChoices, event, username]);
 
@@ -201,7 +201,7 @@ export function EventCalendar({
         }
         return (
             clientAllChoices ??
-            parseEventToCalendarChoices(event.groupedChoices, calendarDate)
+            parseEventToCalendarChoices(event.usersChoices, calendarDate)
         );
     }, [calendarDate, clientAllChoices, event, username]);
 

@@ -25,7 +25,7 @@ export function ListViewDialog() {
     }
 
     const allChoices = parseEventToCalendarChoices(
-        event.groupedChoices,
+        event.usersChoices,
         calendarDate,
     );
 

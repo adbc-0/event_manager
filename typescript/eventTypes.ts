@@ -4,16 +4,24 @@ type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
 
 export type AvailabilityEnumValues =
     (typeof AvailabilityEnum)[keyof typeof AvailabilityEnum];
-export type AvailabilityChoices = {
-    available: number[];
-    unavailable: number[];
-    maybe_available: number[];
+type AvailabilityFromRule = {
+    day: number;
+    availability: AvailabilityEnumValues;
+    type: "FROM_RULE";
+    ruleId: number;
 };
+type AvailabilityFromManual = {
+    day: number;
+    availability: AvailabilityEnumValues;
+    type: "MANUAL";
+};
+export type AvailabilityChoice = AvailabilityFromRule | AvailabilityFromManual;
+export type AvailabilityChoices = Array<AvailabilityChoice>;
 export type UsersAvailabilityChoices = Record<string, AvailabilityChoices>;
 export type EventResponse = {
     name: string;
     time: string;
-    groupedChoices: UsersAvailabilityChoices;
+    usersChoices: UsersAvailabilityChoices;
 };
 export type CurrentDate = {
     readonly day: number;

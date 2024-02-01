@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAtom } from "jotai";
+import { match } from "ts-pattern";
 
 import { AvailabilityEnum } from "~/constants";
 import {
@@ -15,18 +16,22 @@ import { CalendarSubmitMenu } from "./CalendarSubmitMenu";
 import { EventCalendar } from "./EventCalendar";
 import {
     AllAvailability,
+    AvailabilityEnumValues,
     EventRouteParams,
     OwnAvailability,
 } from "~/typescript";
 
-function getNextAvailabilityChoice(currentChoice: string) {
-    if (currentChoice === AvailabilityEnum.AVAILABLE) {
-        return AvailabilityEnum.MAYBE_AVAILABLE;
-    }
-    if (currentChoice === AvailabilityEnum.MAYBE_AVAILABLE) {
-        return AvailabilityEnum.UNAVAILABLE;
-    }
-    return AvailabilityEnum.AVAILABLE;
+function getNextAvailabilityChoice(currentChoice: AvailabilityEnumValues) {
+    return match(currentChoice)
+        .with(
+            AvailabilityEnum.AVAILABLE,
+            () => AvailabilityEnum.MAYBE_AVAILABLE,
+        )
+        .with(
+            AvailabilityEnum.MAYBE_AVAILABLE,
+            () => AvailabilityEnum.UNAVAILABLE,
+        )
+        .otherwise(() => AvailabilityEnum.AVAILABLE);
 }
 
 export function Calendar() {
@@ -61,11 +66,11 @@ export function Calendar() {
             return;
         }
         const parsedOwnChoices = parseEventToOwnChoices(
-            event.groupedChoices[username],
+            event.usersChoices[username],
             calendarDate,
         );
         const parsedAllChoices = parseEventToCalendarChoices(
-            event.groupedChoices,
+            event.usersChoices,
             calendarDate,
         );
         setAllChoices(parsedAllChoices);
@@ -82,13 +87,10 @@ export function Calendar() {
 
         const nonNullOwnChoices =
             ownChoices ??
-            parseEventToOwnChoices(
-                event.groupedChoices[username],
-                calendarDate,
-            );
+            parseEventToOwnChoices(event.usersChoices[username], calendarDate);
         const nonNullAllChoices =
             allChoices ??
-            parseEventToCalendarChoices(event.groupedChoices, calendarDate);
+            parseEventToCalendarChoices(event.usersChoices, calendarDate);
 
         const ownChoicesClone = structuredClone(nonNullOwnChoices);
         const allChoicesClone = structuredClone(nonNullAllChoices);
