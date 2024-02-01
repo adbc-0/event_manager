@@ -18,14 +18,13 @@ import {
     EventResponse,
     ID,
     ParsedRule,
+    UsersAvailabilityChoices,
 } from "~/typescript";
 
 type Event = {
     event_id: string;
     name: string;
 };
-
-type GroupedChoices = Record<string, AvailabilityChoices>;
 
 type MonthsChoices = {
     choice: AvailabilityEnumValues;
@@ -165,11 +164,11 @@ function createEmptyUserChoices(users: EventUser[]) {
     return users.reduce((o, currUser) => {
         o[currUser.username] = createNilChoices();
         return o;
-    }, {} as GroupedChoices);
+    }, {} as UsersAvailabilityChoices);
 }
 
 function fillUsersAvailability(
-    emptyChoices: GroupedChoices,
+    emptyChoices: UsersAvailabilityChoices,
     eventMonthChoices: MonthsChoices[],
 ) {
     return eventMonthChoices.reduce((o, curr) => {
@@ -183,7 +182,7 @@ function fillUsersAvailability(
 }
 
 function fillUserAvailabilityWithRules(
-    groupedChoices: GroupedChoices,
+    groupedChoices: UsersAvailabilityChoices,
     rulesWithSearchedDays: TransformedRule[],
 ) {
     return rulesWithSearchedDays.reduce((o, curr) => {

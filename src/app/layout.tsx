@@ -4,7 +4,7 @@ import { Fira_Sans_Condensed } from "next/font/google";
 import Providers from "./providers";
 import "./globals.css";
 
-const firaSans = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
+const appFont = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
 // ToDo: Show source of decision (rule). Rewrite backend response.
 // ToDo: Edit create rules
@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`${firaSans.className} min-h-full-dvh`}>
+            <body className={`${appFont.className} min-h-full-dvh`}>
                 <Providers>{children}</Providers>
             </body>
         </html>
