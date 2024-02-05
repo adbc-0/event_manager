@@ -2,13 +2,14 @@ import { startTransition } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useAtom } from "jotai";
+import { useQueryClient } from "@tanstack/react-query";
 
 import okIcon from "~/public/acceptButton.svg";
 import cancelIcon from "~/public/rejectButton.svg";
 
 import { calendarDateAtoms } from "~/atoms";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-import { useEventQuery } from "~/queries/useEventQuery";
+import { calendarKeys, useEventQuery } from "~/queries/useEventQuery";
 import { ChangeAvailability } from "~/app/api/events/[eventId]/actions";
 import { Button } from "~/components/Button/Button";
 import { ReactProps, EventRouteParams, OwnAvailability } from "~/typescript";
@@ -30,6 +31,7 @@ export function CalendarSubmitMenu({
         throw new Error("Missing event url param");
     }
 
+    const queryClient = useQueryClient();
     const [calendarDate] = useAtom(calendarDateAtoms.readDateAtom);
     const { data: event } = useEventQuery(eventId);
 
@@ -59,10 +61,12 @@ export function CalendarSubmitMenu({
             markChangesAsCurrent();
         });
 
-        // Error: Here is source of bug. This invalidation won't work since ChangeAvailabilty runs after query invalidation
-        // queryClient.invalidateQueries({
-        //     queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
-        // });
+        // Temporary fix until I change implementation of API
+        setTimeout(() => {
+            queryClient.invalidateQueries({
+                queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
+            });
+        }, 100);
     };
 
     return (

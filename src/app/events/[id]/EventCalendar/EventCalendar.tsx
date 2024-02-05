@@ -233,7 +233,7 @@ export function EventCalendar({
 
     return (
         <div className="bg-primary-lighter rounded-md border border-primary-lighter-border max-w-sm m-auto my-1 p-3 relative">
-            {isFetching && (
+            {isFetching && !event && (
                 <div className="absolute bg-primary-lighter w-full top-0 left-0 rounded-md z-10 flex justify-center items-center h-full">
                     <LoadingSpinner />
                 </div>
