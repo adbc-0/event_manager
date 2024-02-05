@@ -1,10 +1,7 @@
 import { useParams } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
-import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-
-import acceptIcon from "~/public/acceptButton.svg";
 
 import { AvailabilityEnum, FreqEnum, WeekdaysList } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
@@ -218,19 +215,12 @@ export function NewCyclicEvent() {
                 </div>
                 <div className="w-full border-b-2 border-neutral-700 my-4" />
                 <LoadingButton
-                    aria-label="submit new rule"
                     type="submit"
                     theme="SAVE"
                     className="p-2 m-2 min-w-[50%] mx-auto"
                     isLoading={createRuleMut.isPending}
                 >
-                    <Image
-                        src={acceptIcon}
-                        className="m-auto"
-                        width={24}
-                        height={24}
-                        alt="submit icon"
-                    />
+                    Create event
                 </LoadingButton>
             </form>
         </div>
