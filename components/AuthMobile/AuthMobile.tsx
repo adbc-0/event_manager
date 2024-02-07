@@ -9,8 +9,8 @@ import logoutIcon from "~/public/logout.svg";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { Button } from "~/components/Button/Button";
 import { AuthDialogContent } from "~/components/AuthDialogContent/AuthDialogContent";
-import { EventRouteParams } from "~/typescript";
 import Dialog from "../Dialog/Dialog";
+import { EventRouteParams } from "~/typescript";
 
 const mobileMenuLayoutStyle =
     "fixed bottom-0 w-full md:max-w-xl md:left-1/2 md:transform md:translate-x-[-50%]";

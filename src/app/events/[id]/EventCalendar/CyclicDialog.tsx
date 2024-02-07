@@ -27,7 +27,7 @@ export function CyclicDialog() {
                 <div
                     role="tablist"
                     className={twMerge(
-                        "flex mb-1 border border-primary-darker-border",
+                        "flex mb-1 border border-primary-lighter-border",
                         elementOnGlassBg,
                     )}
                 >

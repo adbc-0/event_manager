@@ -148,7 +148,7 @@ export function NewCyclicEvent() {
     };
 
     return (
-        <div className="border border-primary-darker-border flex justify-center p-2 text-center">
+        <div className="border border-primary-lighter-border flex justify-center p-2 text-center">
             <form onSubmit={submitRule} className="grow">
                 <div className="py-2">
                     <label htmlFor="event-name">

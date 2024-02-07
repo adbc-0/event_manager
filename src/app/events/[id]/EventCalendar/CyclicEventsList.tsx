@@ -66,7 +66,7 @@ export function CyclicEventsList() {
 
     if (!rulesQ.data?.length) {
         return (
-            <div className="border border-primary-darker-border">
+            <div className="border border-primary-lighter-border">
                 <p className="text-center py-2">No cyclic events</p>
             </div>
         );
@@ -82,7 +82,7 @@ export function CyclicEventsList() {
             {rulesQ.data.map((rule) => (
                 <div
                     key={rule.id}
-                    className="border border-primary-darker-border border-b-0 last:border-b"
+                    className="border border-primary-lighter-border border-b-0 last:border-b"
                 >
                     <div className="flex justify-between items-center p-2">
                         <p>{rule.name}</p>

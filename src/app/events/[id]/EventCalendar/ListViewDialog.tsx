@@ -24,13 +24,13 @@ export function ListViewDialog() {
         return null;
     }
 
-    const allChoices = parseEventToCalendarChoices(
+    const choices = parseEventToCalendarChoices(
         event.usersChoices,
         calendarDate,
     );
 
     return (
-        <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
+        <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate shadow-md">
             <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-primary">
                 <tr>
                     <th scope="col" className="px-2 py-2">
@@ -48,7 +48,7 @@ export function ListViewDialog() {
                 </tr>
             </thead>
             <tbody>
-                {Object.entries(allChoices).map(([day, dayChoices]) => (
+                {Object.entries(choices).map(([day, dayChoices]) => (
                     <ChoiceRow
                         key={day}
                         day={day}

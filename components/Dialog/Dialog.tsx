@@ -172,7 +172,7 @@ function DialogContent({
                             <DialogTopBar title={title} />
                             <div className="p-2 grow">
                                 <div className="relative h-full">
-                                    <div className="absolute overflow-auto inset-0 shadow-md">
+                                    <div className="absolute overflow-auto inset-0">
                                         {children}
                                     </div>
                                 </div>
