@@ -4,13 +4,13 @@ type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
 
 export type AvailabilityEnumValues =
     (typeof AvailabilityEnum)[keyof typeof AvailabilityEnum];
-type AvailabilityFromRule = {
+export type AvailabilityFromRule = {
     day: number;
     availability: AvailabilityEnumValues;
-    type: "FROM_RULE";
     ruleId: number;
+    type: "FROM_RULE";
 };
-type AvailabilityFromManual = {
+export type AvailabilityFromManual = {
     day: number;
     availability: AvailabilityEnumValues;
     type: "MANUAL";

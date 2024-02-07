@@ -13,8 +13,9 @@ import {
 } from "~/services/dayJsFacade";
 import { decodeEventParamDate, parseRule } from "~/utils/eventUtils";
 import {
-    AvailabilityChoice,
     AvailabilityEnumValues,
+    AvailabilityFromManual,
+    AvailabilityFromRule,
     EventResponse,
     ID,
     ParsedRule,
@@ -159,21 +160,6 @@ function createEmptyUserChoices(users: EventUser[]) {
     }, {} as UsersAvailabilityChoices);
 }
 
-type CreateChoiceArgs = {
-    day: number;
-    availability: AvailabilityEnumValues;
-};
-function createChoice({
-    availability,
-    day,
-}: CreateChoiceArgs): AvailabilityChoice {
-    return {
-        day,
-        availability,
-        type: "MANUAL",
-    };
-}
-
 function createChoicesMap(
     users: EventUser[],
     eventMonthChoices: MonthsChoices[],
@@ -195,6 +181,31 @@ function createChoicesMap(
     return choicesCache;
 }
 
+type RuleChoiceBuilder = {
+    day: number;
+    availability: AvailabilityEnumValues;
+    ruleId: number;
+};
+function createRuleChoice(props: RuleChoiceBuilder): AvailabilityFromRule {
+    return {
+        ...props,
+        type: "FROM_RULE",
+    };
+}
+
+type ManualChoiceBuilder = {
+    day: number;
+    availability: AvailabilityEnumValues;
+};
+function createManualChoice(
+    props: ManualChoiceBuilder,
+): AvailabilityFromManual {
+    return {
+        ...props,
+        type: "MANUAL",
+    };
+}
+
 function combineChoices(
     users: EventUser[],
     parsedRules: TransformedRule[],
@@ -203,17 +214,24 @@ function combineChoices(
     const groupedUsers = createEmptyUserChoices(users);
     const manualChoicesMap = createChoicesMap(users, eventMonthChoices);
 
-    parsedRules.forEach(({ choice, username, selectedDays }) => {
+    parsedRules.forEach(({ choice, username, selectedDays, id }) => {
         selectedDays.forEach((day) => {
-            if (manualChoicesMap[username].has(day)) {
-                const newChoice = createChoice({ availability: choice, day });
+            if (!manualChoicesMap[username].has(day)) {
+                const newChoice = createRuleChoice({
+                    ruleId: id,
+                    availability: choice,
+                    day,
+                });
                 groupedUsers[username].push(newChoice);
             }
         });
     });
 
     eventMonthChoices.forEach(({ choice, day, username }) => {
-        const newChoice = createChoice({ availability: choice, day });
+        const newChoice = createManualChoice({
+            availability: choice,
+            day,
+        });
         groupedUsers[username].push(newChoice);
     });
 
