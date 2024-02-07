@@ -16,13 +16,13 @@ function Error({ error, reset }: ErrorProps) {
 
     return (
         <div className="min-h-full-dvh flex text-center justify-center flex-col gap-2">
-            <h1>Uncaught exception error</h1>
+            <h1>Uncaught exception</h1>
             <Button
                 theme="BASIC"
                 className="w-fit mx-auto p-2"
                 onClick={() => reset()}
             >
-                Try again
+                Reload page
             </Button>
         </div>
     );
