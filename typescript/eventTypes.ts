@@ -1,7 +1,6 @@
 import { AvailabilityEnum, FreqEnum } from "~/constants";
 
-type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
-
+export type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
 export type AvailabilityEnumValues =
     (typeof AvailabilityEnum)[keyof typeof AvailabilityEnum];
 export type AvailabilityFromRule = {
@@ -36,7 +35,7 @@ export type RRule = {
     byDay: string[];
 };
 export type ParsedRule = {
-    FREQ: string;
+    FREQ: FreqEnumValues;
     BYDAY: string;
     INTERVAL: string;
     COUNT: string;

@@ -11,6 +11,13 @@ import { useEventQuery } from "~/queries/useEventQuery";
 import { ChoiceRow } from "./ChoiceRow";
 import { EventRouteParams } from "~/typescript";
 
+// function filterOutPastDays(choices: AllAvailability) {
+//     const currentDay = getCurrentDate().day;
+//     const choicesClone = structuredClone(choices);
+//     range(1, currentDay, (i) => delete choicesClone[i]);
+//     return choicesClone;
+// }
+
 export function ListViewDialog() {
     const { id: eventId } = useParams<EventRouteParams>();
     if (!eventId) {

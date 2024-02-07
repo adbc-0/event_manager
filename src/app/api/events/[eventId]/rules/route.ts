@@ -5,7 +5,7 @@ import { AvailabilityEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { parseRule } from "~/utils/eventUtils";
-import { ID } from "~/typescript";
+import { AvailabilityEnumValues, FreqEnumValues, ID } from "~/typescript";
 
 type RouteParams = {
     eventId: string;
@@ -15,14 +15,15 @@ type RequestParams = {
     params: RouteParams;
 };
 
-type EventRules = {
+export type EventRule = {
     id: ID;
     name: string;
-    rule: string;
+    rule: FreqEnumValues; // ToDo: Add constraint to db so not any string can be saved
     user_id: ID;
+    choice: AvailabilityEnumValues;
 };
 
-export type RequestResponse = EventRules[];
+export type RequestResponse = ReadonlyArray<EventRule>;
 
 function ofUser(userId: string) {
     return postgres`AND user_id=${userId}`;
@@ -41,8 +42,8 @@ export async function GET(request: Request, { params }: RequestParams) {
 
     const userId = searchParams.get("userId");
 
-    const rules = await postgres<EventRules[]>`
-        SELECT id, name, rule, user_id
+    const rules = await postgres<EventRule[]>`
+        SELECT id, name, rule, user_id, choice
         FROM event.availability_rules
         WHERE event_id = ${eventId}
             ${userId ? ofUser(userId) : postgres``};
