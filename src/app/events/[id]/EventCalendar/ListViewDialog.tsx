@@ -11,6 +11,7 @@ import { useEventQuery } from "~/queries/useEventQuery";
 import { ChoiceRow } from "./ChoiceRow";
 import { EventRouteParams } from "~/typescript";
 
+// ToDo: Implement
 // function filterOutPastDays(choices: AllAvailability) {
 //     const currentDay = getCurrentDate().day;
 //     const choicesClone = structuredClone(choices);

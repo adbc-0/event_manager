@@ -15,12 +15,10 @@ import {
 } from "react";
 
 import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
-import { GlassmorphicPane } from "../GlassmorphicPane/GlassmorphicPane";
 import { ReactProps, Nullable } from "~/typescript";
 
 type DialogContentProps = ReactProps & {
     title?: string;
-    fullscreen?: boolean;
 };
 type DialogContextT = {
     dialogRef: Nullable<RefObject<HTMLDialogElement>>;
@@ -121,18 +119,14 @@ function DialogTrigger({ children }: ReactProps) {
 function DialogTopBar({ title }: { title: string | undefined }) {
     const { closeDialog } = useDialogContext();
     return (
-        <div className="flex justify-between bg-primary rounded-t-md p-2 items-center">
+        <div className="flex justify-between rounded-t-md p-2 items-center border-b border-b-black">
             <h2 className="text-xl">{title}</h2>
             <ClosePaneButton closeModal={closeDialog} />
         </div>
     );
 }
 
-function DialogContent({
-    children,
-    title,
-    fullscreen = false,
-}: DialogContentProps) {
+function DialogContent({ children, title }: DialogContentProps) {
     const {
         dialogRef,
         isOpen,
@@ -160,33 +154,16 @@ function DialogContent({
     return (
         <dialog
             ref={dialogRef}
-            className="p-0 w-full rounded-md open:animate-fade-in"
+            className="open:flex open:flex-col overflow-hidden w-full md:max-w-3xl bg-primary rounded-md shadow-lg border border-black"
         >
-            {isOpen &&
-                (fullscreen ? (
-                    <GlassmorphicPane
-                        outerClassName="md:max-w-3xl md:m-auto"
-                        innerClassName="h-[calc(100dvh-8rem)]"
-                    >
-                        <div className="h-full flex flex-col">
-                            <DialogTopBar title={title} />
-                            <div className="p-2 grow">
-                                <div className="relative h-full">
-                                    <div className="absolute overflow-auto inset-0">
-                                        {children}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </GlassmorphicPane>
-                ) : (
-                    <GlassmorphicPane
-                        outerClassName="md:max-w-3xl md:m-auto" // alternative -> md:max-w-sm md:m-auto
-                    >
-                        <DialogTopBar title={title} />
-                        <div className="p-2">{children}</div>
-                    </GlassmorphicPane>
-                ))}
+            {isOpen && (
+                <>
+                    <DialogTopBar title={title} />
+                    <div className="p-2 bg-primary-lighter overflow-y-auto">
+                        {children}
+                    </div>
+                </>
+            )}
         </dialog>
     );
 }

@@ -220,7 +220,7 @@ export function NewCyclicEvent() {
                     className="p-2 m-2 min-w-[50%] mx-auto"
                     isLoading={createRuleMut.isPending}
                 >
-                    Create event
+                    Create Event
                 </LoadingButton>
             </form>
         </div>

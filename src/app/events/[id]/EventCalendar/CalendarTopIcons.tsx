@@ -56,7 +56,7 @@ export function CalendarTopIcons() {
                         />
                     </Button>
                 </Dialog.DialogTrigger>
-                <Dialog.DialogContent fullscreen>
+                <Dialog.DialogContent>
                     <ListViewDialog />
                 </Dialog.DialogContent>
             </Dialog>
