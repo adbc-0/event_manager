@@ -3,21 +3,43 @@ import { useAtom } from "jotai";
 
 import { parseEventToCalendarChoices } from "~/utils/eventUtils";
 import { calendarDateAtoms } from "~/atoms";
+import { range } from "~/utils/index";
+import { getCurrentDate } from "~/services/dayJsFacade";
 import {
     useEventUsersQuery,
     usernameSelector,
 } from "~/queries/useEventUsersQuery";
 import { useEventQuery } from "~/queries/useEventQuery";
 import { ChoiceRow } from "./ChoiceRow";
-import { EventRouteParams } from "~/typescript";
+import {
+    AllAvailability,
+    CurrentDate,
+    EventRouteParams,
+    UsersAvailabilityChoices,
+} from "~/typescript";
 
-// ToDo: Implement
-// function filterOutPastDays(choices: AllAvailability) {
-//     const currentDay = getCurrentDate().day;
-//     const choicesClone = structuredClone(choices);
-//     range(1, currentDay, (i) => delete choicesClone[i]);
-//     return choicesClone;
-// }
+// ToDo: rewrite mutation
+function filterOutPastDays(choices: AllAvailability) {
+    const currentDay = getCurrentDate().day;
+    const choicesClone = structuredClone(choices);
+    range(2, currentDay, (i) => delete choicesClone[i-1]);
+    return choicesClone;
+}
+
+function parseChoices(
+    usersChoices: UsersAvailabilityChoices,
+    eventDate: CurrentDate,
+) {
+    const currentDate = getCurrentDate();
+    const fullMonthChoices = parseEventToCalendarChoices(
+        usersChoices,
+        eventDate,
+    );
+    if (currentDate.month === eventDate.month) {
+        return filterOutPastDays(fullMonthChoices);
+    }
+    return fullMonthChoices;
+}
 
 export function ListViewDialog() {
     const { id: eventId } = useParams<EventRouteParams>();
@@ -32,10 +54,7 @@ export function ListViewDialog() {
         return null;
     }
 
-    const choices = parseEventToCalendarChoices(
-        event.usersChoices,
-        calendarDate,
-    );
+    const availabilityChoices = parseChoices(event.usersChoices, calendarDate);
 
     return (
         <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate shadow-md">
@@ -56,14 +75,16 @@ export function ListViewDialog() {
                 </tr>
             </thead>
             <tbody>
-                {Object.entries(choices).map(([day, dayChoices]) => (
-                    <ChoiceRow
-                        key={day}
-                        day={day}
-                        dayChoices={dayChoices}
-                        users={usernames}
-                    />
-                ))}
+                {Object.entries(availabilityChoices).map(
+                    ([day, dayChoices]) => (
+                        <ChoiceRow
+                            key={day}
+                            day={day}
+                            dayChoices={dayChoices}
+                            users={usernames}
+                        />
+                    ),
+                )}
             </tbody>
         </table>
     );
