@@ -13,9 +13,12 @@ import {
     useRef,
     useState,
 } from "react";
+import Image from "next/image";
 
-import { ClosePaneButton } from "../GlassmorphicPane/ClosePane";
+import closeIcon from "~/public/close.svg";
+
 import { ReactProps, Nullable } from "~/typescript";
+import { Button } from "../Button/Button";
 
 type DialogContentProps = ReactProps & {
     title?: string;
@@ -116,12 +119,38 @@ function DialogTrigger({ children }: ReactProps) {
     });
 }
 
+
+type ClosePaneProps = ReactProps & {
+    closeModal: () => void;
+};
+
+function DialogCloseButton({ closeModal }: ClosePaneProps) {
+    return (
+        <Button
+            aria-label="close list view button"
+            type="button"
+            theme="BASIC"
+            className="w-9 h-9 rounded-full"
+            onClick={closeModal}
+        >
+            <Image
+                src={closeIcon}
+                className="m-auto"
+                width={24}
+                height={24}
+                alt="close modal icon"
+            />
+        </Button>
+    );
+}
+
+
 function DialogTopBar({ title }: { title: string | undefined }) {
     const { closeDialog } = useDialogContext();
     return (
         <div className="flex justify-between rounded-t-md p-2 items-center border-b border-b-black">
             <h2 className="text-xl">{title}</h2>
-            <ClosePaneButton closeModal={closeDialog} />
+            <DialogCloseButton closeModal={closeDialog} />
         </div>
     );
 }
