@@ -27,7 +27,7 @@ type RulePayload = {
     startDate: Date;
     userId: number | undefined;
 };
-type CreateRuleArgs = {
+type CreateRule = {
     eventId: string;
     rulePayload: RulePayload;
 };
@@ -73,7 +73,7 @@ function isDaySelected(days: string[], searchedDay: string) {
     return days.some((day) => day === searchedDay);
 }
 
-function POST_RULE({ eventId, rulePayload }: CreateRuleArgs) {
+function POST_RULE({ eventId, rulePayload }: CreateRule) {
     return fetch(`/api/events/${eventId}/rules`, {
         method: "POST",
         headers: {
@@ -92,7 +92,7 @@ export function NewCyclicEvent() {
 
     const queryClient = useQueryClient();
 
-    const createRuleMut = useMutation<unknown, Error, CreateRuleArgs>({
+    const createRuleMut = useMutation<unknown, Error, CreateRule>({
         mutationFn: POST_RULE,
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -147,6 +147,7 @@ export function NewCyclicEvent() {
         closeDialog();
     };
 
+    // ToDo: Add validation to input that works on mobile (or toast)
     return (
         <div className="border border-primary-lighter-border flex justify-center p-2 text-center">
             <form onSubmit={submitRule} className="grow">

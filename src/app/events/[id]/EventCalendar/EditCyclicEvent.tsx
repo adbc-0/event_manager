@@ -12,7 +12,12 @@ import { useDialogContext } from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { LoadingButton } from "~/components/Button/LoadingButton";
-import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
+import {
+    EventRouteParams,
+    RRule,
+    AvailabilityEnumValues,
+    ID,
+} from "~/typescript";
 import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
 import { EventRule } from "~/app/api/events/[eventId]/rules/route";
 import { parseRule } from "~/utils/eventUtils";
@@ -25,9 +30,10 @@ type RulePayload = {
     name: string;
     availabilityChoice: AvailabilityEnumValues;
     rule: string;
-    userId: number | undefined;
+    userId: ID;
 };
-type CreateRuleArgs = {
+type UpdateRule = {
+    ruleId: number;
     eventId: string;
     rulePayload: RulePayload;
 };
@@ -84,9 +90,10 @@ function isDaySelected(days: string[], searchedDay: string) {
     return days.some((day) => day === searchedDay);
 }
 
-function POST_RULE({ eventId, rulePayload }: CreateRuleArgs) {
-    return fetch(`/api/events/${eventId}/rules`, {
-        method: "POST",
+function PUT_RULE({ eventId, ruleId, rulePayload }: UpdateRule) {
+    // why is rule nested in event?? Why not POST: /api/rules
+    return fetch(`/api/events/${eventId}/rules/${ruleId}`, {
+        method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
@@ -98,7 +105,7 @@ type EditCyclicEventProps = {
     savedRule: EventRule;
 };
 
-// ToDo: Move common logic to component
+// ToDo: Move common logic to hook
 // https://www.kanzaki.com/docs/ical/rrule.html
 export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
     const { id: eventId } = useParams<EventRouteParams>();
@@ -108,8 +115,8 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
 
     const queryClient = useQueryClient();
 
-    const createRuleMut = useMutation<unknown, Error, CreateRuleArgs>({
-        mutationFn: POST_RULE,
+    const createRuleMut = useMutation<unknown, Error, UpdateRule>({
+        mutationFn: PUT_RULE,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: calendarKeys.ofEventAndMonth(eventId, calendarDate),
@@ -155,22 +162,31 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
         setIsDirty(true);
     };
 
-    const submitRule = async (e: FormEvent<HTMLFormElement>) => {
+    const _updateRule = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!userId) {
+            throw new Error("Missing user id");
+        }
+
         const rulePayload = {
             name: rule.name,
             availabilityChoice: rule.availability,
             rule: createRule(rule),
-            userId,
+            userId: userId,
         };
-        await createRuleMut.mutateAsync({ eventId, rulePayload });
+        await createRuleMut.mutateAsync({
+            eventId,
+            ruleId: savedRule.id,
+            rulePayload,
+        });
         setIsDirty(false);
         closeDialog();
     };
 
     return (
         <div className="flex justify-center p-2 text-center border-t border-primary-lighter-border">
-            <form onSubmit={submitRule} className="grow">
+            <form onSubmit={_updateRule} className="grow">
                 <div className="py-2">
                     <Input
                         aria-label="Event name"

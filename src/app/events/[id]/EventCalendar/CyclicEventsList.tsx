@@ -25,6 +25,7 @@ type DeleteRuleArgs = {
 };
 
 async function DELETE_RULE({ eventId, ruleId }: DeleteRuleArgs) {
+    // ToDo: Error handling
     return fetch(`/api/events/${eventId}/rules/${ruleId}`, {
         method: "DELETE",
     });

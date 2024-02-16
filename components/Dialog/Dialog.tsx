@@ -119,7 +119,6 @@ function DialogTrigger({ children }: ReactProps) {
     });
 }
 
-
 type ClosePaneProps = ReactProps & {
     closeModal: () => void;
 };
@@ -143,7 +142,6 @@ function DialogCloseButton({ closeModal }: ClosePaneProps) {
         </Button>
     );
 }
-
 
 function DialogTopBar({ title }: { title: string | undefined }) {
     const { closeDialog } = useDialogContext();

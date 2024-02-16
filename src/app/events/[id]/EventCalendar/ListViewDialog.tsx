@@ -22,7 +22,7 @@ import {
 function filterOutPastDays(choices: AllAvailability) {
     const currentDay = getCurrentDate().day;
     const choicesClone = structuredClone(choices);
-    range(2, currentDay, (i) => delete choicesClone[i-1]);
+    range(2, currentDay, (i) => delete choicesClone[i - 1]);
     return choicesClone;
 }
 
