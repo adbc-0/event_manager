@@ -5,15 +5,16 @@ import { useAtom } from "jotai";
 
 import { AvailabilityEnum, FreqEnum, WeekdaysList } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
+import { NewRuleSchema } from "~/schemas";
 import { rulesKeys } from "~/queries/useRulesQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
+import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useDialogContext } from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
 import { LoadingButton } from "~/components/Button/LoadingButton";
 import { EventRouteParams, RRule, AvailabilityEnumValues } from "~/typescript";
-import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
 
 type Rule = RRule & {
     name: string;
@@ -24,7 +25,7 @@ type RulePayload = {
     name: string;
     availabilityChoice: AvailabilityEnumValues;
     rule: string;
-    startDate: Date;
+    startDate: string;
     userId: number | undefined;
 };
 type CreateRule = {
@@ -140,9 +141,13 @@ export function NewCyclicEvent() {
             name: rule.name,
             availabilityChoice: rule.availability,
             rule: createRule(rule),
-            startDate: rule.startDate,
+            startDate: rule.startDate.toJSON(),
             userId,
         };
+        const parser = NewRuleSchema.safeParse(rulePayload);
+        if (!parser.success) {
+            return;
+        }
         await createRuleMut.mutateAsync({ eventId, rulePayload });
         closeDialog();
     };

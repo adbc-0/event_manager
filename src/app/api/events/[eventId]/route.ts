@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { match } from "ts-pattern";
 
-import { DAYS_IN_WEEK, FreqEnum } from "~/constants";
+import { ChoiceSource, DAYS_IN_WEEK, FreqEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import {
@@ -181,27 +181,29 @@ function createChoicesMap(
     return choicesCache;
 }
 
-type RuleChoiceBuilder = {
+type RuleChoiceObject = {
     day: number;
     availability: AvailabilityEnumValues;
-    ruleId: number;
+    ruleId: ID;
 };
-function createRuleChoice(props: RuleChoiceBuilder): AvailabilityFromRule {
+function createChoiceFromRule(
+    properties: RuleChoiceObject,
+): AvailabilityFromRule {
     return {
-        ...props,
-        type: "FROM_RULE",
+        ...properties,
+        type: ChoiceSource.FROM_RULE,
     };
 }
 
-type ManualChoiceBuilder = {
+type ManualChoiceObject = {
     day: number;
     availability: AvailabilityEnumValues;
 };
-function createManualChoice(
-    props: ManualChoiceBuilder,
+function createChoiceFromManual(
+    properties: ManualChoiceObject,
 ): AvailabilityFromManual {
     return {
-        ...props,
+        ...properties,
         type: "MANUAL",
     };
 }
@@ -217,7 +219,7 @@ function combineChoices(
     parsedRules.forEach(({ choice, username, selectedDays, id }) => {
         selectedDays.forEach((day) => {
             if (!manualChoicesMap[username].has(day)) {
-                const newChoice = createRuleChoice({
+                const newChoice = createChoiceFromRule({
                     ruleId: id,
                     availability: choice,
                     day,
@@ -228,7 +230,7 @@ function combineChoices(
     });
 
     eventMonthChoices.forEach(({ choice, day, username }) => {
-        const newChoice = createManualChoice({
+        const newChoice = createChoiceFromManual({
             availability: choice,
             day,
         });

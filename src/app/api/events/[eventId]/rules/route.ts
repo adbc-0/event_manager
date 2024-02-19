@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
-import { AvailabilityEnum } from "~/constants";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { parseRule } from "~/utils/eventUtils";
+import { NewRuleSchema, parsedRuleSchema } from "~/schemas";
 import { AvailabilityEnumValues, FreqEnumValues, ID } from "~/typescript";
 
 type RouteParams = {
@@ -51,20 +50,6 @@ export async function GET(request: Request, { params }: RequestParams) {
     return NextResponse.json(rules);
 }
 
-const RuleSchema = z.object({
-    name: z.string().trim().min(1).max(19),
-    availabilityChoice: z.nativeEnum(AvailabilityEnum),
-    rule: z.string().trim(),
-    startDate: z.string().datetime().pipe(z.coerce.date()),
-    userId: z.number().min(1),
-});
-
-const parsedRuleSchema = z.object({
-    FREQ: z.string().optional(),
-    INTERVAL: z.string().optional(),
-    BYDAY: z.string().optional(),
-});
-
 export async function POST(req: Request, { params }: RequestParams) {
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
@@ -75,7 +60,7 @@ export async function POST(req: Request, { params }: RequestParams) {
     }
 
     const body = await req.json();
-    const rule = RuleSchema.parse(body);
+    const rule = NewRuleSchema.parse(body);
 
     const ruleObject = parseRule(rule.rule);
     parsedRuleSchema.parse(ruleObject);

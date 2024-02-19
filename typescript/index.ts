@@ -1,5 +1,5 @@
 export * from "./eventTypes";
-export * from "./queryOptions";
+export * from "./queries";
 
 export type Values<T> = T[keyof T];
 export type Nullable<T> = T | null;

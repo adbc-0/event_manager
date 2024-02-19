@@ -5,9 +5,13 @@ import { useAtom } from "jotai";
 
 import { AvailabilityEnum, FreqEnum, WeekdaysList } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
+import { EditedRuleSchema } from "~/schemas";
 import { rulesKeys } from "~/queries/useRulesQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
+import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
+import { EventRule } from "~/app/api/events/[eventId]/rules/route";
+import { parseRule } from "~/utils/eventUtils";
 import { useDialogContext } from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
 import { Input } from "~/components/Input/Input";
@@ -18,9 +22,6 @@ import {
     AvailabilityEnumValues,
     ID,
 } from "~/typescript";
-import { getCurrentDayOfWeek } from "~/services/dayJsFacade";
-import { EventRule } from "~/app/api/events/[eventId]/rules/route";
-import { parseRule } from "~/utils/eventUtils";
 
 type Rule = RRule & {
     name: string;
@@ -91,7 +92,6 @@ function isDaySelected(days: string[], searchedDay: string) {
 }
 
 function PUT_RULE({ eventId, ruleId, rulePayload }: UpdateRule) {
-    // why is rule nested in event?? Why not POST: /api/rules
     return fetch(`/api/events/${eventId}/rules/${ruleId}`, {
         method: "PUT",
         headers: {
@@ -164,17 +164,19 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
 
     const _updateRule = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         if (!userId) {
             throw new Error("Missing user id");
         }
-
         const rulePayload = {
             name: rule.name,
             availabilityChoice: rule.availability,
             rule: createRule(rule),
             userId: userId,
         };
+        const { success } = EditedRuleSchema.safeParse(rulePayload);
+        if (!success) {
+            return;
+        }
         await createRuleMut.mutateAsync({
             eventId,
             ruleId: savedRule.id,

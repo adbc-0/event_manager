@@ -22,3 +22,7 @@ export const WeekdaysList = [
     "friday",
     "saturday",
 ] as const;
+export const ChoiceSource = {
+    FROM_RULE: "FROM_RULE",
+    MANUAL: "MANUAL",
+} as const;

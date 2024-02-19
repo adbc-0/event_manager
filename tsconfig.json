@@ -28,6 +28,7 @@
             "~/public/*": ["./public/*"],
             "~/api/*": ["./src/app/api/*"],
             "~/queries/*": ["./lib/queries/*"],
+            "~/schemas": ["./lib/schemas/schemas"],
             "~/atoms": ["./lib/atoms/atoms"],
             "~/constants": ["./lib/constants/constants"],
             "~/typescript": ["./typescript"],

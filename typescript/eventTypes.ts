@@ -1,4 +1,4 @@
-import { AvailabilityEnum, FreqEnum } from "~/constants";
+import { AvailabilityEnum, ChoiceSource, FreqEnum } from "~/constants";
 
 export type FreqEnumValues = (typeof FreqEnum)[keyof typeof FreqEnum];
 export type AvailabilityEnumValues =
@@ -7,12 +7,12 @@ export type AvailabilityFromRule = {
     day: number;
     availability: AvailabilityEnumValues;
     ruleId: number;
-    type: "FROM_RULE";
+    type: typeof ChoiceSource.FROM_RULE;
 };
 export type AvailabilityFromManual = {
     day: number;
     availability: AvailabilityEnumValues;
-    type: "MANUAL";
+    type: typeof ChoiceSource.MANUAL;
 };
 export type AvailabilityChoice = AvailabilityFromRule | AvailabilityFromManual;
 export type AvailabilityChoices = Array<AvailabilityChoice>;
