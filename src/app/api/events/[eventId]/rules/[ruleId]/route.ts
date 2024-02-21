@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { isNil } from "~/std";
 import { hashId } from "~/services/hashId";
 import { postgres } from "~/services/postgres";
 import { parseRule } from "~/utils/eventUtils";
-import { isNil } from "~/utils/index";
 import { EditedRuleSchema, parsedRuleSchema } from "~/schemas";
 import { ID } from "~/typescript";
-
-// ToDo: Cleanup duplicate types from HERE, src/app/events/[id]/EventCalendar/EditCyclicEvent.tsx and src/app/api/events/[eventId]/rules/route.ts
 
 type RouteParams = {
     eventId: string;

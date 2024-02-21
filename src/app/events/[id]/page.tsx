@@ -4,7 +4,8 @@ import {
     QueryClient,
 } from "@tanstack/react-query";
 
-import { ServerError, encodeEventParamDate } from "~/utils/index";
+import { ServerError } from "~/std";
+import { encodeEventParamDate } from "~/utils/eventUtils";
 import { usersKeys } from "~/queries/useEventUsersQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { getCurrentDate } from "~/services/dayJsFacade";

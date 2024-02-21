@@ -2,7 +2,7 @@ import dayjs, { extend } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-import { range } from "~/utils/index";
+import { range } from "~/std";
 import { DAYS_IN_WEEK, MILLISECONDS_IN_WEEK, WeekdaysList } from "~/constants";
 import { CurrentDate } from "~/typescript";
 

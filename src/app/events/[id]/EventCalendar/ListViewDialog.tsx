@@ -1,9 +1,9 @@
 import { useParams } from "next/navigation";
 import { useAtom } from "jotai";
 
+import { stringToNumber } from "~/std";
 import { parseEventToCalendarChoices } from "~/utils/eventUtils";
 import { calendarDateAtoms } from "~/atoms";
-import { range } from "~/utils/index";
 import { getCurrentDate } from "~/services/dayJsFacade";
 import {
     useEventUsersQuery,
@@ -21,9 +21,13 @@ import {
 // ToDo: rewrite mutation
 function filterOutPastDays(choices: AllAvailability) {
     const currentDay = getCurrentDate().day;
-    const choicesClone = structuredClone(choices);
-    range(2, currentDay, (i) => delete choicesClone[i - 1]);
-    return choicesClone;
+    return Object.entries(choices).reduce((acc, [day, choices]) => {
+        if (stringToNumber(day) < currentDay) {
+            return acc;
+        }
+        acc[stringToNumber(day)] = choices;
+        return acc;
+    }, {} as AllAvailability);
 }
 
 function parseChoices(
@@ -57,9 +61,9 @@ export function ListViewDialog() {
     const availabilityChoices = parseChoices(event.usersChoices, calendarDate);
 
     return (
-        <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate shadow-md">
+        <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
             <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-primary">
-                <tr>
+                <tr className="block">
                     <th scope="col" className="px-2 py-2">
                         &nbsp;
                     </th>
@@ -74,7 +78,7 @@ export function ListViewDialog() {
                     ))}
                 </tr>
             </thead>
-            <tbody>
+            <tbody className="block overflow-auto w-full">
                 {Object.entries(availabilityChoices).map(
                     ([day, dayChoices]) => (
                         <ChoiceRow

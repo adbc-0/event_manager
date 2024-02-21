@@ -1,3 +1,4 @@
+import { stringToNumber } from "../std/string/stringToNumber";
 import { getLastDayOfMonth } from "~/services/dayJsFacade";
 import {
     UsersAvailabilityChoices,
@@ -70,7 +71,7 @@ export function parseEventToCalendarChoices(
             }
             usersDayChoices[users] = type;
         });
-        choices[day] = usersDayChoices;
+        choices[stringToNumber(day)] = usersDayChoices;
     });
 
     return choices;

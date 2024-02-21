@@ -8,11 +8,11 @@ import trashIcon from "~/public/trash.svg";
 import expandIcon from "~/public/expand.svg";
 import expandLessIcon from "~/public/expand_less.svg";
 
+import { handleQueryError } from "~/std";
 import { calendarDateAtoms } from "~/atoms";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { rulesKeys, useRuleQuery } from "~/queries/useRulesQuery";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
-import { handleQueryError } from "~/utils/index";
 import { Button } from "~/components/Button/Button";
 import { LoadingSpinner } from "~/components/LoadingSpinner/LoadingSpinner";
 import { LoadingButton } from "~/components/Button/LoadingButton";

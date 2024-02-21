@@ -16,14 +16,15 @@
         "incremental": true,
         "plugins": [
             {
-                "name": "next",
-            },
+                "name": "next"
+            }
         ],
         "paths": {
             "~/*": ["./src/*"],
             "~/components/*": ["./components/*"],
             "~/hooks/*": ["./lib/hooks/*"],
             "~/services/*": ["./lib/services/*"],
+            "~/std": ["./lib/std/index"],
             "~/utils/*": ["./lib/utils/*"],
             "~/public/*": ["./public/*"],
             "~/api/*": ["./src/app/api/*"],
@@ -31,15 +32,15 @@
             "~/schemas": ["./lib/schemas/schemas"],
             "~/atoms": ["./lib/atoms/atoms"],
             "~/constants": ["./lib/constants/constants"],
-            "~/typescript": ["./typescript"],
-        },
+            "~/typescript": ["./typescript"]
+        }
     },
     "include": [
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "src/app/api/sentry-example-api/route.ts",
+        "src/app/api/sentry-example-api/route.ts"
     ],
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules"]
 }

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useAtom } from "jotai";
 import { useParams } from "next/navigation";
 
+import { capitalize, truncateString, pipe, chunks, isNil } from "~/std";
 import { AvailabilityEnum } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
 import { useEventQuery } from "~/queries/useEventQuery";
@@ -13,14 +14,9 @@ import {
     newDateFromNativeDate,
 } from "~/services/dayJsFacade";
 import {
-    capitalize,
-    truncateString,
-    pipe,
-    chunks,
-    parseEventToOwnChoices,
     parseEventToCalendarChoices,
-    isNil,
-} from "~/utils/index";
+    parseEventToOwnChoices,
+} from "~/utils/eventUtils";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { LoadingSpinner } from "~/components/LoadingSpinner/LoadingSpinner";
 import {

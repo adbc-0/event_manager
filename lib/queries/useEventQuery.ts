@@ -1,9 +1,10 @@
 import { useAtom } from "jotai";
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 
+import { ServerError } from "~/std";
+import { encodeEventParamDate } from "~/utils/eventUtils";
 import { CALENDAR_REFETCH_INTERVAL } from "~/constants";
 import { calendarDateAtoms } from "~/atoms";
-import { ServerError, encodeEventParamDate } from "~/utils/index";
 import { CurrentDate, EventResponse } from "~/typescript";
 
 async function fetchEvent({ signal, queryKey }: QueryFunctionContext) {

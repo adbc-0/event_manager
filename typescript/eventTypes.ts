@@ -28,7 +28,7 @@ export type CurrentDate = {
     readonly year: number;
 };
 export type OwnAvailability = Record<string, AvailabilityEnumValues>;
-export type AllAvailability = Record<string, OwnAvailability>;
+export type AllAvailability = Record<number, OwnAvailability>;
 export type RRule = {
     freq: FreqEnumValues;
     interval: number;

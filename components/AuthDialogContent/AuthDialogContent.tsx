@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 
-import { handleQueryError } from "~/utils/index";
+import { handleQueryError } from "~/std";
 import { useAnonAuth } from "~/hooks/use-anon-auth";
 import { useEventUsersQuery } from "~/queries/useEventUsersQuery";
 import { EventUser } from "~/app/api/events/[eventId]/users/route";

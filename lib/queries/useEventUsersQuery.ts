@@ -1,7 +1,7 @@
 import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 
+import { ServerError } from "~/std";
 import { RequestResponse } from "~/app/api/events/[eventId]/users/route";
-import { ServerError } from "~/utils/index";
 
 export function usernameSelector(users: RequestResponse) {
     return users.map(({ username }) => username);
