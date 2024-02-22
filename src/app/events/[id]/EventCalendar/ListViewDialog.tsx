@@ -18,7 +18,6 @@ import {
     UsersAvailabilityChoices,
 } from "~/typescript";
 
-// ToDo: rewrite mutation
 function filterOutPastDays(choices: AllAvailability) {
     const currentDay = getCurrentDate().day;
     return Object.entries(choices).reduce((acc, [day, choices]) => {
@@ -61,35 +60,35 @@ export function ListViewDialog() {
     const availabilityChoices = parseChoices(event.usersChoices, calendarDate);
 
     return (
-        <table className="table-fixed w-full text-center text-sm text-gray-300 border-separate">
-            <thead className="sticky top-0 text-xs uppercase text-gray-300 h-10 bg-primary">
-                <tr className="block">
-                    <th scope="col" className="px-2 py-2">
-                        &nbsp;
-                    </th>
-                    {usernames.map((username) => (
-                        <th
-                            key={username}
-                            scope="col"
-                            className="px-2 py-2 truncate"
-                        >
-                            {username}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody className="block overflow-auto w-full">
-                {Object.entries(availabilityChoices).map(
-                    ([day, dayChoices]) => (
-                        <ChoiceRow
-                            key={day}
-                            day={day}
-                            dayChoices={dayChoices}
-                            users={usernames}
-                        />
-                    ),
-                )}
-            </tbody>
-        </table>
+        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(90vh-5.5rem)]">
+            <table className="grid bg-primary-light">
+                <thead className="sticky top-0 text-xs uppercase text-gray-300 bg-primary">
+                    <tr className="grid auto-cols-fr grid-flow-col gap-1">
+                        <th scope="col" className="p-2" />
+                        {usernames.map((username) => (
+                            <th
+                                key={username}
+                                scope="col"
+                                className="truncate p-2"
+                            >
+                                {username}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {Object.entries(availabilityChoices).map(
+                        ([day, dayChoices]) => (
+                            <ChoiceRow
+                                key={day}
+                                day={day}
+                                dayChoices={dayChoices}
+                                users={usernames}
+                            />
+                        ),
+                    )}
+                </tbody>
+            </table>
+        </div>
     );
 }

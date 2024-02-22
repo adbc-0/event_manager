@@ -146,7 +146,7 @@ function DialogCloseButton({ closeModal }: ClosePaneProps) {
 function DialogTopBar({ title }: { title: string | undefined }) {
     const { closeDialog } = useDialogContext();
     return (
-        <div className="flex justify-between rounded-t-md p-2 items-center border-b border-b-black">
+        <div className="flex justify-between rounded-t-md p-2 items-center border-b border-b-black h-14">
             <h2 className="text-xl">{title}</h2>
             <DialogCloseButton closeModal={closeDialog} />
         </div>
