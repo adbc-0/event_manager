@@ -6,8 +6,6 @@ import "./globals.css";
 
 const appFont = Fira_Sans_Condensed({ weight: "400", subsets: ["latin"] });
 
-// ToDo: Show source of decision (rule)
-// ToDo: Edit create rules
 // ToDo: Forced dark mode
 // ToDo: Prevent going back and checking dates that differ more than half a year, Remove old records
 // ToDo: Swipe on calendar to change month

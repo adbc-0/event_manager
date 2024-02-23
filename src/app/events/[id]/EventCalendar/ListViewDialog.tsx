@@ -60,7 +60,7 @@ export function ListViewDialog() {
     const availabilityChoices = parseChoices(event.usersChoices, calendarDate);
 
     return (
-        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(90vh-5.5rem)]">
+        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100% - 2em - 6px - 3.5rem)]">
             <table className="grid bg-primary-light">
                 <thead className="sticky top-0 text-xs uppercase text-gray-300 bg-primary">
                     <tr className="grid auto-cols-fr grid-flow-col gap-1">
