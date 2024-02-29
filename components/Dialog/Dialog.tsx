@@ -181,7 +181,7 @@ function DialogContent({ children, title }: DialogContentProps) {
     return (
         <dialog
             ref={dialogRef}
-            className="open:flex open:flex-col overflow-hidden w-full md:max-w-3xl bg-primary rounded-md shadow-lg border border-black"
+            className="open:flex open:flex-col open:animate-fade-in overflow-hidden w-full md:max-w-3xl bg-primary rounded-md shadow-lg border border-black"
         >
             {isOpen && (
                 <>
