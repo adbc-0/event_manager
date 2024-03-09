@@ -18,7 +18,7 @@ function Error({ error, reset }: ErrorProps) {
         <div className="min-h-full-dvh flex text-center justify-center flex-col gap-2">
             <h1>Uncaught exception</h1>
             <Button
-                theme="BASIC"
+                variant="BASIC"
                 className="w-fit mx-auto p-2"
                 onClick={() => reset()}
             >

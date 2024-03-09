@@ -187,7 +187,7 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
     };
 
     return (
-        <div className="flex justify-center p-2 text-center border-t border-primary-lighter-border">
+        <div className="flex justify-center p-2 text-center">
             <form onSubmit={_updateRule} className="grow">
                 <div className="py-2">
                     <Input
@@ -203,7 +203,7 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
                 <div className="py-2">
                     <span>Every</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-primary-border rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
+                        className="bg-input m-2 p-1 rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
                         defaultValue={rule.interval}
                         onChange={changeInterval}
                     >
@@ -216,7 +216,7 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
                     </select>
                     <span>week{rule.interval > 1 ? "s" : ""} I will be</span>
                     <select
-                        className="bg-primary m-2 p-1 border border-primary-border rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
+                        className="bg-input m-2 p-1 rounded-md text-accent text-center focus:outline-none focus:ring focus:ring-accent"
                         defaultValue={rule.availability}
                         onChange={changeAvailability}
                     >
@@ -235,12 +235,12 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
                 <div className="flex justify-center gap-2 flex-wrap p-2">
                     {daysInWeek.map((day) => (
                         <Button
-                            theme="BASIC"
+                            variant="BASIC"
                             key={day}
                             type="button"
                             className={`py-3 px-4 max-w-[4rem] ${
                                 isDaySelected(rule.byDay, day)
-                                    ? "bg-accent text-black"
+                                    ? "bg-accent text-accent-foreground"
                                     : ""
                             }`}
                             onClick={() => toggleDay(day)}
@@ -251,10 +251,10 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
                 </div>
                 {isDirty && (
                     <>
-                        <div className="w-full border-b-2 border-neutral-700 my-4" />
+                        <div className="w-full my-4" />
                         <LoadingButton
                             type="submit"
-                            theme="SAVE"
+                            variant="SAVE"
                             className="p-2 m-2 min-w-[50%] mx-auto"
                             isLoading={createRuleMut.isPending}
                         >

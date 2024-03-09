@@ -8,7 +8,7 @@ type InputProps = React.DetailedHTMLProps<
 type Ref = HTMLInputElement;
 
 const baseInputStyle =
-    "block rounded-md bg-primary border border-primary-darker focus:outline-none focus:ring focus:ring-accent";
+    "bg-input block rounded-md focus:outline-none focus:ring focus:ring-accent";
 
 export const Input = forwardRef<Ref, InputProps>(function Input(
     { className, ...props },
@@ -17,6 +17,5 @@ export const Input = forwardRef<Ref, InputProps>(function Input(
     if (typeof ref === "function") {
         throw new Error("Unexpected ref type");
     }
-
     return <input {...props} className={twMerge(baseInputStyle, className)} />;
 });

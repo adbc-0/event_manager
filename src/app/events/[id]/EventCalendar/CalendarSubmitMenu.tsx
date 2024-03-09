@@ -74,7 +74,7 @@ export function CalendarSubmitMenu({
             <Button
                 aria-label="Revert choices"
                 className="flex-auto py-2"
-                theme="BASIC"
+                variant="BASIC"
                 type="reset"
                 onClick={resetCalendar}
             >
@@ -89,7 +89,7 @@ export function CalendarSubmitMenu({
             <Button
                 aria-label="Submit choices"
                 className="flex-auto py-2"
-                theme="SAVE"
+                variant="SAVE"
                 type="submit"
                 onClick={onSubmitClick}
             >

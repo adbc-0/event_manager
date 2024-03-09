@@ -24,11 +24,11 @@ export function AuthMobile() {
         return (
             <div className={mobileMenuLayoutStyle}>
                 <div className="flex w-full gap-2 p-2">
-                    <p className="basis-10/12 py-3 text-center bg-primary-darker border border-primary-darker-border rounded-md shadow-inner">
+                    <p className="basis-10/12 py-3 text-center bg-card-background rounded-md shadow-inner">
                         {username}
                     </p>
                     <Button
-                        theme="BASIC"
+                        variant="BASIC"
                         className="basis-2/12 py-3"
                         onClick={logout}
                     >
@@ -51,7 +51,7 @@ export function AuthMobile() {
                 <div className="flex w-full">
                     <Dialog>
                         <Dialog.DialogTrigger>
-                            <Button theme="BASIC" className="grow py-3 m-2">
+                            <Button variant="BASIC" className="grow py-3 m-2">
                                 <Image
                                     src={loginIcon}
                                     className="m-auto"
@@ -61,7 +61,8 @@ export function AuthMobile() {
                                 />
                             </Button>
                         </Dialog.DialogTrigger>
-                        <Dialog.DialogContent title="User selection">
+                        <Dialog.DialogContent>
+                            <Dialog.DialogTopBar title="User Selection" />
                             <AuthDialogContent />
                         </Dialog.DialogContent>
                     </Dialog>

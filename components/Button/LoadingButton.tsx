@@ -1,14 +1,16 @@
 import { LoadingSpinner } from "../LoadingSpinner/LoadingSpinner";
 import { Button } from "./Button";
+
 import { ReactProps } from "~/typescript";
 
-type LoadingButtonTheme = "DISCARD" | "SAVE" | "BASIC";
+// ToDo: Unify with Button variant
+type LoadingButtonVariant = "DISCARD" | "SAVE" | "BASIC" | "FLAT";
 type LoadingButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
 > &
     ReactProps & {
-        theme: LoadingButtonTheme;
+        variant: LoadingButtonVariant;
         isLoading: boolean;
     };
 

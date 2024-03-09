@@ -19,10 +19,10 @@ import closeIcon from "~/public/close.svg";
 
 import { ReactProps, Nullable } from "~/typescript";
 import { Button } from "../Button/Button";
+import { twMerge } from "tailwind-merge";
 
-type DialogContentProps = ReactProps & {
-    title?: string;
-};
+type DialogContentProps = ReactProps;
+type DialogTopBarProps = { title?: string };
 type DialogContextT = {
     dialogRef: Nullable<RefObject<HTMLDialogElement>>;
     isOpen: boolean;
@@ -120,40 +120,42 @@ function DialogTrigger({ children }: ReactProps) {
 }
 
 type ClosePaneProps = ReactProps & {
-    closeModal: () => void;
+    className?: string;
 };
 
-function DialogCloseButton({ closeModal }: ClosePaneProps) {
+function DialogCloseButton({ className }: ClosePaneProps) {
+    const { closeDialog } = useDialogContext();
     return (
         <Button
             aria-label="close list view button"
             type="button"
-            theme="BASIC"
-            className="w-9 h-9 rounded-full"
-            onClick={closeModal}
+            variant="BASIC"
+            className={twMerge("w-6 h-6 rounded-full", className)}
+            onClick={closeDialog}
         >
             <Image
                 src={closeIcon}
                 className="m-auto"
-                width={24}
-                height={24}
+                width={16}
+                height={16}
                 alt="close modal icon"
             />
         </Button>
     );
 }
 
-function DialogTopBar({ title }: { title: string | undefined }) {
-    const { closeDialog } = useDialogContext();
+function DialogTopBar({ title }: DialogTopBarProps) {
     return (
-        <div className="flex justify-between rounded-t-md p-2 items-center border-b border-b-black h-14">
-            <h2 className="text-xl">{title}</h2>
-            <DialogCloseButton closeModal={closeDialog} />
+        <div className="grid grid-cols-3 rounded-t-md p-3 h-12">
+            <h2 className="col-start-2 col-end-3 justify-self-center">
+                {title}
+            </h2>
+            <DialogCloseButton className="justify-self-end" />
         </div>
     );
 }
 
-function DialogContent({ children, title }: DialogContentProps) {
+function DialogContent({ children }: DialogContentProps) {
     const {
         dialogRef,
         isOpen,
@@ -181,56 +183,50 @@ function DialogContent({ children, title }: DialogContentProps) {
     return (
         <dialog
             ref={dialogRef}
-            className="open:flex open:flex-col open:animate-fade-in overflow-hidden w-full md:max-w-3xl bg-primary rounded-md shadow-lg border border-black"
+            className="overflow-hidden w-full md:max-w-3xl rounded-md shadow-lg border border-border-edge open:flex open:flex-col open:animate-fade-in"
         >
-            {isOpen && (
-                <>
-                    <DialogTopBar title={title} />
-                    <div className="p-2 bg-primary-lighter overflow-y-auto">
-                        {children}
-                    </div>
-                </>
-            )}
+            {isOpen && <>{children}</>}
         </dialog>
     );
 }
 
-function composeEventHandlers<E>(
-    originalEventHandler?: (event: E) => void,
-    ourEventHandler?: (event: E) => void,
-    { checkForDefaultPrevented = true } = {},
-) {
-    return function handleEvent(event: E) {
-        originalEventHandler?.(event);
+// function composeEventHandlers<E>(
+//     originalEventHandler?: (event: E) => void,
+//     ourEventHandler?: (event: E) => void,
+//     { checkForDefaultPrevented = true } = {},
+// ) {
+//     return function handleEvent(event: E) {
+//         originalEventHandler?.(event);
 
-        if (
-            checkForDefaultPrevented === false ||
-            !(event as unknown as Event).defaultPrevented
-        ) {
-            return ourEventHandler?.(event);
-        }
-    };
-}
+//         if (
+//             checkForDefaultPrevented === false ||
+//             !(event as unknown as Event).defaultPrevented
+//         ) {
+//             return ourEventHandler?.(event);
+//         }
+//     };
+// }
 
-function DialogClose({ children }: ReactProps) {
-    if (!children) {
-        throw new Error("missing children");
-    }
+// function DialogClose({ children }: ReactProps) {
+//     if (!children) {
+//         throw new Error("missing children");
+//     }
 
-    const { closeDialog } = useDialogContext();
-    const triggerElement = Children.only(children);
-    if (!isValidElement(triggerElement)) {
-        throw new Error("invalid react element");
-    }
+//     const { closeDialog } = useDialogContext();
+//     const triggerElement = Children.only(children);
+//     if (!isValidElement(triggerElement)) {
+//         throw new Error("invalid react element");
+//     }
 
-    const originalOnClick = triggerElement.props.onClick;
+//     const originalOnClick = triggerElement.props.onClick;
 
-    return cloneElement(triggerElement as ReactElement, {
-        onClick: composeEventHandlers(originalOnClick, closeDialog),
-    });
-}
+//     return cloneElement(triggerElement as ReactElement, {
+//         onClick: composeEventHandlers(originalOnClick, closeDialog),
+//     });
+// }
 
-Dialog.DialogClose = DialogClose;
+Dialog.DialogTopBar = DialogTopBar;
+Dialog.DialogCloseButton = DialogCloseButton;
 Dialog.DialogTrigger = DialogTrigger;
 Dialog.DialogContent = DialogContent;
 

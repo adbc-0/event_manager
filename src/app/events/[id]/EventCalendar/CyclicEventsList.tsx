@@ -72,7 +72,7 @@ export function CyclicEventsList() {
 
     if (!rulesQ.data?.length) {
         return (
-            <div className="border border-primary-lighter-border">
+            <div className="">
                 <p className="text-center py-2">No cyclic events</p>
             </div>
         );
@@ -92,18 +92,15 @@ export function CyclicEventsList() {
     };
 
     return (
-        <div>
+        <div className="py-2 px-4">
             {rulesQ.data.map((rule) => (
-                <div
-                    key={rule.id}
-                    className="border border-primary-lighter-border border-b-0 last:border-b"
-                >
-                    <div className="flex justify-between items-center p-2 gap-2">
+                <div key={rule.id} className="border border-border border-b-0 first:rounded-t-lg last:rounded-b-lg last:border-b bg-card-background">
+                    <div className="flex justify-between items-center px-4 py-2 gap-2">
                         <p className="grow">{rule.name}</p>
                         <Button
                             aria-label="show event details"
                             type="button"
-                            theme="BASIC"
+                            variant="FLAT"
                             className="p-2"
                             onClick={() => _showEvent(rule.id)}
                         >
@@ -122,7 +119,7 @@ export function CyclicEventsList() {
                         <LoadingButton
                             aria-label="delete rule event"
                             type="button"
-                            theme="BASIC"
+                            variant="FLAT"
                             className="p-2"
                             disabled={Boolean(removedEventId)}
                             isLoading={removedEventId === rule.id.toString()}

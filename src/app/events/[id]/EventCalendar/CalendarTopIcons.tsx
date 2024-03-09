@@ -23,7 +23,7 @@ export function CalendarTopIcons() {
                         aria-label="show dialog with rules"
                         className="w-9 h-9"
                         type="button"
-                        theme="BASIC"
+                        variant="BASIC"
                         disabled={!userId}
                     >
                         <Image
@@ -35,7 +35,7 @@ export function CalendarTopIcons() {
                         />
                     </Button>
                 </Dialog.DialogTrigger>
-                <Dialog.DialogContent title="Calendar rules">
+                <Dialog.DialogContent>
                     <CyclicDialog />
                 </Dialog.DialogContent>
             </Dialog>
@@ -44,7 +44,7 @@ export function CalendarTopIcons() {
                     <Button
                         aria-label="show all choices listed in dialog"
                         type="button"
-                        theme="BASIC"
+                        variant="BASIC"
                         className="w-9 h-9"
                     >
                         <Image
@@ -57,6 +57,7 @@ export function CalendarTopIcons() {
                     </Button>
                 </Dialog.DialogTrigger>
                 <Dialog.DialogContent>
+                    <Dialog.DialogTopBar />
                     <ListViewDialog />
                 </Dialog.DialogContent>
             </Dialog>

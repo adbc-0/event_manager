@@ -59,11 +59,12 @@ export function ListViewDialog() {
 
     const availabilityChoices = parseChoices(event.usersChoices, calendarDate);
 
+    // ToDo: Should I take padding into account when calculating max-h?
     return (
-        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100% - 2em - 6px - 3.5rem)]">
-            <table className="grid bg-primary-light">
-                <thead className="sticky top-0 text-xs uppercase text-gray-300 bg-primary">
-                    <tr className="grid auto-cols-fr grid-flow-col gap-1">
+        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100% - 2em - 6px - 3rem)]">
+            <table className="grid px-1">
+                <thead className="sticky top-0 text-xs uppercase">
+                    <tr className="bg-card-background grid auto-cols-fr grid-flow-col gap-1">
                         <th scope="col" className="p-2" />
                         {usernames.map((username) => (
                             <th

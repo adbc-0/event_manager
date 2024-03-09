@@ -2,30 +2,39 @@ import { twMerge } from "tailwind-merge";
 
 import { ReactProps } from "~/typescript";
 
-type ButtonTheme = "DISCARD" | "SAVE" | "BASIC";
+type ButtonTheme = "DISCARD" | "SAVE" | "BASIC" | "FLAT";
 type ButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
 > &
     ReactProps & {
-        theme: ButtonTheme;
+        variant: ButtonTheme;
     };
 
-const themeColors: Record<ButtonTheme, string> = {
-    BASIC: "bg-primary-lighter text-white border border-primary-border outline-accent",
-    DISCARD:
-        "bg-danger text-danger-text border border-primary-border outline-danger",
-    SAVE: "bg-accent text-accent-text border border-primary-border outline-accent",
+const variantStyles: Record<ButtonTheme, string> = {
+    BASIC: "bg-raised text-white outline-accent",
+    FLAT: "text-white outline-accent",
+    DISCARD: "bg-destructive text-destructive-text outline-destructive",
+    SAVE: "bg-accent text-accent-foreground outline-accent",
 } as const;
 
 const baseButtonStyle =
-    "rounded-md shadow-md hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90 active:outline active:outline-offset-3";
+    "rounded-md hover:brightness-125 disabled:opacity-50 disabled:cursor-not-allowed active:brightness-90 active:outline active:outline-offset-3";
 
-export function Button({ children, theme, className, ...props }: ButtonProps) {
+export function Button({
+    children,
+    variant,
+    className,
+    ...props
+}: ButtonProps) {
     return (
         <button
             {...props}
-            className={twMerge(baseButtonStyle, themeColors[theme], className)}
+            className={twMerge(
+                baseButtonStyle,
+                variantStyles[variant],
+                className,
+            )}
         >
             {children}
         </button>

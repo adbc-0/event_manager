@@ -4,36 +4,74 @@
 
 @layer base {
     :root {
-        --color-primary: 38 38 38; /* Neutral 800 */
-        --color-primary-border: 24 24 27; /* Zinc 900 */
-        --color-primary-darker: 24 24 27; /* Zinc 900 */
-        --color-primary-darker-border: 0 0 0; /* BLACK */
-        --color-primary-lighter: 64 64 64; /* Neutral 700 */
-        --color-primary-lighter-border: 24 24 27; /* Zinc 900 */
-        --accent-color: 94 234 212; /* Teal 300 */
-        --accent-text: 0 0 0; /* BLACK */
-        --danger-color: 252, 165, 165; /* Red 300 */
-        --danger-text: 0 0 0; /* BLACK */
-    }
+        --background: 0 0% 14%;
+        --foreground: 0 0% 100%;
+        --border: 0 0 11%;
+        --raised: 0, 0%, 21%;
+        --input: 0 0 21%;
 
+        --accent: 171 77% 64%;
+        --accent-foreground: 0 0% 0%;
+
+        --destructive: 9 100% 69%;
+        --destructive-background: 356 75% 43%;
+        --destructive-foreground: 0 0% 100%;
+
+        --success: 0 0% 0%;
+        --success-background: 0 0% 0%;
+        --success-foreground: 0 0% 0%;
+
+        --warning: 0 0% 0%;
+        --warning-background: 0 0% 0%;
+        --warning-foreground: 0 0% 0%;
+
+        --error: 0 0% 0%;
+        --error-background: 0 0% 0%;
+        --error-foreground: 0 0% 0%;
+
+        --headerbar-background: 0 0% 19%;
+        --headerbar-foreground: 0 0% 9%;
+        --headerbar-border: 0 0% 9%;
+        --headerbar-backdrop: 0 0% 9%;
+        --headerbar-shade: 0 0% 9%;
+        --headerbar-darker-shade: 0 0% 9%;
+
+        --sidebar-primary-background: 0 0% 9%;
+        --sidebar-primary-foreground: 0 0% 9%;
+        --sidebar-primary-backdrop: 0 0% 9%;
+        --sidebar-primary-shade: 0 0% 9%;
+
+        --sidebar-secondary-background: 0 0% 9%;
+        --sidebar-secondary-background: 0 0% 9%;
+        --sidebar-secondary-foreground: 0 0% 9%;
+        --sidebar-secondary-backdrop: 0 0% 9%;
+        --sidebar-secondary-shade: 0 0% 9%;
+
+        --card-background: 0 0% 21%;
+        --card-foreground: 0 0% 100%;
+        --card-shade: 0 0% 0% 0.36;
+
+        --popover-background: 0 0% 9%;
+        --popover-foreground: 0 0% 9%;
+        --popover-shade: 0 0% 9%;
+    }
+}
+
+@layer base {
     html {
-        @apply accent-teal-300;
-        @apply text-neutral-300;
-        @apply bg-neutral-800;
+        @apply bg-background text-foreground;
     }
 
     dialog {
-        @apply text-neutral-300;
-        @apply bg-transparent;
+        @apply bg-background text-foreground;
     }
 
     dialog::backdrop {
-        @apply bg-gray-500;
-        @apply backdrop-filter;
-        @apply backdrop-blur-sm;
-        @apply bg-opacity-5;
+        @apply bg-neutral-950 bg-opacity-35 backdrop-filter backdrop-blur-sm;
     }
+}
 
+@layer utilities {
     .min-h-full-dvh {
         @apply min-h-[100dvh];
     }

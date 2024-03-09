@@ -15,9 +15,9 @@ type ChoiceRowProps = ReactProps & {
 };
 
 const availabilityColor = {
-    available: `bg-green-600`,
-    maybe_available: `bg-orange-600`,
-    unavailable: `bg-red-600`,
+    available: "bg-green-600",
+    maybe_available: "bg-orange-600",
+    unavailable: "bg-red-600",
 } as const;
 
 const iconSwitch: Record<AvailabilityEnumValues, StaticImport> = {
@@ -28,8 +28,8 @@ const iconSwitch: Record<AvailabilityEnumValues, StaticImport> = {
 
 export function ChoiceRow({ day, dayChoices, users }: ChoiceRowProps) {
     return (
-        <tr className="grid auto-cols-fr grid-flow-col gap-1 bg-primary-light my-1">
-            <th scope="row" className="p-2 font-medium text-gray-300 bg-neutral-500 bg-opacity-15">
+        <tr className="grid auto-cols-fr grid-flow-col gap-1 my-1">
+            <th scope="row" className="p-2 font-medium bg-card-background">
                 {day}
             </th>
             {users.map((user) => {
@@ -38,7 +38,7 @@ export function ChoiceRow({ day, dayChoices, users }: ChoiceRowProps) {
                     <td
                         key={day + user}
                         className={twMerge(
-                            "bg-opacity-15 flex justify-center align-center bg-neutral-500",
+                            "bg-card-background flex justify-center align-center",
                             availabilityColor[userChoiceForDay],
                         )}
                     >

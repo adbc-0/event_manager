@@ -27,12 +27,12 @@ export function AuthDialogContent() {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="py-2 px-4 flex flex-col">
             {usersQuery.data.map((user) => (
                 <button
                     key={user.id}
                     type="button"
-                    className="grow border border-primary-border border-b-0 last:border-b block py-2 bg-primary hover:bg-accent hover:text-accent-text hover:transition-colors ease-out duration-300"
+                    className="border border-border border-b-0 first:rounded-t-lg last:rounded-b-lg last:border-b bg-card-background text-card-foreground py-2 hover:brightness-110 hover:transition-colors ease-out duration-300"
                     onClick={() => selectUser(user)}
                 >
                     {user.username}
