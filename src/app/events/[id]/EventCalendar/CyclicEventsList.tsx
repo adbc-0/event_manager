@@ -94,7 +94,10 @@ export function CyclicEventsList() {
     return (
         <div className="py-2 px-4">
             {rulesQ.data.map((rule) => (
-                <div key={rule.id} className="border border-border border-b-0 first:rounded-t-lg last:rounded-b-lg last:border-b bg-card-background">
+                <div
+                    key={rule.id}
+                    className="border border-border border-b-0 first:rounded-t-lg last:rounded-b-lg last:border-b bg-card-background"
+                >
                     <div className="flex justify-between items-center px-4 py-2 gap-2">
                         <p className="grow">{rule.name}</p>
                         <Button

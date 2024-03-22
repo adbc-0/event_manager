@@ -220,7 +220,12 @@ export function NewCyclicEvent() {
                         </Button>
                     ))}
                 </div>
-                <div className="w-full my-4" />
+                <Button
+                    variant="FLAT"
+                    className="block p-2 w-full rounded-none border-t border-t-border-edge"
+                >
+                    Cancel
+                </Button>
                 <LoadingButton
                     type="submit"
                     variant="FLAT"
