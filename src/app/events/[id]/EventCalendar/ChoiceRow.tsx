@@ -15,9 +15,9 @@ type ChoiceRowProps = ReactProps & {
 };
 
 const availabilityColor = {
-    available: "bg-green-600",
-    maybe_available: "bg-orange-600",
-    unavailable: "bg-red-600",
+    available: "bg-green-1",
+    maybe_available: "bg-orange-1",
+    unavailable: "bg-red-1",
 } as const;
 
 const iconSwitch: Record<AvailabilityEnumValues, StaticImport> = {

@@ -187,7 +187,7 @@ export function EditCyclicEvent({ savedRule }: EditCyclicEventProps) {
     };
 
     return (
-        <div className="flex justify-center p-2 text-center">
+        <div className="bg-card-lowered flex justify-center p-2 text-center border-t border-border">
             <form onSubmit={_updateRule} className="grow">
                 <div className="py-2">
                     <Input

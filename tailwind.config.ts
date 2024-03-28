@@ -16,6 +16,9 @@ const config = {
                 border: "hsl(var(--border))",
                 raised: "hsl(var(--raised))",
                 input: "hsl(var(--input))",
+                "red-1": "hsl(var(--red-1))",
+                "green-1": "hsl(var(--green-1))",
+                "orange-1": "hsl(var(--orange-1))",
                 accent: {
                     DEFAULT: "hsl(var(--accent))",
                     foreground: "hsl(var(--accent-foreground))",
@@ -56,6 +59,7 @@ const config = {
                 card: {
                     background: "hsl(var(--card-background))",
                     foreground: "hsl(var(--card-foreground))",
+                    lowered: "hsl(var(--card-lowered))",
                     shade: "hsl(var(--card-shade))",
                 },
                 popover: {
@@ -78,7 +82,6 @@ const config = {
             },
         },
     },
-    plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;

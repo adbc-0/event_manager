@@ -100,6 +100,23 @@ export function CyclicEventsList() {
                 >
                     <div className="flex justify-between items-center px-4 py-2 gap-2">
                         <p className="grow">{rule.name}</p>
+                        <LoadingButton
+                            aria-label="delete rule event"
+                            type="button"
+                            variant="FLAT"
+                            className="p-2"
+                            disabled={Boolean(removedEventId)}
+                            isLoading={removedEventId === rule.id.toString()}
+                            onClick={() => _deleteRule(rule.id.toString())}
+                        >
+                            <Image
+                                src={trashIcon}
+                                className="m-auto"
+                                width={24}
+                                height={24}
+                                alt="trash can icon"
+                            />
+                        </LoadingButton>
                         <Button
                             aria-label="show event details"
                             type="button"
@@ -119,23 +136,6 @@ export function CyclicEventsList() {
                                 alt="expand icon"
                             />
                         </Button>
-                        <LoadingButton
-                            aria-label="delete rule event"
-                            type="button"
-                            variant="FLAT"
-                            className="p-2"
-                            disabled={Boolean(removedEventId)}
-                            isLoading={removedEventId === rule.id.toString()}
-                            onClick={() => _deleteRule(rule.id.toString())}
-                        >
-                            <Image
-                                src={trashIcon}
-                                className="m-auto"
-                                width={24}
-                                height={24}
-                                alt="trash can icon"
-                            />
-                        </LoadingButton>
                     </div>
                     {openRuleId === rule.id && (
                         <EditCyclicEvent savedRule={rule} />

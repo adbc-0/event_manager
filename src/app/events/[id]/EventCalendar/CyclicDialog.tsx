@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState } from "react";
 import { match } from "ts-pattern";
 
@@ -7,7 +8,6 @@ import { NewCyclicEvent } from "./NewCyclicEvent";
 import { CyclicEventsList } from "./CyclicEventsList";
 import Dialog from "~/components/Dialog/Dialog";
 import { Button } from "~/components/Button/Button";
-import Image from "next/image";
 
 type Tab = "list" | "new";
 

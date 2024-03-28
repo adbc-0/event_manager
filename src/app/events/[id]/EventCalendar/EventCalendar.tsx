@@ -73,11 +73,11 @@ const dayColor: Record<DayColorType, string> = {
     ALL_SELECTED:
         "bg-blue-300 [@media(hover:hover)]:hover:bg-blue-300/80 text-neutral-800",
     MAYBE_AVAILABLE:
-        "bg-orange-300 [@media(hover:hover)]:hover:bg-orange-300/80 text-neutral-800",
+        "bg-orange-1 [@media(hover:hover)]:hover:bg-orange-1/80 text-neutral-800",
     MY_AVAILABLE:
-        "bg-accent [@media(hover:hover)]:hover:bg-accent/80 text-neutral-800",
+        "bg-green-1 [@media(hover:hover)]:hover:bg-green-1/80 text-neutral-800",
     UNAVAILABLE:
-        "bg-rose-300 [@media(hover:hover)]:hover:bg-rose-300/80 text-neutral-800",
+        "bg-red-1 [@media(hover:hover)]:hover:bg-red-1/80 text-neutral-800",
     UNSELECTED: "hover:bg-white/10",
     DISABLED: "opacity-50",
 } as const;

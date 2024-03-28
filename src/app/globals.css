@@ -48,12 +48,17 @@
         --sidebar-secondary-shade: 0 0% 9%;
 
         --card-background: 0 0% 21%;
+        --card-lowered: 0 0 17%;
         --card-foreground: 0 0% 100%;
         --card-shade: 0 0% 0% 0.36;
 
         --popover-background: 0 0% 9%;
         --popover-foreground: 0 0% 9%;
         --popover-shade: 0 0% 9%;
+
+        --orange-1: 30 100% 64%;
+        --red-1: 6 90% 64%;
+        --green-1: 133 76% 75%;
     }
 }
 
