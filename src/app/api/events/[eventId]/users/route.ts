@@ -19,7 +19,7 @@ export type EventUser = {
 
 export type RequestResponse = EventUser[];
 
-export async function GET(request: Request, { params }: RequestParams) {
+export async function GET(_: Request, { params }: RequestParams) {
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
