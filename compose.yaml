@@ -1,17 +1,17 @@
 services:
-  db:
-    container_name: event_manager_postgres_db
-    image: postgres:16.3
-    restart: unless-stopped
-    hostname: localhost
-    environment:
-      POSTGRES_DB: event_manager
-      POSTGRES_PASSWORD: 2137
-      POSTGRES_USER: postgres
-    ports:
-      - "5432:5432" 
-    volumes:
-      - pgdata:/var/lib/postgresql/data 
+    db:
+        container_name: event_manager_postgres_db
+        image: postgres:16.3
+        restart: unless-stopped
+        hostname: localhost
+        environment:
+            POSTGRES_DB: event_manager
+            POSTGRES_PASSWORD: 2137
+            POSTGRES_USER: postgres
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
+    pgdata:

@@ -29,7 +29,10 @@ const iconSwitch: Record<AvailabilityEnumValues, StaticImport> = {
 export function ChoiceRow({ day, dayChoices, users }: ChoiceRowProps) {
     return (
         <tr className="grid auto-cols-fr grid-flow-col gap-1 bg-primary-light my-1">
-            <th scope="row" className="p-2 font-medium text-gray-300 bg-neutral-500 bg-opacity-15">
+            <th
+                scope="row"
+                className="p-2 font-medium text-gray-300 bg-neutral-500 bg-opacity-15"
+            >
                 {day}
             </th>
             {users.map((user) => {
