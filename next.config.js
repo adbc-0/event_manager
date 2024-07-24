@@ -1,19 +1,8 @@
-/** @type {import('next').NextConfig} */
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { withSentryConfig } = require("@sentry/nextjs");
 
 module.exports = withSentryConfig(
-    module.exports,
     {
         reactStrictMode: true,
-        // For all available options, see:
-        // https://github.com/getsentry/sentry-webpack-plugin#options
-
-        // Suppresses source map uploading logs during build
-        silent: true,
-        org: "sd-wt",
-        project: "javascript-react",
     },
     {
         // For all available options, see:
@@ -21,9 +10,6 @@ module.exports = withSentryConfig(
 
         // Upload a larger set of source maps for prettier stack traces (increases build time)
         widenClientFileUpload: true,
-
-        // Transpiles SDK to be compatible with IE11 (increases bundle size)
-        transpileClientSDK: true,
 
         // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
         tunnelRoute: "/monitoring",
