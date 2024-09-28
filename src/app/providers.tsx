@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
-import { Toaster } from "sonner";
 
 import { QUERY_STALE_TIME } from "~/constants";
 import { ReactProps } from "~/typescript";
@@ -24,7 +23,6 @@ export default function Providers({ children }: ReactProps) {
         <QueryClientProvider client={queryClient}>
             <JotaiProvider>
                 {children}
-                <Toaster position="top-center" />
             </JotaiProvider>
         </QueryClientProvider>
     );
