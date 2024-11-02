@@ -11,7 +11,7 @@ type RouteParams = {
 };
 
 type RequestParams = {
-    params: RouteParams;
+    params: Promise<RouteParams>;
 };
 
 export type EventRule = {

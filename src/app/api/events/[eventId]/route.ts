@@ -59,7 +59,7 @@ type RouteParams = {
 };
 
 type RequestParams = {
-    params: RouteParams;
+    params: Promise<RouteParams>;
 };
 
 const DayToNoMap = {
