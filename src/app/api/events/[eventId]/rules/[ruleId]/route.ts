@@ -16,7 +16,8 @@ type RequestParams = {
     params: RouteParams;
 };
 
-export async function PUT(req: Request, { params }: RequestParams) {
+export async function PUT(req: Request, props: RequestParams) {
+    const params = await props.params;
     const [, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(
@@ -62,7 +63,8 @@ export async function PUT(req: Request, { params }: RequestParams) {
 }
 
 // ToDo: Only user should be able to remove his own rule
-export async function DELETE(_: Request, { params }: RequestParams) {
+export async function DELETE(_: Request, props: RequestParams) {
+    const params = await props.params;
     const { eventId: encodedEventId, ruleId } = params;
     const [eventId, decodingError] = hashId.decode(encodedEventId);
     if (decodingError) {

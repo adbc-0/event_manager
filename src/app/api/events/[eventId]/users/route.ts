@@ -19,7 +19,9 @@ export type EventUser = {
 
 export type RequestResponse = EventUser[];
 
-export async function GET(_: Request, { params }: RequestParams) {
+export const dynamic = 'force-static';
+export async function GET(_: Request, props: RequestParams) {
+    const params = await props.params;
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(

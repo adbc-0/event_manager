@@ -28,7 +28,9 @@ function ofUser(userId: string) {
     return postgres`AND user_id=${userId}`;
 }
 
-export async function GET(request: Request, { params }: RequestParams) {
+export const dynamic = 'force-static';
+export async function GET(request: Request, props: RequestParams) {
+    const params = await props.params;
     const { searchParams } = new URL(request.url);
 
     const [eventId, decodingError] = hashId.decode(params.eventId);
@@ -50,7 +52,8 @@ export async function GET(request: Request, { params }: RequestParams) {
     return NextResponse.json(rules);
 }
 
-export async function POST(req: Request, { params }: RequestParams) {
+export async function POST(req: Request, props: RequestParams) {
+    const params = await props.params;
     const [eventId, decodingError] = hashId.decode(params.eventId);
     if (decodingError) {
         return NextResponse.json(

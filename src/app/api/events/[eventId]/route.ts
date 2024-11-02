@@ -252,7 +252,9 @@ function createInspectedMonthFallback() {
     return `${currentDate.month}-${currentDate.year}`;
 }
 
-export async function GET(request: Request, { params }: RequestParams) {
+export const dynamic = 'force-static';
+export async function GET(request: Request, props: RequestParams) {
+    const params = await props.params;
     try {
         const { searchParams } = new URL(request.url);
 
@@ -342,7 +344,7 @@ export async function GET(request: Request, { params }: RequestParams) {
         };
 
         return NextResponse.json(response);
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { message: "Internal server error" },
             { status: 500 },

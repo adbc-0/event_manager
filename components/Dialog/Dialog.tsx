@@ -24,13 +24,16 @@ type DialogContentProps = ReactProps & {
     title?: string;
 };
 type DialogContextT = {
-    dialogRef: Nullable<RefObject<HTMLDialogElement>>;
+    dialogRef: Nullable<RefObject<HTMLDialogElement | null>>;
     isOpen: boolean;
     startRenderingDialogChildren: () => void;
     stopRenderingDialogChildren: () => void;
     closeDialog: () => void;
     openDialog: () => void;
 };
+type ChildrenProps = {
+    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
 
 const DialogContext = createContext<DialogContextT>({
     dialogRef: null,
@@ -114,7 +117,7 @@ function DialogTrigger({ children }: ReactProps) {
         throw new Error("invalid react element");
     }
 
-    return cloneElement(triggerElement as ReactElement, {
+    return cloneElement(triggerElement as ReactElement<ChildrenProps>, {
         onClick: openDialog,
     });
 }
@@ -218,14 +221,14 @@ function DialogClose({ children }: ReactProps) {
     }
 
     const { closeDialog } = useDialogContext();
-    const triggerElement = Children.only(children);
+    const triggerElement = Children.only(children) as ReactElement<ChildrenProps>;
     if (!isValidElement(triggerElement)) {
         throw new Error("invalid react element");
     }
 
     const originalOnClick = triggerElement.props.onClick;
 
-    return cloneElement(triggerElement as ReactElement, {
+    return cloneElement(triggerElement as ReactElement<ChildrenProps>, {
         onClick: composeEventHandlers(originalOnClick, closeDialog),
     });
 }

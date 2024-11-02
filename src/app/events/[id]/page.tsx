@@ -19,15 +19,16 @@ export const metadata = {
 };
 
 type PageProps = {
-    params: { id: string };
-    searchParams: { [key: string]: string | string[] | undefined };
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 function getFullAPIPath(url: string) {
     return `${process.env.NEXT_PUBLIC_API_URL}${url}`;
 }
 
-async function Page({ params }: PageProps) {
+async function Page(props: PageProps) {
+    const params = await props.params;
     const eventId = params.id;
 
     const queryClient = new QueryClient();
