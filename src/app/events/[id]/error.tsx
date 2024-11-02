@@ -1,7 +1,5 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
-import { useEffect } from "react";
 import { Button } from "~/components/Button/Button";
 
 type ErrorProps = {
@@ -9,11 +7,7 @@ type ErrorProps = {
     reset: () => void;
 };
 
-function Error({ error, reset }: ErrorProps) {
-    useEffect(() => {
-        Sentry.captureException(error);
-    }, [error]);
-
+function Error({ reset }: ErrorProps) {
     return (
         <div className="min-h-full-dvh flex text-center justify-center flex-col gap-2">
             <h1>Uncaught exception</h1>

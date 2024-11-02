@@ -40,7 +40,6 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "src/app/api/sentry-example-api/route.ts"
     ],
     "exclude": ["node_modules"]
 }
