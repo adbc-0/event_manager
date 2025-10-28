@@ -12,8 +12,7 @@ import { AuthDialogContent } from "~/components/AuthDialogContent/AuthDialogCont
 import Dialog from "../Dialog/Dialog";
 import { EventRouteParams } from "~/typescript";
 
-const mobileMenuLayoutStyle =
-    "fixed bottom-0 w-full md:max-w-xl md:left-1/2 md:transform md:translate-x-[-50%]";
+const mobileMenuLayoutStyle = "";
 
 export function AuthMobile() {
     const { id: eventId } = useParams<EventRouteParams>();
@@ -23,15 +22,11 @@ export function AuthMobile() {
     if (userId) {
         return (
             <div className={mobileMenuLayoutStyle}>
-                <div className="flex w-full gap-2 p-2">
-                    <p className="basis-10/12 py-3 text-center bg-primary-darker border border-primary-darker-border rounded-md shadow-inner">
+                <div className="flex justify-center gap-2 p-2">
+                    <p className="px-6 py-3 text-center bg-primary-darker border border-primary-darker-border rounded-md shadow-inner">
                         {username}
                     </p>
-                    <Button
-                        theme="BASIC"
-                        className="basis-2/12 py-3"
-                        onClick={logout}
-                    >
+                    <Button theme="BASIC" className="px-3 py-3" onClick={logout}>
                         <Image
                             src={logoutIcon}
                             className="m-auto"
@@ -48,10 +43,10 @@ export function AuthMobile() {
     return (
         <>
             <div className={mobileMenuLayoutStyle}>
-                <div className="flex w-full">
+                <div className="flex justify-center">
                     <Dialog>
                         <Dialog.DialogTrigger>
-                            <Button theme="BASIC" className="grow py-3 m-2">
+                            <Button theme="BASIC" className="px-3 py-3 m-2">
                                 <Image
                                     src={loginIcon}
                                     className="m-auto"
@@ -61,7 +56,7 @@ export function AuthMobile() {
                                 />
                             </Button>
                         </Dialog.DialogTrigger>
-                        <Dialog.DialogContent title="User selection">
+                        <Dialog.DialogContent title="Person selection">
                             <AuthDialogContent />
                         </Dialog.DialogContent>
                     </Dialog>
