@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 
-import loginIcon from "~/public/login.svg";
 import logoutIcon from "~/public/logout.svg";
 
 import { useAnonAuth } from "~/hooks/use-anon-auth";
@@ -47,13 +46,7 @@ export function AuthMobile() {
                     <Dialog>
                         <Dialog.DialogTrigger>
                             <Button theme="BASIC" className="px-3 py-3 m-2">
-                                <Image
-                                    src={loginIcon}
-                                    className="m-auto"
-                                    width={24}
-                                    height={24}
-                                    alt="login icon"
-                                />
+                                Select yourself
                             </Button>
                         </Dialog.DialogTrigger>
                         <Dialog.DialogContent title="Person selection">
