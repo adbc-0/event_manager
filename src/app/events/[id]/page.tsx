@@ -10,7 +10,7 @@ import { usersKeys } from "~/queries/useEventUsersQuery";
 import { calendarKeys } from "~/queries/useEventQuery";
 import { getCurrentDate } from "~/services/dayJsFacade";
 import { EventView } from "./EventCalendar/EventView";
-import { AuthMobile } from "~/components/AuthMobile/AuthMobile";
+import { PersonPicker } from "~/components/PersonPicker/PersonPicker";
 import { CurrentDate } from "~/typescript";
 
 export const metadata = {
@@ -74,7 +74,7 @@ async function Page({ params }: PageProps) {
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <EventView />
-            <AuthMobile />
+            <PersonPicker />
         </HydrationBoundary>
     );
 }
